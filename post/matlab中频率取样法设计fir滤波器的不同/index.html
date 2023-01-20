@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="s Zhebin" /><meta name="description" content="DEF
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。
 " /><meta name="keywords" content="Hugo, theme, even" />
 
 
@@ -41,22 +41,22 @@
 
 
 <meta property="og:title" content="Matlab中频率取样法设计FIR滤波器的不同" />
-<meta property="og:description" content="DEF" />
+<meta property="og:description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://bingsz.github.io/post/matlab%E4%B8%AD%E9%A2%91%E7%8E%87%E5%8F%96%E6%A0%B7%E6%B3%95%E8%AE%BE%E8%AE%A1fir%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E4%B8%8D%E5%90%8C/" />
 <meta property="article:published_time" content="2023-01-20T16:29:31+08:00" />
 <meta property="article:modified_time" content="2023-01-20T16:29:31+08:00" />
 <meta itemprop="name" content="Matlab中频率取样法设计FIR滤波器的不同">
-<meta itemprop="description" content="DEF">
+<meta itemprop="description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。">
 <meta itemprop="datePublished" content="2023-01-20T16:29:31&#43;08:00" />
 <meta itemprop="dateModified" content="2023-01-20T16:29:31&#43;08:00" />
-<meta itemprop="wordCount" content="1">
+<meta itemprop="wordCount" content="1189">
 
 
 
 <meta itemprop="keywords" content="Matlab,FIR," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Matlab中频率取样法设计FIR滤波器的不同"/>
-<meta name="twitter:description" content="DEF"/>
+<meta name="twitter:description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -139,11 +139,55 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">Contents</h2>
   <div class="post-toc-content always-active">
-    <nav id="TableOfContents"></nav>
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#__1-两种方法结果比较__">1. 两种方法结果比较</a></li>
+        <li><a href="#__2-采样后时域频域关系__">2. 采样后时域频域关系</a></li>
+        <li><a href="#__3-问题解决__">3. 问题解决</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
   </div>
 </div>
     <div class="post-content">
-      <p>DEF</p>
+      <p>  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。</p>
+<h2 id="__1-两种方法结果比较__"><strong>1. 两种方法结果比较</strong></h2>
+<p>  我之前打算实现一个信号处理函数库，当然并没有考虑性能方面的事情，仅仅是熟悉算法。而在实现$\text{FIR}$的频率响应设计滤波器时便遇到了这个问题，因为我发现我所使用的一般频率取样算法与$\text{Matlab}$得到的结果并不完全一样，如下所示：</p>
+<div>
+<center>
+  <img src="/images/1_2.png" width="75%"/>
+  <br>
+  图1：两种方法比较
+</center>
+</div>
+<p>  其中，蓝色线为$\text{Matlab}$生成的$\text{FIR}$滤波器的频域响应，橙色线为一般频率取样算法得到的结果（同样加了海明窗）。可以看到，$\text{Matlab}$的算法得到的结果具有更好的过渡带响应及旁瓣电平。</p>
+<p>  根据$\text{Matlab}$官方手册上的叙述，fir2函数首先对输入频域响应进行插值，生成一个称为“密集网格”的东西，随后使用逆傅里叶变换得到冲激响应，最后使用海明窗进行截断，获得想要的冲激响应。如下图所示：</p>
+<div>
+<center>
+  <img src="/images/1_1.png" width="75%"/>
+  <br>
+  图2：fir2函数描述
+</center>
+</div>
+<p>  也就是说，$\text{Matlab}$中的实现方法与一般的频率取样法的差别在于，$\text{Matlab}$对频率响应进行了更加密集的插值，然后使用密集插值后的结果进行处理输出（也就是加窗截断，获得所需要阶数）。为了搞清楚这种方法带来的差别，要从频域采样说起。</p>
+<h2 id="__2-采样后时域频域关系__"><strong>2. 采样后时域频域关系</strong></h2>
+<p>  如果在时域中进行采样周期为 $T_s$ （对应的采样角频率为$\omega_s$） 的采样，即</p>
+<p>$$ x[n] = x(nT_s) $$</p>
+<p>  那么在频域上便存在如下关系：</p>
+<p>$$ X_d(\omega) = \sum_{k=-\infty}^{\infty}X_c(\omega - \omega_s) $$</p>
+<p>  其中$X_d$表示离散时间傅里叶变换（即$x[n]$的离散时间傅里叶变换），下标$d$表示离散（$\text{Discrete}$）；$X_c$表示连续时间傅里叶变换，下标$c$表示连续（$\text{Continuous}$）。</p>
+<p>  由于时域与频域本就是一个对应关系，所以上述关系在频域上同样成立。换言之，如果在频域中进行采样</p>
+<p>$$ X_d[n] = X_c(n\omega_s) $$</p>
+<p>  那么，在时域中将会产生信号混叠，即将有如下等式成立：</p>
+<p>$$ x_d[n] = \sum_{k=-\infty}^{\infty}x_c[n - T_s] $$</p>
+<p>  其中，$x_d[n]$为逆傅里叶变换后的结果，$x_c[n]$为原始信号（其离散时间傅里叶变换对应$X_c$）。</p>
+<p>  证明过程与时域采样定理的证明过程一致，主要运用的是“频域乘积对应时域卷积”定理。事实上，从这个角度来理解离散傅里叶变换可以发现，由于离散傅里叶变换本质便是对于离散时间傅里叶变换的一个采样，因此$N$点离散傅里叶变换正是时域信号频谱不混叠的最小点数。</p>
+<h2 id="__3-问题解决__"><strong>3. 问题解决</strong></h2>
+<p>  当明白了上述关系后，结论也就自然而然地出来了。一般的频率取样设计滤波器方法由于在点数较少的时候会产生时域混叠现象，因此得到的冲激信号将会产生一定的失真；而$\text{Matlab}$的“密集网格”方法便能很好的避免这个问题。</p>
+<p>但是$\text{Matlab}$的这种设计方法也会带来一定的负面效果。</p>
     </div>
 
     
@@ -207,6 +251,15 @@
 
 
 <script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
 
 
 
