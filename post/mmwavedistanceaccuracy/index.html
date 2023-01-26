@@ -50,7 +50,7 @@
 <meta itemprop="description" content="目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？">
 <meta itemprop="datePublished" content="2023-01-22T16:16:50&#43;08:00" />
 <meta itemprop="dateModified" content="2023-01-22T16:16:50&#43;08:00" />
-<meta itemprop="wordCount" content="2988">
+<meta itemprop="wordCount" content="2977">
 
 
 
@@ -257,10 +257,7 @@
 <p>  那么对$(1)$作离散时间傅里叶变换，可得</p>
 <p>$$ X_s(\omega) = \frac{1}{2\pi} X(\omega)*W(\omega) $$</p>
 <p>  其中，$*$表示卷积，$W(\omega)$如下定义：</p>
-<p>$$ W(\omega)=
-\begin{cases}
-e^{-j\omega \frac{\tau - 1}{2}}\frac{\sin(\omega \frac{\tau}{2})}{\sin(\frac{\omega}{2})}&amp; x \neq 0 \\ 1&amp; \text{x = 0}
-\end{cases} $$</p>
+<p>$$ W(\omega)=e^{-j\omega \frac{\tau - 1}{2}}\frac{\sin(\omega \frac{\tau}{2})}{\sin(\frac{\omega}{2})} $$</p>
 <p>  可以看到，现实世界中的有限长离散时间信号实际上是无限长离散时间信号的一个模糊。如果使用4dB带宽来衡量距离分辨率，那么可得频率分辨率为：</p>
 <p>$$ \Delta f = \frac{1}{\tau} \tag{2} $$</p>
 <p>  将上式代入距离求解公式中，可以得到距离分辨率为：</p>
