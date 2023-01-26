@@ -50,7 +50,7 @@
 <meta itemprop="description" content="目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？">
 <meta itemprop="datePublished" content="2023-01-22T16:16:50&#43;08:00" />
 <meta itemprop="dateModified" content="2023-01-22T16:16:50&#43;08:00" />
-<meta itemprop="wordCount" content="3105">
+<meta itemprop="wordCount" content="2988">
 
 
 
@@ -248,23 +248,18 @@
 <p>  从上述结果可以发现，通过单纯增加$\text{FFT}$点数并不能将这两段信号区分开来，现在我们来讨论一下在这种情况下，距离分辨率应当怎么求解，即求解可以将频率离得多近的两段信号区分开来。</p>
 <h2 id="__31-从窗函数角度的距离分辨率求解__"><strong>3.1 从窗函数角度的距离分辨率求解</strong></h2>
 <p>  首先，在现实世界中并不能无限长时间的采样，因此采样这个过程可以被理解为，一个无限长离散信号与一个矩形窗相乘，可表示为如下公式：</p>
-<p>$$ x_s[n] = x_c(nT_s) = x(nT_s)W&rsquo;_\tau(nT_s) \tag{1} $$</p>
-<p>  其中，$x_s[n]$为采集到的信号，$x_c(t)$为截断后的模拟域上的信号，$x(t)$为模拟域上的原始信号（即无限长模拟信号），$W&rsquo;_\tau(t)$如下式所定义：</p>
-<p>$$ W&rsquo;_\tau(t)=
+<p>$$ x_s[n] = x[n]w_\tau[n] \tag{1} $$</p>
+<p>  其中，$x_s[n]$为采集到的信号，$x[n]$为离散域上的原始信号（即无限长采样后的离散信号），$w_\tau[n]$如下式所定义：</p>
+<p>$$ w_\tau[n]=
 \begin{cases}
 1&amp; \text{0} \leq \text{n &lt;} \tau \\ 0&amp; \text{Others}
 \end{cases}$$</p>
-<p>  为了分析方便，我们对信号作一个平移，将$W&rsquo;_\tau(t)$中心平移至原点，同时采样得到的离散信号与无限长离散信号进行平移，但为了方便，仍记为$x_s(t)$与$x(t)$。</p>
-<p>$$ W_\tau(t)=
+<p>  那么对$(1)$作离散时间傅里叶变换，可得</p>
+<p>$$ X_s(\omega) = \frac{1}{2\pi} X(\omega)*W(\omega) $$</p>
+<p>  其中，$*$表示卷积，$W(\omega)$如下定义：</p>
+<p>$$ W(\omega)=
 \begin{cases}
-1&amp; -\frac{\tau}{2} \leq \text{n &lt;} \frac{\tau}{2} \\ 0&amp; \text{Others}
-\end{cases}$$</p>
-<p>  不妨假设$\tau$为一个偶数，那么对$(1)$作离散时间傅里叶变换，可得</p>
-<p>$$ X_s(\omega) = \frac{\tau}{2\pi} X(\omega)*Sa(\frac{\tau}{2}\omega) $$</p>
-<p>  其中，$*$表示卷积，$Sa(x)$如下定义：</p>
-<p>$$ Sa(x)=
-\begin{cases}
-\frac{sinx}{x}&amp; x \neq 0 \\ 1&amp; \text{x = 0}
+e^{-j\omega \frac{\tau - 1}{2}}\frac{\sin(\omega \frac{\tau}{2})}{\sin(\frac{\omega}{2})}&amp; x \neq 0 \\ 1&amp; \text{x = 0}
 \end{cases} $$</p>
 <p>  可以看到，现实世界中的有限长离散时间信号实际上是无限长离散时间信号的一个模糊。如果使用4dB带宽来衡量距离分辨率，那么可得频率分辨率为：</p>
 <p>$$ \Delta f = \frac{1}{\tau} \tag{2} $$</p>
@@ -297,14 +292,14 @@
 <h2 id="__32-从模糊函数角度的距离分辨率求解__"><strong>3.2 从模糊函数角度的距离分辨率求解</strong></h2>
 <p>  模糊函数是用来衡量不同维度差异下的信号波形差异的一种量化方法，定义如下所示：</p>
 <p>$$ \chi(\tau, f_d) = \int_{-\infty}^{\infty}u(t)u^*(t+\tau)e^{j2\pi f_d\ t} \mathrm{d}t $$</p>
-<p>  其中$u(t)$为信号的复包络，在线性调频信号中为$u(t)=W_T(t)e^{j\pi \mu t^2}$，其中$W_T(t)$与前文定义类似，只不过迁移到了模拟域上。有些地方会在$u(t)$前乘上一个系数$\frac{1}{\sqrt{T}}$，这是为了保证信号能量的归一化。将线性调频信号的复包络代入模糊函数的计算公式中，可得到如下结果：</p>
+<p>  其中$u(t)$为信号的复包络，在线性调频信号中为$u(t)=W_T(t)e^{j\pi \mu t^2}$，其中为了方便，将$W_T(t)$的中心平移到了原点。有些地方会在$u(t)$前乘上一个系数$\frac{1}{\sqrt{T}}$，这是为了保证信号能量的归一化。将线性调频信号的复包络代入模糊函数的计算公式中，可得到如下结果：</p>
 <p>$$\begin{align*} \chi(\tau, f_d) =&amp; \int_{-\infty}^{\infty}u(t)u^*(t+\tau)e^{j2\pi f_d\ t} \mathrm{d}t \\ =&amp; \int_{-\infty}^{\infty}W_T(t)e^{j\pi \mu t^2}W_T(t+\tau)e^{-j\pi \mu (t+\tau)^2} e^{j2\pi f_d\ t} \mathrm{d}t \end{align*} $$</p>
 <p>  当$|\tau|$大于$T$时，$W_T(t)W_T(t+\tau)$恒为$0$。</p>
-<p>  当$\tau$小于$T$，且$\tau$大于$0$时，上式变为：</p>
+<p>  当$|\tau|$小于$T$，且$\tau$大于$0$时，上式变为：</p>
 <p>$$\begin{align*} \chi(\tau, f_d) =&amp; \int_{-\frac{T}{2}}^{\frac{T}{2}-\tau}e^{j\pi \mu t^2}e^{-j\pi \mu (t+\tau)^2} e^{j2\pi f_d\ t} \mathrm{d}t \\ =&amp; e^{-j\pi \mu \tau^2}\int_{-\frac{T}{2}}^{\frac{T}{2}-\tau} e^{j2\pi (f_d\ -\mu \tau)t} \mathrm{d}t \\ =&amp; \frac{e^{-j\pi \mu \tau^2}}{j2\pi(f_d\ - \mu \tau)}(e^{j2\pi (f_d\ - \mu \tau)(\frac{T}{2} - \tau)} - e^{-j2\pi (f_d\ - \mu \tau)\frac{T}{2}}) \\ =&amp; \frac{e^{-j\pi \mu \tau^2}e^{-j\pi (f_d\ - \mu \tau)\tau}}{j2\pi(f_d\ - \mu \tau)}(e^{j\pi (f_d\ - \mu \tau)(T - \tau)} - e^{-j\pi (f_d\ - \mu \tau)(T - \tau)}) \\ =&amp; \frac{e^{-j\pi \mu \tau^2}e^{-j\pi (f_d\ - \mu \tau)\tau}}{\pi(f_d\ - \mu \tau)}\sin(\pi (f_d\ - \mu \tau)(T-\tau)) \end{align*} $$</p>
 <p>  于是可得</p>
 <p>$$\begin{align*} |\chi(\tau, f_d)| =&amp; |(T-\tau)\frac{\sin(\pi (f_d\ - \mu \tau)(T-\tau))}{\pi (f_d\ - \mu \tau)(T-\tau)}| \\ =&amp; |(T-\tau)\mathrm{Sa}(\pi (f_d\ - \mu \tau)(T-\tau))| \end{align*} $$</p>
-<p>  当$\tau$小于$T$，且$\tau$小于$0$时，与上式求法同理。综合来看，结果如下：</p>
+<p>  当$|\tau|$小于$T$，且$\tau$小于$0$时，与上式求法同理。综合来看，结果如下：</p>
 <p>$$ |\chi(\tau, f_d)|=
 \begin{cases}
 |(T-|\tau|)\mathrm{Sa}(\pi (f_d\ - \mu \tau)(T-|\tau|))|&amp; |\tau|&lt;T \\ 0&amp; \text{Others}
@@ -324,6 +319,7 @@
   图8：通过解卷积实现超分辨率
 </center>
 </div>
+<p>  （笔者还没学随机信号处理与现代信号处理，先鸽了）</p>
     </div>
 
     
