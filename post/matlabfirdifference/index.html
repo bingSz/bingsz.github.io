@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Matlab中频率取样法设计FIR滤波器的不同 - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/matlabfirdifference/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Matlab中频率取样法设计FIR滤波器的不同" />
+<meta property="og:description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/matlabfirdifference/" />
+<meta property="article:published_time" content="2023-01-20T16:29:31+08:00" />
+<meta property="article:modified_time" content="2023-01-20T16:29:31+08:00" />
+<meta itemprop="name" content="Matlab中频率取样法设计FIR滤波器的不同">
+<meta itemprop="description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。">
+<meta itemprop="datePublished" content="2023-01-20T16:29:31&#43;08:00" />
+<meta itemprop="dateModified" content="2023-01-20T16:29:31&#43;08:00" />
+<meta itemprop="wordCount" content="2181">
+
+
+
+<meta itemprop="keywords" content="Matlab,FIR," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Matlab中频率取样法设计FIR滤波器的不同"/>
+<meta name="twitter:description" content="  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Matlab中频率取样法设计FIR滤波器的不同</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-01-20 </span>
+        <div class="post-category">
+            <a href="/categories/matlab/"> Matlab </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#__1-两种方法结果比较__">1. 两种方法结果比较</a></li>
+        <li><a href="#__2-采样后时域频域关系__">2. 采样后时域频域关系</a></li>
+        <li><a href="#__3-问题解决__">3. 问题解决</a></li>
+        <li><a href="#__4-textmatlab方法缺点__">4. $\text{Matlab}$方法缺点</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。</p>
+<h2 id="__1-两种方法结果比较__"><strong>1. 两种方法结果比较</strong></h2>
+<p>  我之前打算实现一个信号处理函数库，当然并没有考虑性能方面的事情，仅仅是熟悉算法。而在实现$\text{FIR}$的频率响应设计滤波器时便遇到了这个问题，因为我发现我所使用的一般频率取样算法与$\text{Matlab}$得到的结果并不完全一样，如下所示：</p>
+<div>
+<center>
+  <img src="/images/1_2.png" width="75%"/>
+  <br>
+  图1：两种方法比较
+</center>
+</div>
+<p>  其中，蓝色线为$\text{Matlab}$生成的$\text{FIR}$滤波器的频域响应，橙色线为一般频率取样算法得到的结果（加了海明窗）。可以看到，$\text{Matlab}$的算法得到的结果具有更好的过渡带响应及旁瓣电平。</p>
+<p>  如果对于一般的频率取样算法不加海明窗（即最基本的频率取样法设计$\text{FIR}$滤波器），那么可以得到如下结果：</p>
+<div>
+<center>
+  <img src="/images/1_3.png" width="75%"/>
+  <br>
+  图2：两种方法比较（2）
+</center>
+</div>
+<p>  可以发现，橙色线的过渡带性能更好，但同时带来的一个问题是，通带波纹性能较差，并且阻带性能较$\text{Matlab}$算法较差。</p>
+<p>  根据$\text{Matlab}$官方手册上的叙述，fir2函数首先对输入频域响应进行插值，生成一个称为“密集网格”的东西，随后使用逆傅里叶变换得到冲激响应，最后使用海明窗进行截断，获得想要的冲激响应。如下图所示：</p>
+<div>
+<center>
+  <img src="/images/1_1.png" width="75%"/>
+  <br>
+  图3：fir2函数描述
+</center>
+</div>
+<p>  也就是说，$\text{Matlab}$中的实现方法与一般的频率取样法的差别在于，$\text{Matlab}$对频率响应进行了更加密集的插值，然后使用密集插值后的结果进行处理输出（也就是加窗截断，获得所需要阶数）。为了搞清楚这种方法带来的差别，要从频域采样说起。</p>
+<h2 id="__2-采样后时域频域关系__"><strong>2. 采样后时域频域关系</strong></h2>
+<p>  如果在时域中进行采样周期为 $T_s$ （对应的采样角频率为$\omega_s$） 的采样，即</p>
+<p>$$ x[n] = x(nT_s) $$</p>
+<p>  那么在频域上便存在如下关系：</p>
+<p>$$ X_d(\omega) = \frac{1}{T_s}\sum_{k=-\infty}^{\infty}X_c(\omega - \omega_s) $$</p>
+<p>  其中$X_d$表示离散时间傅里叶变换（即$x[n]$的离散时间傅里叶变换），下标$d$表示离散（$\text{Discrete}$）；$X_c$表示连续时间傅里叶变换，下标$c$表示连续（$\text{Continuous}$）。</p>
+<p>  由于时域与频域本就是一个对应关系，所以上述关系在频域上同样成立。换言之，如果在频域中进行采样</p>
+<p>$$ X_d[n] = X_c(n\omega_s) $$</p>
+<p>  那么，在时域中将会产生信号混叠，即将有如下等式成立：</p>
+<p>$$ x_d[n] = \frac{1}{\omega_s}\sum_{k=-\infty}^{\infty}x_c[n - T_s] \tag{1} $$</p>
+<p>  其中，$x_d[n]$为逆傅里叶变换后的结果，$x_c[n]$为原始信号（其离散时间傅里叶变换对应$X_c$）。</p>
+<p>  证明过程与时域采样定理的证明过程一致，主要运用的是“频域乘积对应时域卷积”定理。记$X_s(\omega)$为采样后的频谱，则有如下关系成立：</p>
+<p>$$ X_s(\omega) = X_c(\omega) \sum_{k=-\infty}^{\infty}\delta(\omega - k\omega_s) $$</p>
+<p>  令$D(\omega) = \sum_{k=-\infty}^{\infty}\delta(\omega - k\omega_s)$，那么根据逆傅里叶变换，可得到：</p>
+<p>$$ d(t) = \frac{T_s}{2\pi} \sum_{k=-\infty}^{\infty}\delta(\omega - k\omega_s) = \frac{1}{\omega_s} \sum_{k=-\infty}^{\infty}\delta(\omega - k\omega_s) $$</p>
+<p>  将上式与原信号$x_c[n]$作卷积，便可得到如下关系，与$\text{(1)}$式相同：</p>
+<p>$$ x_d[n] = \frac{1}{\omega_s}\sum_{k=-\infty}^{\infty}x_c[n - T_s] $$</p>
+<p>  事实上，从这个角度来理解离散傅里叶变换可以发现，由于离散傅里叶变换本质便是对于离散时间傅里叶变换的一个采样，因此$N$点离散傅里叶变换正是时域信号频谱不混叠的最小点数。</p>
+<h2 id="__3-问题解决__"><strong>3. 问题解决</strong></h2>
+<p>  当明白了上述关系后，结论也就自然而然地出来了。一般的频率取样设计滤波器方法由于在点数较少的时候会产生时域混叠现象，因此得到的冲激信号将会产生一定的失真；而$\text{Matlab}$的“密集网格”方法便能很好的避免这个问题，但是在时间上可能会花费更多。同时，为了得到指定的滤波器点数，需要对结果进行截断，在$\text{Matlab}$中使用海明窗进行截断。</p>
+<p>  事实上，可以通过对密集网格的结果使用不同的窗来获得不同的性能，经过测试，对密集网格使用矩形窗可得到与普通频率取样法相似结果，但具有更好的频域响应（这个原因在第二节已经讨论过了，主要原因在于密集网格减少了时域混叠）。</p>
+<h2 id="__4-textmatlab方法缺点__"><strong>4. $\text{Matlab}$方法缺点</strong></h2>
+<p>  同时，由于$\text{Matlab}$使用fir2函数设计$\text{FIR}$滤波器时，在结果处使用了海明窗进行截断，因此便会带来一些缺点，这些缺点本质上并不是由密集网格方法带来的，而是由海明窗带来的。使用海明窗对结果进行截断带来的问题在于对目标频域响应的拟合效果较普通方法较差，这主要是因为海明窗比矩形窗具有较宽的主瓣宽度（当然，使用海明窗的话，通带波纹会比矩形窗小，这是因为矩形窗的旁瓣较高）。</p>
+<p>  此处我用一个公式来衡量这种性能，定义“频域响应误差”如下所示：</p>
+<p>$$ E = \int_{0}^{2\pi}(H_c(\omega) - H_d(\omega))^2\mathrm{d} \omega $$</p>
+<p>  其中，$H_c(\omega)$为期望得到的频域响应，$H_d(\omega)$为生成的滤波器系数得到的频域响应。为了使计算机计算地更加方便，对上式进行改写，用如下公式替代：</p>
+<p>$$ E = \sum_{k=0}^{N-1}(H_c[n] - H_d[n])^2 $$</p>
+<p>  对于不同点数的$\text{FIR}$滤波器，可以得到如下误差曲线：</p>
+<div>
+<center>
+  <img src="/images/1_5.png" width="75%"/>
+  <br>
+  图4：两种方法误差曲线
+</center>
+</div>
+<p>  其中，蓝色为$\text{Matlab}$所生成滤波器的误差，橙色为不加窗的频率取样法设计的滤波器的误差。</p>
+<p>  综上所述，如果应用中对于通带波纹比较敏感，则可以对频率取样法得到的结果进行加窗（当然，可以事先生成密集网格，然后进行频率取样法）；如果对于通带波纹不太敏感，而比较看重过渡带性能，则可以使用普通的频率取样法（或使用密集网格加矩形窗截断的方法）。</p>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/matlab/">Matlab</a>
+          <a href="/tags/fir/">FIR</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/mmwavedistanceaccuracy/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">TI毫米波雷达的距离分辨率</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

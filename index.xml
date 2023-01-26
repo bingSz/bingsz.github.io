@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Even - A super concise theme for Hugo</title>
+    <title>sZhebin Blog</title>
     <link>https://bingsz.github.io/</link>
-    <description>Recent content on Even - A super concise theme for Hugo</description>
+    <description>Recent content on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 21 Jan 2023 14:57:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 22 Jan 2023 16:16:50 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -21,11 +21,20 @@
     </item>
     
     <item>
+      <title>TI毫米波雷达的距离分辨率</title>
+      <link>https://bingsz.github.io/post/mmwavedistanceaccuracy/</link>
+      <pubDate>Sun, 22 Jan 2023 16:16:50 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/mmwavedistanceaccuracy/</guid>
+      <description>&lt;p&gt;目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Matlab中频率取样法设计FIR滤波器的不同</title>
-      <link>https://bingsz.github.io/post/matlab%E4%B8%AD%E9%A2%91%E7%8E%87%E5%8F%96%E6%A0%B7%E6%B3%95%E8%AE%BE%E8%AE%A1fir%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E4%B8%8D%E5%90%8C/</link>
+      <link>https://bingsz.github.io/post/matlabfirdifference/</link>
       <pubDate>Fri, 20 Jan 2023 16:29:31 +0800</pubDate>
       
-      <guid>https://bingsz.github.io/post/matlab%E4%B8%AD%E9%A2%91%E7%8E%87%E5%8F%96%E6%A0%B7%E6%B3%95%E8%AE%BE%E8%AE%A1fir%E6%BB%A4%E6%B3%A2%E5%99%A8%E7%9A%84%E4%B8%8D%E5%90%8C/</guid>
+      <guid>https://bingsz.github.io/post/matlabfirdifference/</guid>
       <description>&lt;p&gt;  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。&lt;/p&gt;</description>
     </item>
     
