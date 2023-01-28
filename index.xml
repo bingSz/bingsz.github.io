@@ -6,7 +6,7 @@
     <description>Recent content on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 22 Jan 2023 16:16:50 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 26 Jan 2023 20:26:13 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,6 +18,15 @@
       
       <guid>https://bingsz.github.io/about/</guid>
       <description>这是一个个人博客，主要用于记录一些本人日常中碰到的问题。 如果有任何疑问可以联系：1016574101@qq.com</description>
+    </item>
+    
+    <item>
+      <title>模糊函数相关性质证明</title>
+      <link>https://bingsz.github.io/post/ambiguityfuncattribution/</link>
+      <pubDate>Thu, 26 Jan 2023 20:26:13 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/ambiguityfuncattribution/</guid>
+      <description>&lt;p&gt;在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。&lt;/p&gt;</description>
     </item>
     
     <item>

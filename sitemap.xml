@@ -10,42 +10,49 @@
   
   <url>
     <loc>https://bingsz.github.io/categories/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://bingsz.github.io/post/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/tags/radar/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://bingsz.github.io/categories/radar/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/radar/</loc>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://bingsz.github.io/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://bingsz.github.io/tags/</loc>
-    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/post/ambiguityfuncattribution/</loc>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
