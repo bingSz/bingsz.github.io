@@ -50,7 +50,7 @@
 <meta itemprop="description" content="在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。">
 <meta itemprop="datePublished" content="2023-01-26T20:26:13&#43;08:00" />
 <meta itemprop="dateModified" content="2023-01-26T20:26:13&#43;08:00" />
-<meta itemprop="wordCount" content="1488">
+<meta itemprop="wordCount" content="1869">
 
 
 
@@ -147,6 +147,7 @@
   <ul>
     <li>
       <ul>
+        <li><a href="#__0-模糊函数的频域形式__">0. 模糊函数的频域形式</a></li>
         <li><a href="#__1-关于原点的对称性__">1. 关于原点的对称性</a></li>
         <li><a href="#__2-原点的最大值性__">2. 原点的最大值性</a></li>
         <li><a href="#__3-模糊体积不变性__">3. 模糊体积不变性</a></li>
@@ -163,6 +164,13 @@
 </div>
     <div class="post-content">
       <p>在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。</p>
+<h2 id="__0-模糊函数的频域形式__"><strong>0. 模糊函数的频域形式</strong></h2>
+<p>$$ \chi(\tau, f_d\ ) = \int_{-\infty}^{\infty}u(t)u^*(t+\tau)e^{j2\pi f_d\ t} \mathrm{d}t = \int_{-\infty}^{\infty}U(f-f_d\ )U^*(f)e^{-j2\pi f \tau} \mathrm{d}f $$</p>
+<p><strong>证明：</strong></p>
+<p>  记$u(t)$的傅里叶变换为$U(f)$，则$u^*(t)e^{-j2\pi f_dt}$的傅里叶变换为$U^*(-f-f_d)$，$u^*(t+\tau)$的傅里叶变换为$U^*(-f)e^{j2\pi f\tau}$</p>
+<p>  根据帕塞瓦尔定理可得</p>
+<p>$$ \begin{align*}
+\chi(\tau, f_d)=&amp;\int_{-\infty}^{\infty}u(t)u^*(t+\tau)e^{j2\pi f_d t} \mathrm{d}t \\ =&amp; \int_{-\infty}^{\infty}U(-f-f_d)U^*(-f)e^{j2\pi f\tau} \mathrm{d}f \\ =&amp; \int_{-\infty}^{\infty}U(f-f_d)U^*(f)e^{-j2\pi f \tau} \mathrm{d}f \end{align*} $$</p>
 <h2 id="__1-关于原点的对称性__"><strong>1. 关于原点的对称性</strong></h2>
 <p>$$ |\chi(\tau, f_d\ )| = |\chi(-\tau, -f_d\ )| $$</p>
 <p><strong>证明：</strong></p>
@@ -207,12 +215,26 @@
 \end{align*} $$</p>
 <h2 id="__5-模糊体积分布限制__"><strong>5. 模糊体积分布限制</strong></h2>
 <p>$$ \int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}\tau = \int_{-\infty}^{\infty}|\chi(\tau, 0)|^2 e^{-j2\pi\tau f_d\ } \mathrm{d}\tau $$</p>
-<p>$$ \int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}\tau = \int_{-\infty}^{\infty}|\chi(0, f_d\ )|^2 e^{j2\pi\tau f_d\ } \mathrm{d}\tau $$</p>
+<p>$$ \int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}f_d\  = \int_{-\infty}^{\infty}|\chi(0, f_d\ )|^2 e^{j2\pi\tau f_d\ } \mathrm{d}f_d\ $$</p>
 <p><strong>证明：</strong></p>
-<p>  先证明第一个式子，可知</p>
+<p>  先证明第一个式子，根据性质0可知等式左边为</p>
 <p>$$ \begin{align*}
-&amp;\int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}u(t_1)u^*(t_1+\tau)e^{j2\pi f_d\  t_1} \mathrm{d} t_1 \int_{-\infty}^{\infty}u^*(t_2)u(t_2+\tau)e^{-j2\pi f_d\  t_2} \mathrm{d} t_2 \mathrm{d} \tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1+\tau)u^*(t_2)u(t_2+\tau)e^{j2\pi f_d\ (t_1 - t_2)}\mathrm{d}t_1\mathrm{d}t_2\mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1+t_2)u^*(t_1+t_2+\tau)u^*(t_2)u(t_2+\tau)e^{j2\pi f_d\  t_1} \mathrm{d}t_1 \mathrm{d}t_2 \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1+t_2)u^*(t_1+t_2+\tau)e^{j2\pi f_d\  t_1}\mathrm{d}t_1u^*(t_2)u(t_2+\tau)  \mathrm{d}t_2 \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\chi(\tau, f_d\ ) \int_{-\infty}^{\infty} e^{-j2\pi f_d\ t_2}u^*(t_2)u(t_2+\tau)\mathrm{d}t_2 \mathrm{d}\tau
+&amp;\int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1-f_d\ )U^*(f_1)e^{-j2\pi f_1 \tau} \mathrm{d}f_1 \int_{-\infty}^{\infty}U^*(f_2-f_d\ )U(f_2)e^{j2\pi f_2 \tau} \mathrm{d}f_2 \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1-f_d\ )U^*(f_1)U^*(f_2-f_d\ )U(f_2)\int_{-\infty}^{\infty}e^{-j2\pi \tau (f_1 - f_2)} \mathrm{d}\tau\mathrm{d}f_1 \mathrm{d}f_2 \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1-f_d\ )U^*(f_1)U^*(f_2-f_d\ )U(f_2)\delta(f_1-f_2)\mathrm{d}f_1 \mathrm{d}f_2 \\ =&amp; \int_{-\infty}^{\infty}U(f-f_d\ )U^*(f)U^*(f-f_d\ )U(f) \mathrm{d}f
 \end{align*} $$</p>
+<p>  而等式右边为</p>
+<p>$$ \begin{align*}
+&amp;\int_{-\infty}^{\infty}|\chi(\tau, 0)|^2 e^{-j2\pi \tau f_d\ } \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1)U^*(f_1)e^{-j2\pi f_1 \tau} \mathrm{d}f_1 \int_{-\infty}^{\infty}U(f_2)U^*(f_2)e^{j2\pi f_2 \tau} \mathrm{d}f_2 e^{-j2\pi \tau f_d\ } \mathrm{d}\tau \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1)U^*(f_1)U(f_2)U^*(f_2)\int_{-\infty}^{\infty}e^{-j2\pi \tau (f_1 - f_2 + f_d)}\mathrm{d}\tau \mathrm{d}f_1 \mathrm{d}f_2 \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}U(f_1)U^*(f_1)U(f_2)U^*(f_2)\delta(f_1 - f_2 + f_d) \mathrm{d}f_1 \mathrm{d}f_2 \\ =&amp; \int_{-\infty}^{\infty}U(f-f_d\ )U^*(f)U^*(f-f_d\ )U(f) \mathrm{d}f
+\end{align*} $$</p>
+<p>  比较可知，第一个式子等式左右两边相等，因此成立。</p>
+<p>  对于第二个式子，等式左边有</p>
+<p>$$ \begin{align*}
+&amp;\int_{-\infty}^{\infty}|\chi(\tau, f_d\ )|^2 \mathrm{d}f_d\ \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1+\tau)e^{j2\pi f_d\ t_1} \mathrm{d} t_1 \int_{-\infty}^{\infty}u^*(t_2)u(t_2+\tau)e^{-j2\pi f_d\ t_2} \mathrm{d} t_2 \mathrm{d}f_d\ \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1+\tau) u^*(t_2)u(t_2+\tau)\int_{-\infty}^{\infty}e^{j2\pi f_d\ (t_1 - t_2)} \mathrm{d}f_d\  \mathrm{d} t_1 \mathrm{d} t_2 \\ =&amp; \int_{-\infty}^{\infty}u(t)u^*(t+\tau)u^*(t)u(t+\tau)\mathrm{d}t
+\end{align*} $$</p>
+<p>  等式右边有</p>
+<p>$$ \begin{align*}
+&amp;\int_{-\infty}^{\infty}|\chi(0, f_d\ )|^2 e^{j2\pi\tau f_d\ } \mathrm{d}f_d\ \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1)e^{j2\pi f_d\ t_1} \mathrm{d} t_1 \int_{-\infty}^{\infty}u(t_2)u^*(t_2)e^{-j2\pi f_d\ t_2} \mathrm{d} t_2 e^{j2\pi \tau f_d\ } \mathrm{d}f_d\ \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1) u(t_2)u^*(t_2) \int_{-\infty}^{\infty} e^{j2\pi (t_1 - t_2 + \tau) f_d\ } \mathrm{d}f_d\ \mathrm{d} t_1 \mathrm{d} t_2 \\ =&amp; \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(t_1)u^*(t_1) u(t_2)u^*(t_2) \delta(t_1 - t_2 + \tau) \mathrm{d} t_1 \mathrm{d} t_2 \\ =&amp; \int_{-\infty}^{\infty}u(t)u^*(t+\tau)u^*(t)u(t+\tau)\mathrm{d}t
+\end{align*} $$</p>
+<p>  比较可知，第二个式子等式左右两边相等，同样成立。</p>
 <h2 id="__6-组合性质__"><strong>6. 组合性质</strong></h2>
 <p>若$c(t)=a(t)+b(t)$，则有</p>
 <p>$$ \chi_c(\tau, f_d\ ) = \chi_a(\tau, f_d\ ) + \chi_b(\tau, f_d\ ) + \chi_{ab}(\tau, f_d\ ) + e^{-j2\pi f_d\ \tau}\chi_{ab}^*(-\tau, -f_d\ ) $$</p>
@@ -243,7 +265,7 @@
 \chi_v(\tau, f_d\ ) = \sum_{m=1}^{N-1}e^{j2\pi f_d\ mT_r}\chi_u(\tau+mT_r, f_d\ )\sum_{i=0}^{N-1-m}c_i^*c_{i+m}e^{j2\pi f_d\ iT_r} \\ + \sum_{m=0}^{N-1}\chi_u(\tau-mT_r, f_d\ )\sum_{i=0}^{N-1-m}c_ic_{i+m}^*e^{j2\pi f_d\ iT_r}
 \end{align*} $$</p>
 <p><strong>证明：</strong></p>
-<p>  将$v(t)=\sum_{i=0}^{N-1}c_iu(t-iT_r)$代入“自相似度”的定义式中，得到：</p>
+<p>  将$v(t)=\sum_{i=0}^{N-1}c_iu(t-iT_r)$代入模糊函数的定义式中，得到：</p>
 <p>$$ \begin{align*}
 \chi_v(\tau, f_d) =&amp; \int_{-\infty}^{\infty}v(t)v^*(t+\tau)e^{j2\pi f_d t} \mathrm{d}t \\ =&amp; \int_{-\infty}^{\infty} [\sum_{i=0}^{N-1}c_iu(t-iT_r) \sum_{i=0}^{N-1}c_i^*u(t-iT_r+\tau)]e^{j2\pi f_d t} \mathrm{d}t \\ =&amp; \int_{-\infty}^{\infty} \sum_{i=0}^{N-1}\sum_{j=0}^{N-1}c_ic_j^*u(t-iT_r)u^*(t-jT_r+\tau)e^{j2\pi f_dt} \mathrm{d}t \tag{8.1}
 \end{align*}$$</p>
