@@ -50,7 +50,7 @@
 <meta itemprop="description" content="目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？">
 <meta itemprop="datePublished" content="2023-01-22T16:16:50&#43;08:00" />
 <meta itemprop="dateModified" content="2023-01-22T16:16:50&#43;08:00" />
-<meta itemprop="wordCount" content="2975">
+<meta itemprop="wordCount" content="3015">
 
 
 
@@ -259,10 +259,10 @@
 <p>  其中，$*$表示卷积，$W(\omega)$如下定义：</p>
 <p>$$ W(\omega)=e^{-j\omega \frac{\tau - 1}{2}}\frac{\sin(\omega \frac{\tau}{2})}{\sin(\frac{\omega}{2})} $$</p>
 <p>  可以看到，现实世界中的有限长离散时间信号实际上是无限长离散时间信号的一个模糊。如果使用4dB带宽来衡量距离分辨率，那么可得频率分辨率为：</p>
-<p>$$ \Delta f = \frac{1}{\tau} \tag{2} $$</p>
-<p>  将上式代入距离求解公式中，可以得到距离分辨率为：</p>
-<p>$$ \Delta R = \frac{c}{2k}\frac{1}{\tau} = \frac{cT}{2B\tau} \tag{3} $$</p>
-<p>  若$T=\tau$（在IWR6843中，应当取$T \approx 2\tau$），那么有</p>
+<p>$$ \Delta f = \frac{F_s}{\tau} = \frac{1}{\tau T_s} = \frac{1}{T_{Dwell}} \tag{2} $$</p>
+<p>  其中，$T_{Dwell}$为采集时长。将上式代入距离求解公式中，可以得到距离分辨率为：</p>
+<p>$$ \Delta R = \frac{c}{2k}\frac{1}{T_{Dwell}} = \frac{cT}{2BT_{Dwell}} \tag{3} $$</p>
+<p>  若$T=T_{Dwell}$（在IWR6843中，应当取$T \approx 2T_{Dwell}$），那么有</p>
 <p>$$ \Delta R = \frac{c}{2B} $$</p>
 <p>  在IWR6843中，已知带宽$B=4\text{GHz}$，可得到距离分辨率为$\Delta R = \frac{3 \times 10^8 \times 2}{2 \times 4 \times 10^9}=7.5\text{cm}$。</p>
 <p>  比较反常的是，该结论表明，频率分辨率仅与采样时间有关，而与采样频率无关。如下图所示，可以发现提高采样频率后，并不能区分开两个信号，而提高采样时间后可以顺利区分开两个信号。</p>
@@ -280,7 +280,7 @@
   图7：提高采样频率后的结果（仅显示部分点）
 </center>
 </div>
-<p>  同时，从上图可以看到，$\Delta f = \frac{1}{\tau}$指出的是极限频率分辨率，所谓极限频率分辨率指的是通过增加$\text{FFT}$点数后所能达到的最大频率分辨率。换言之，增加$\text{FFT}$点数只能在有限范围内增加分辨率，而最终的分辨率由$(2)$所决定。</p>
+<p>  同时，从上图可以看到，$\Delta f = \frac{1}{T_{Dwell}}$指出的是极限频率分辨率，所谓极限频率分辨率指的是通过增加$\text{FFT}$点数后所能达到的最大频率分辨率。换言之，增加$\text{FFT}$点数只能在有限范围内增加分辨率，而最终的分辨率由$(2)$所决定。</p>
 <p>  事实上，上述结论在陈伯孝的《现代雷达系统分析与设计》中已经有类似结论，在该书的第四章第九节 <em>连续波信号与连续波雷达</em> 中指出，窄带滤波器的频率分辨率与驻留时间（即上文中所提到的采样时间）满足如下关系：</p>
 <p>$$ \Delta f = \frac{1}{T_{Dwell}} $$</p>
 <p>  从形式上来看，上式可以作如下理解（当然，不作为严谨证明，只作为理解与记忆）</p>
