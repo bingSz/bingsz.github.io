@@ -6,10 +6,19 @@
     <description>Recent content in Radar on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 26 Jan 2023 20:26:13 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 31 Jan 2023 16:09:02 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/categories/radar/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>频率步进脉冲雷达的相参积累</title>
+      <link>https://bingsz.github.io/post/steppedfreqcoherentint/</link>
+      <pubDate>Tue, 31 Jan 2023 16:09:02 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/steppedfreqcoherentint/</guid>
+      <description>&lt;p&gt;  最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>模糊函数相关性质证明</title>
@@ -17,7 +26,7 @@
       <pubDate>Thu, 26 Jan 2023 20:26:13 +0800</pubDate>
       
       <guid>https://bingsz.github.io/post/ambiguityfuncattribution/</guid>
-      <description>&lt;p&gt;在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。&lt;/p&gt;</description>
+      <description>&lt;p&gt;  在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +35,7 @@
       <pubDate>Sun, 22 Jan 2023 16:16:50 +0800</pubDate>
       
       <guid>https://bingsz.github.io/post/mmwavedistanceaccuracy/</guid>
-      <description>&lt;p&gt;目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？&lt;/p&gt;</description>
+      <description>&lt;p&gt;  目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？&lt;/p&gt;</description>
     </item>
     
   </channel>

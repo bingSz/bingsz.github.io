@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>频率步进脉冲雷达的相参积累 - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/steppedfreqcoherentint/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="频率步进脉冲雷达的相参积累" />
+<meta property="og:description" content="  最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/steppedfreqcoherentint/" />
+<meta property="article:published_time" content="2023-01-31T16:09:02+08:00" />
+<meta property="article:modified_time" content="2023-02-02T18:53:02+08:00" />
+<meta itemprop="name" content="频率步进脉冲雷达的相参积累">
+<meta itemprop="description" content="  最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。">
+<meta itemprop="datePublished" content="2023-01-31T16:09:02&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-02T18:53:02&#43;08:00" />
+<meta itemprop="wordCount" content="2058">
+
+
+
+<meta itemprop="keywords" content="Radar," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="频率步进脉冲雷达的相参积累"/>
+<meta name="twitter:description" content="  最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">频率步进脉冲雷达的相参积累</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-01-31 </span>
+        <div class="post-category">
+            <a href="/categories/radar/"> Radar </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#__1-矩形调幅脉冲雷达的相参积累方法__">1. 矩形调幅脉冲雷达的相参积累方法</a></li>
+            <li><a href="#__2-频率步进脉冲雷达的相参积累方法__">2. 频率步进脉冲雷达的相参积累方法</a></li>
+            <li><a href="#__3-matlab仿真__">3. Matlab仿真</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。</p>
+<h3 id="__1-矩形调幅脉冲雷达的相参积累方法__"><strong>1. 矩形调幅脉冲雷达的相参积累方法</strong></h3>
+<p>  在讨论频率步进脉冲雷达的相参积累前，先来复习一下普通矩形调幅脉冲雷达的相参积累方法。假设积累脉冲数为$M$，如果目标无多普勒频移，那么此时积累的方法便是将积累脉冲简单相加（假设各重复脉冲的初始相位相等），如下所示</p>
+<p>$$ x[n] = \sum_{k=0}^{M-1}x_{k}[n] $$</p>
+<p>  其中$x[n]$表示积累后的输出，$x_k[n]$表示第$k$个积累脉冲在第$n$个采样点的值。如果记噪声的功率为$\sigma_n^2$，那么$M$个噪声求和之后得到的功率为$M\sigma_n^2$，而信号功率由于与振幅的平方成正比，因此有信号功率$S = N^2S_0$，于是改善后的信噪比为</p>
+<p>$$ \text{SNR}=\frac{S}{N} = \frac{M^2}{M}\frac{S_0}{\sigma_n^2} = M\text{SNR}_0 $$</p>
+<p>  其中$\text{SNR}_0$为单个脉冲的信噪比。</p>
+<p>  换言之，如果目标存在多普勒频移$f_d$，那就需要对接收的脉冲作一个频移补偿$-f_d$，以此抵消多普勒频移，从而使接收信号振幅之和最大。此时的积累方法如下所示</p>
+<p>$$ x[n] = \sum_{k=0}^{M-1}x_{k}[n]e^{-j2\pi f_d\  T_r} \tag{1.1} $$</p>
+<p>  其中$T_r$为脉冲重复周期。但是由于事先并不知道目标的多普勒频移，因此一个实用的方法是对$x_k[n]$在$k$方向上作$\text{FFT}$，从而得到各个频率处的积累。事实上，在$k$方向上作$\text{FFT}$对应的便是慢时间维$\text{FFT}$。换言之，慢时间维$\text{FFT}$本质上是一种相参积累。</p>
+<p>  从相参积累的角度也可以推导出毫米波雷达中的测速公式，若慢时间维$\text{FFT}$上的尖峰位于$n_0$处，那么由$(1.1)$可得目标多普勒频移为</p>
+<p>$$ f_d = \frac{n_0f_r}{N} = \frac{n_0}{NT_r} $$</p>
+<p>  其中$N$为采样点数（与刚刚信噪比处的$N$不同）。</p>
+<p>  于是可得目标速度为</p>
+<p>$$ v = \frac{\lambda f_d}{2} = \frac{\lambda n_0}{2NT_r} $$</p>
+<p>  与毫米波雷达的测速公式相同。</p>
+<h3 id="__2-频率步进脉冲雷达的相参积累方法__"><strong>2. 频率步进脉冲雷达的相参积累方法</strong></h3>
+<p>  从前文已经知道，矩形调幅脉冲雷达的相参积累方法是对积累脉冲在慢时间维上作$\text{FFT}$，那么频率步进脉冲雷达的相参积累方法是什么样的呢。考虑如下频率步进脉冲信号</p>
+<p>$$ u(t) = \sum_{k=0}^{N-1}e^{j2\pi (f_0+k\Delta f) t}W_T(t - kT_r) $$</p>
+<p>  其中$W(t)$如下定义</p>
+<p>$$ W(t)=\begin{cases}
+1,\ \ \ \  &amp;0 \leq t \leq T \\ 0, &amp;Others
+\end{cases} $$</p>
+<p>  假设回波信号仅仅是发射信号的一个延迟，于是回波信号如下所示</p>
+<p>$$ \begin{align*}
+u_r(t) =&amp; \sum_{k=0}^{N-1}e^{j2\pi (f_0+k\Delta f) (t-\tau)}W_T(t - \tau - kT_r) \\ =&amp; \sum_{k=0}^{N-1}e^{j2\pi f_0 (t-\tau)}W_T(t - \tau - kT_r)e^{-j2\pi k\Delta f(t-\tau)}
+\end{align*} $$</p>
+<p>  可以发现，回波信号相当于对处于基础频率$f_0$的回波信号作了一个傅里叶变换。那么从这个公式就可以发现，如果要对频率步进脉冲雷达作相参积累，只需要对积累信号作逆傅里叶变换即可。</p>
+<p>  对脉冲积累序列作逆傅里叶变换可得</p>
+<p>$$ u_d[n] = \frac{1}{N}\sum_{k=0}^{N-1}e^{j2\pi f_0 (t - \tau)} W_T(t-\tau) e^{-j2\pi k (t\Delta f - \tau \Delta f - \frac{n}{N})} $$</p>
+<p>  当$0 \leq |t-\tau| \leq T$时，有</p>
+<p>$$ \begin{align*}
+u_d[n] =&amp; \frac{1}{N}e^{j2\pi f_0 (t - \tau)}\sum_{k=0}^{N-1}e^{-j2\pi k (t\Delta f - \tau \Delta f - \frac{n}{N})} \\ =&amp; \frac{1}{N}e^{j2\pi f_0 (t - \tau)} \frac{1-e^{-j2\pi (Nt\Delta f - N \tau \Delta f - n)}}{1-e^{-j2\pi (t\Delta f - \tau \Delta f - \frac{n}{N})}} \\ =&amp; \frac{1}{N}e^{j2\pi f_0 (t - \tau)}\frac{e^{-j\pi (Nt\Delta f - N \tau \Delta f - n)}}{e^{-j\pi (t\Delta f - \tau \Delta f - \frac{n}{N})}} \frac{\sin(\pi (Nt\Delta f - N \tau \Delta f - n))}{\sin(\pi (t\Delta f - \tau \Delta f - \frac{n}{N}))}
+\end{align*} $$</p>
+<p>  于是模为</p>
+<p>$$ |u_d[n]| = \frac{1}{N}|\frac{\sin(\pi (Nt\Delta f - N \tau \Delta f - n))}{\sin(\pi (t\Delta f - \tau \Delta f - \frac{n}{N}))}| $$</p>
+<p>  其它情况下，$u_d[n]$为$0$。因此可得时间差$\Delta t$为</p>
+<p>$$ \Delta t = t - \tau = \frac{n_0}{N\Delta f} $$</p>
+<p>  其中$n_0$为模最大值处的序号。由上式可得最大不模糊时间差为</p>
+<p>$$ \Delta t_{max} = \frac{1}{\Delta f} $$</p>
+<p>  因此，一个$\Delta f$的良好定义可以是$\frac{1}{T_s}$，其中$T_s$为采样间隔。在不考虑其它因素的情况下，这可使在不产生模糊的情况下，有最大的时间分辨率。</p>
+<p>  从上式可以看出，对频率步进脉冲信号作相参积累相当于在不提高采样频率的情况下，扩展了原有的分辨率。原时间分辨率为$T_s$，而经过相参积累后，时间分辨率可达到$\frac{T_s}{N}$。</p>
+<p>  总结一下上文提到的频率步进脉冲信号的相参积累方法。首先对每个脉冲回波进行采样，得到一个$M \times N$的二维矩阵$X_{M, N}$，其中$M$为积累脉冲数，$N$为对每一个回波信号的采样点数。因此该矩阵的每一行为一个脉冲的$N$点采样。随后，在这个二维矩阵的列方向进行逆$\text{FFT}$，得到更精细的距离分辨率。最后将该二维矩阵进行重排，合成一个具有高距离分辨率的回波信号。</p>
+<h3 id="__3-matlab仿真__"><strong>3. Matlab仿真</strong></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">Ts</span> <span class="p">=</span> <span class="mf">0.1</span><span class="p">;</span>       <span class="c">% 假设ADC采样间隔0.1s，同时假设脉冲长度即为Ts</span>
+<span class="n">n</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>         <span class="c">% 采样点数10个</span>
+<span class="n">m</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span>          <span class="c">% 积累脉冲数5个</span>
+<span class="n">f0</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>        <span class="c">% 基频10Hz</span>
+<span class="n">df</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>        <span class="c">% 频率步进步长10Hz</span>
+<span class="n">dt1</span> <span class="p">=</span> <span class="mf">0.22</span><span class="p">;</span>     <span class="c">% 第一个目标回波时间为0.22s</span>
+<span class="n">dt2</span> <span class="p">=</span> <span class="mf">0.27</span><span class="p">;</span>     <span class="c">% 第二个目标回波时间为0.27s</span>
+
+<span class="n">w</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="p">;</span>    <span class="c">% m * n的二维矩阵</span>
+
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">m</span>
+    <span class="n">tmp</span> <span class="p">=</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="n">f0</span> <span class="o">*</span> <span class="p">(</span><span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dt1</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="p">(</span><span class="nb">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">df</span> <span class="o">*</span> <span class="n">dt1</span><span class="p">)</span><span class="p">;</span> <span class="c">% 计算回波信号</span>
+    <span class="n">w</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="n">w</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">;</span> <span class="c">% 默认目标回波仅占一个单元</span>
+<span class="k">end</span>
+
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">m</span>
+    <span class="n">tmp</span> <span class="p">=</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="n">f0</span> <span class="o">*</span> <span class="p">(</span><span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> <span class="o">-</span> <span class="n">dt2</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="p">(</span><span class="nb">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">df</span> <span class="o">*</span> <span class="n">dt2</span><span class="p">)</span><span class="p">;</span>
+    <span class="n">w</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="n">w</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="nb">floor</span><span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">Ts</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">tmp</span><span class="p">;</span>
+<span class="k">end</span>
+
+<span class="n">w</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="p">;</span>        <span class="c">% 添加噪声，信噪比10dB</span>
+
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">n</span>
+    <span class="n">w</span><span class="p">(</span><span class="p">:</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ifft</span><span class="p">(</span><span class="n">w</span><span class="p">(</span><span class="p">:</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span><span class="o">&#39;</span><span class="p">)</span><span class="o">&#39;</span><span class="p">)</span><span class="p">;</span>     <span class="c">% 进行相参积累</span>
+<span class="k">end</span>
+<span class="n">ret</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">*</span><span class="n">n</span><span class="p">)</span><span class="p">;</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">n</span>
+    <span class="n">ret</span><span class="p">(</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="nb">i</span><span class="o">*</span><span class="n">m</span><span class="p">)</span> <span class="p">=</span> <span class="n">w</span><span class="p">(</span><span class="p">:</span><span class="p">,</span> <span class="nb">i</span><span class="p">)</span><span class="o">&#39;</span><span class="p">;</span>      <span class="c">% 进行重排</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>  Matlab程序如上所示，设置脉冲宽度为0.1s，而目标出现在0.22s与0.27s处，理论上无法将两个目标分开。而经过相参积累后，便可以将两个目标分开，结果如下所示</p>
+<div>
+<center>
+  <img src="/images/4_1.png" width="75%"/>
+  <br>
+  图1：两种方法比较
+</center>
+</div>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/radar/">Radar</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/ambiguityfuncattribution/">
+            <span class="next-text nav-default">模糊函数相关性质证明</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
