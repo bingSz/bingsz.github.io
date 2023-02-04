@@ -6,7 +6,7 @@
     <description>Recent content on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 31 Jan 2023 16:09:02 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Feb 2023 16:19:03 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,6 +18,15 @@
       
       <guid>https://bingsz.github.io/about/</guid>
       <description>这是一个个人博客，主要用于记录一些本人日常中碰到的问题。 如果有任何疑问可以联系：1016574101@qq.com</description>
+    </item>
+    
+    <item>
+      <title>CFAR中的概率问题证明</title>
+      <link>https://bingsz.github.io/post/cfarprob/</link>
+      <pubDate>Fri, 03 Feb 2023 16:19:03 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/cfarprob/</guid>
+      <description>&lt;p&gt;  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。&lt;/p&gt;</description>
     </item>
     
     <item>

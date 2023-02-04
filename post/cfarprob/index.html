@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CFAR中的概率问题证明 - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/cfarprob/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="CFAR中的概率问题证明" />
+<meta property="og:description" content="  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/cfarprob/" />
+<meta property="article:published_time" content="2023-02-03T16:19:03+08:00" />
+<meta property="article:modified_time" content="2023-02-03T16:19:03+08:00" />
+<meta itemprop="name" content="CFAR中的概率问题证明">
+<meta itemprop="description" content="  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。">
+<meta itemprop="datePublished" content="2023-02-03T16:19:03&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-03T16:19:03&#43;08:00" />
+<meta itemprop="wordCount" content="2670">
+
+
+
+<meta itemprop="keywords" content="Radar," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CFAR中的概率问题证明"/>
+<meta name="twitter:description" content="  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">CFAR中的概率问题证明</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-03 </span>
+        <div class="post-category">
+            <a href="/categories/radar/"> Radar </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#__1-前置知识噪声概率分布__">1. 前置知识：噪声概率分布</a></li>
+            <li><a href="#__2-前置知识矩母函数__">2. 前置知识：矩母函数</a></li>
+            <li><a href="#__3-ca-cfar原理及仿真__">3. CA-CFAR原理及仿真</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。</p>
+<h3 id="__1-前置知识噪声概率分布__"><strong>1. 前置知识：噪声概率分布</strong></h3>
+<p>  在雷达信号处理中，通常使用中频正交采样的方式，将接收到的信号转换成两路$\text{IQ}$信号，而在处理时再将两路信号合成为一路复信号，如下所示</p>
+<p>$$ r(t)=A(t) e^{j2\pi f_0\  t + \phi(t)} $$</p>
+<p>  其中$r(t)$表示接收到的信号，$A(t)$表示信号振幅，$f_0$表示载频，$\phi(t)$表示接收信号的相位变化。</p>
+<p>  在目标检测方法中，一般是设立一个门限值，若接收到的信号振幅超过这个门限值，则表明有目标存在，反之则没有目标存在。因此目标检测理论中的一个重要问题便是如何去寻找这个门限值。为了讨论这个问题，我们要引入两个定义，一个是检测概率，记为$P_d$，表示当目标存在时，系统将其检测出来的概率；另一个是虚警概率，记为$P_{fd}$，表示当回波信号仅存在噪声时，系统误警的概率。</p>
+<p>  为了方便讨论，接下来仅考虑非起伏目标的检测，即目标回波的振幅不发生变化。假设$\text{IQ}$通道中的两路噪声均服从零均值、方差为$\sigma_n^2$的正态分布，概率密度函数如下所示</p>
+<p>$$ P_n(r) = \frac{1}{\sqrt{2\pi} \sigma_n}e^{-\frac{r^2}{2\sigma_n^2}} $$</p>
+<p>  由于$\text{IQ}$两路均存在噪声，因此合成之后的噪声振幅服从瑞利分布，接下来推导瑞利分布的概率密度函数。记$r_a$为合成噪声的振幅，定义如下所示</p>
+<p>$$ r_a = \sqrt{r_I^2+r_Q^2} $$</p>
+<p>  记$F_{r_I^2}(r)$为$r_I^2$的分布函数，于是有</p>
+<p>$$ F_{r_I^2}(r) = P_n(-\sqrt{r} \leq x \leq \sqrt{r}) = \frac{1}{\sqrt{2\pi} \sigma_n}\int_{-\sqrt{r}}^{\sqrt{r}}e^{-\frac{x^2}{2\sigma_n^2}} \mathrm{d}x \tag{1.1} $$</p>
+<p>  记$P_{r_I^2}$为$r_I^2$的概率密度函数，则有</p>
+<p>$$ P_{r_I^2}(r) = \frac{\mathrm{d}F_{r_I^2}(r)}{\mathrm{d}r} = \frac{1}{\sqrt{2\pi} \sigma_n}\frac{1}{\sqrt{r}}e^{-\frac{r}{2\sigma_n^2}} \tag{1.2} $$</p>
+<p>  对于$r_Q^2$同理，有</p>
+<p>$$ P_{r_Q^2}(r) = \frac{1}{\sqrt{2\pi} \sigma_n}\frac{1}{\sqrt{r}}e^{-\frac{r}{2\sigma_n^2}} $$</p>
+<p>  记$P_A(r)$为$r_I^2+r_Q^2$的概率密度函数，则有</p>
+<p>$$ \begin{align*}
+P_A(r)=&amp;P_{r_I^2}(r)*P_{r_Q^2}(r) \\ =&amp; \frac{e^{-\frac{r}{2\sigma_n^2}}}{2\pi \sigma_n^2}\int_{0}^{r}\frac{1}{\sqrt{\tau}}\frac{1}{\sqrt{r-\tau}} \mathrm{d} \tau \\ =&amp; \frac{e^{-\frac{r}{2\sigma_n^2}}}{2\sigma_n^2} \tag{1.3}
+\end{align*} $$</p>
+<p>  其中，$*$表示卷积。当$\sigma_n^2=1$时，上式就是自由度为2的卡方分布。与$(1.1)$式、$(1.2)$式的推导方法相同，可得到$r_a$的概率密度函数。</p>
+<p>$$ F_{r_a}(r) = P_A(x \leq r^2) = \frac{1}{2\sigma_n^2}\int_{0}^{r^2}e^{-\frac{x}{2\sigma_n^2}}\mathrm{d}x $$</p>
+<p>$$ P_{r_a}(r) = \frac{\mathrm{d}F_{r_a}(r)}{\mathrm{d}r} = \frac{r}{\sigma_n^2}e^{-\frac{r^2}{2\sigma_n^2}} \tag{1.4} $$</p>
+<p>  $(1.4)$式即为瑞利分布。当然瑞利分布的推导过程并不需要上面那么繁琐，可以假设一个二维正态分布，然后使用这个二维正态分布进行推导，会比上述方法简单许多。如果检波时使用平方律检波，那么噪声的概率密度函数服从$(1.3)$式，为了方便，后续推导时假设使用平方律检波，即噪声振幅服从指数分布。</p>
+<h3 id="__2-前置知识矩母函数__"><strong>2. 前置知识：矩母函数</strong></h3>
+<p>  在介绍下面章节之前，要先介绍一下矩母函数。设$\xi$为一随机变量，那么记$M_{\xi}(t)=E[e^{t\xi}]$为$\xi$的矩母函数。接下来我们给出几条关于矩母函数的性质。</p>
+<p><strong>性质1：</strong> $M_{\xi}(t)=1+\frac{\mu_1t}{1!}+\frac{\mu_2t^2}{2!}+&hellip;$，其中$\mu_1$, $\mu_2$, &hellip;分别表示$\xi$的一阶矩、二阶矩、&hellip;</p>
+<p><strong>证明：</strong></p>
+<p>  对$e^{t\xi}$作泰勒展开，由定义得</p>
+<p>$$ \begin{align*}
+M_{\xi}(t)=&amp;\int_{-\infty}^{\infty}e^{t\xi}P(\xi)\mathrm{d}\xi \\ =&amp; \int_{-\infty}^{\infty}(1+\frac{t\xi}{1!}+\frac{(t\xi)^2}{2!}+&hellip;)P(\xi)\mathrm{d}\xi \\ =&amp; \int_{-\infty}^{\infty}P(\xi)\mathrm{d}\xi + \frac{t}{1!}\int_{-\infty}^{\infty}\xi P(\xi)\mathrm{d}\xi+&hellip; \\ =&amp; 1+\frac{\mu_1t}{1!}+\frac{\mu_2t^2}{2!}+&hellip;
+\end{align*} $$</p>
+<p><strong>性质2：</strong> 设$\alpha$，$\beta$为常数，那么$M_{\alpha \xi + \beta}(t) = e^{\beta t}M_{\xi}(\alpha t)$</p>
+<p><strong>证明：</strong></p>
+<p>  直接代入公式可得</p>
+<p>$$ \begin{align*}
+M_{\alpha \xi + \beta}(t) =&amp; \int_{-\infty}^{\infty}e^{(\alpha \xi + \beta)t}P(\xi) \mathrm{d} \xi \\ =&amp; e^{\beta t}\int_{-\infty}^{\infty}e^{\alpha \xi t}P(\xi) \mathrm{d} \xi \\ =&amp; e^{\beta t}M_{\xi}(\alpha t)
+\end{align*} $$</p>
+<p><strong>性质3：</strong> 若$X_1$，$X_2$为两个独立的随机变量，那么有$M_{X_1+X_2}(t)=M_{X_1}(t)M_{X_2}(t)$</p>
+<p><strong>证明：</strong></p>
+<p>  由定义得$M_{X_1+X_2}(t)=E[e^{t(X_1+X_2)}]=E[e^{tX_1}e^{tX_2}]$，由于随机变量独立，因此$M_{X_1+X_2}(t)=E[e^{tX_1}]E[e^{tX_2}]$</p>
+<p><strong>定理1：</strong> 当$X \text{~} Ga(\alpha, \beta),(\alpha, \beta \in \mathbb{Z}^+)$时，$M_X(t)=\frac{1}{(1-\frac{t}{\beta})^{\alpha}}$，其中$Ga(\alpha, \beta)$为伽马分布。</p>
+<p><strong>证明：</strong></p>
+<p>  已知$X$的概率密度函数为</p>
+<p>$$ P(x) = \frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e^{-x \beta} $$</p>
+<p>  将上式代入矩母函数中可得</p>
+<p>$$ \begin{align*}
+M_{X}(t) =&amp; \int_{0}^{\infty}\frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e^{x(t - \beta)} \mathrm{d}x \\ =&amp; \frac{\beta^{\alpha}}{(\beta - t)^{\alpha}} = \frac{1}{(1-\frac{t}{\beta})^{\alpha}} \tag{2.1}
+\end{align*} $$</p>
+<h3 id="__3-ca-cfar原理及仿真__"><strong>3. CA-CFAR原理及仿真</strong></h3>
+<h4 id="__31-ca-cfar原理__"><strong>3.1. CA-CFAR原理</strong></h4>
+<p>  首先来介绍CA-CFAR（单元平均CFAR）的工作原理以及背后的概率证明。对回波信号进行采样，共有$N$个采样点，记为$x[i](i \in {0, 1, &hellip;, N-1})$。现要判断$x[k]$是否为目标回波，CA-CFAR的做法是，首先取一系列参考点，随后计算这些点的和，记为$x_0$，选定一个系数$K$，若$x[k]$大于$Kx_0$，则该采样点判断为目标回波</p>
+<p>  首先来考虑取一系列参考点这个操作。通常来说，这一系列点在待检测点的周围，但又间隔一定距离。例如待检测点为$x[k]$，通常选取$x[k-D-\frac{M}{2}]$, $x[k-D-\frac{M}{2}+1]$, &hellip;, $x[k-D-1]$, $x[k+D+1]$, $x[k+D+2]$, &hellip;, $x[k+D+\frac{M}{2}]$。其中$x[k-D]$, $x[k-D+1]$, &hellip;, $x[k-1]$, $x[k+1]$, &hellip;, $x[k+D]$表示保护单元，用于消除与待检测点之间的相关性，同时为了防止长目标回波信号被自身淹没。</p>
+<p>  然后我们来计算发生虚警的概率，已知此时门限值为$Kx_0$，于是虚警概率的期望可表示为</p>
+<p>$$ E[P_{fd}] = E[P_{r_a}(r \geq Kx_0)] = E[\int_{Kx_0}^{\infty}\frac{e^{-\frac{r}{2\sigma_n^2}}}{2\sigma_n^2}\mathrm{d}r] = E[e^{-\frac{Kx_0}{2\sigma_n^2}}] \tag{3.1} $$</p>
+<p>  因此虚警概率的期望为$M_{x_0}(-\frac{K}{2\sigma_n^2})$，其中$M_{x_0}(\cdot)$为矩母函数。首先我们来求$x_0$的概率密度函数，当只有两点相加时，有</p>
+<p>$$ P_{x_0}(r) = \frac{1}{4\sigma_n^4} \int_{0}^{r}e^{-\frac{r}{2\sigma_n^2}}\mathrm{d}\tau = \frac{r}{4\sigma_n^4}e^{-\frac{r}{2\sigma_n^2}} $$</p>
+<p>  当三点相加时，有</p>
+<p>$$ P_{x_0}(r) = \frac{1}{8\sigma_n^6} \int_{0}^{r}\tau e^{-\frac{r}{2\sigma_n^2}}\mathrm{d}\tau = \frac{1}{8\sigma_n^6}\frac{r^2}{2}e^{-\frac{r}{2\sigma_n^2}} $$</p>
+<p>  归纳可得，当$M$点相加时，有</p>
+<p>$$ P_{x_0}(r) = \frac{1}{(2\sigma_n^2)^M}\frac{r^{M-1}}{(M-1)!}e^{-\frac{r}{2\sigma_n^2}} $$</p>
+<p>  事实上，上述便是伽马分布的概率密度函数。因此$(3.1)$即为伽马分布的矩母函数，将其代入到之前所求的公式中，可得</p>
+<p>$$ E[P_{fd}] = E[e^{-\frac{Kx_0}{2\sigma_n^2}}] = M_{x_0}(-\frac{K}{2\sigma_n^2}) = \frac{1}{(1+K)^{M}} \tag{3.2} $$</p>
+<p>  因此，当给定一个虚警概率$P_{fd}$，与所选点数$M$时，可通过$(3.2)$式求得$K$，从而确定对于某一个待检测点的门限值。</p>
+<h4 id="__32-ca-cfar的matlab仿真__"><strong>3.2. CA-CFAR的Matlab仿真</strong></h4>
+<p>  接下来进行Matlab仿真，假设虚警概率$P_{fd}=10^{-6}$，所选参考点数为10个，保护单元个数为20个，代入$(3.2)$中可求得$K=3$。于是可编写如下Matlab代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">K</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>  <span class="c">% 阈值为3</span>
+<span class="n">M</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c">% 参考单元共10个</span>
+<span class="n">D</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c">% 保护单元共20个</span>
+
+<span class="n">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.001</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>
+
+<span class="n">x</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="n">x</span><span class="p">(</span><span class="mi">150</span><span class="p">:</span><span class="mi">155</span><span class="p">)</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>    <span class="c">% 模拟目标回波信号</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 加入噪声</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>   <span class="c">% 模拟平方律检波</span>
+
+<span class="n">figure</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">% 绘制回波信号图</span>
+<span class="n">hold</span> <span class="n">on</span>
+
+<span class="n">T</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">T</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span> <span class="o">+</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">+</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">+</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 计算自适应门限</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="c">% 绘制门限图</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><div>
+<center>
+  <img src="/images/5_1.png" width="75%"/>
+  <br>
+  图1：仿真结果（仅截取部分）
+</center>
+</div>
+<p>  其中橙色线为门限值，蓝色线为回波信号。可以看到在保护单元个数与阈值选取合理的情况下，较好地进行了目标检测。</p>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/radar/">Radar</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/steppedfreqcoherentint/">
+            <span class="next-text nav-default">频率步进脉冲雷达的相参积累</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
