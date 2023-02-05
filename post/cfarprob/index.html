@@ -50,7 +50,7 @@
 <meta itemprop="description" content="  最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。">
 <meta itemprop="datePublished" content="2023-02-03T16:19:03&#43;08:00" />
 <meta itemprop="dateModified" content="2023-02-03T16:19:03&#43;08:00" />
-<meta itemprop="wordCount" content="2670">
+<meta itemprop="wordCount" content="3972">
 
 
 
@@ -152,6 +152,8 @@
             <li><a href="#__1-前置知识噪声概率分布__">1. 前置知识：噪声概率分布</a></li>
             <li><a href="#__2-前置知识矩母函数__">2. 前置知识：矩母函数</a></li>
             <li><a href="#__3-ca-cfar原理及仿真__">3. CA-CFAR原理及仿真</a></li>
+            <li><a href="#__4-go-cfar原理及仿真__">4. GO-CFAR原理及仿真</a></li>
+            <li><a href="#__5-so-cfar原理及仿真__">5. SO-CFAR原理及仿真</a></li>
           </ul>
         </li>
       </ul>
@@ -226,7 +228,87 @@ M_{X}(t) =&amp; \int_{0}^{\infty}\frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e
 <p>$$ E[P_{fd}] = E[e^{-\frac{Kx_0}{2\sigma_n^2}}] = M_{x_0}(-\frac{K}{2\sigma_n^2}) = \frac{1}{(1+K)^{M}} \tag{3.2} $$</p>
 <p>  因此，当给定一个虚警概率$P_{fd}$，与所选点数$M$时，可通过$(3.2)$式求得$K$，从而确定对于某一个待检测点的门限值。</p>
 <h4 id="__32-ca-cfar的matlab仿真__"><strong>3.2. CA-CFAR的Matlab仿真</strong></h4>
-<p>  接下来进行Matlab仿真，假设虚警概率$P_{fd}=10^{-6}$，所选参考点数为10个，保护单元个数为20个，代入$(3.2)$中可求得$K=3$。于是可编写如下Matlab代码</p>
+<p>  接下来进行Matlab仿真，假设虚警概率$P_{fd}=10^{-6}$，所选参考点数为10个，保护单元个数为20个，代入$(3.2)$中可求得$K \approx 3$。于是可编写如下Matlab代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">K</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>  <span class="c">% 阈值为3</span>
+<span class="n">M</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c">% 参考单元共10个</span>
+<span class="n">D</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c">% 保护单元共20个</span>
+
+<span class="n">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.001</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>
+
+<span class="n">x</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="n">x</span><span class="p">(</span><span class="mi">150</span><span class="p">:</span><span class="mi">155</span><span class="p">)</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>    <span class="c">% 模拟目标回波信号</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 加入噪声</span>
+<span class="n">x</span> <span class="p">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>   <span class="c">% 模拟平方律检波</span>
+
+<span class="n">figure</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">% 绘制回波信号图</span>
+<span class="n">hold</span> <span class="n">on</span>
+
+<span class="n">T</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">T</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span> <span class="o">+</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">+</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">+</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 计算自适应门限</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="c">% 绘制门限图</span>
+</code></pre></td></tr></table>
+</div>
+</div><div>
+<center>
+  <img src="/images/5_1.png" width="75%"/>
+  <br>
+  图1：仿真结果（仅截取部分）
+</center>
+</div>
+<p>  其中橙色线为门限值，蓝色线为回波信号。可以看到在保护单元个数与阈值选取合理的情况下，较好地进行了目标检测。</p>
+<h3 id="__4-go-cfar原理及仿真__"><strong>4. GO-CFAR原理及仿真</strong></h3>
+<h4 id="__41-go-cfar原理__"><strong>4.1. GO-CFAR原理</strong></h4>
+<p>  与CA-CFAR的原理类似，GO-CFAR（最大选择CFAR）在计算门限值的时候取$K\max(x[i])$来作为门限值，其中$x[i]$为选择的参考点。接下来我们来计算在这种情况下对应的虚警概率。与前面的步骤同理，我们首先来求出$\max(x[i])$服从的概率分布。若记$F_m(r)$为$\max(x[i])$的分布函数，那么有</p>
+<p>$$ F_m(r) = P(x[i] \leq r) = F_x(r)^M $$</p>
+<p>  于是可得$\max(x[i])$的概率密度函数为</p>
+<p>$$ P_m(r) = \frac{\mathrm{d}F_m(r)}{\mathrm{d}r} = M P_x(r) F_x(r)^{M-1} = \frac{M}{2\sigma_n^2}e^{-\frac{r}{2\sigma_n^2}}(1 - e^{-\frac{r}{2\sigma_n^2}})^{M-1} \tag{4.1} $$</p>
+<p>  与$(3.1)$相同的推导方法，可得在这种情况下的虚警概率为</p>
+<p>$$ E[P_{fd}] = E[e^{-\frac{Kx_m}{2\sigma_n^2}}] $$</p>
+<p>  其中$x_m$为$\max(x[i])$。将$(4.1)$式代入上式，可得</p>
+<p>$$ \begin{align*}
+E[P_{fd}] =&amp; E[e^{-\frac{Kx_m}{2\sigma_n^2}}] \\ =&amp; \frac{M}{2\sigma_n^2}\int_{0}^{\infty}e^{-\frac{Kr}{2\sigma_n^2}}e^{-\frac{r}{2\sigma_n^2}}(1 - e^{-\frac{r}{2\sigma_n^2}})^{M-1}\mathrm{d}r \\ =&amp; M\int_{0}^{1}t^{K}(1-t)^{M-1}\mathrm{d}t\ (t \rightarrow e^{-\frac{r}{2\sigma_n^2}}) \tag{4.2}
+\end{align*} $$</p>
+<p>  若假设$K$为正整数，则对$\int_{0}^{1}t^{K+1}(1-t)^{M-1}\mathrm{d}t$反复使用分部积分法，可得</p>
+<p>$$ \begin{align*}
+\int_{0}^{1}t^{K}(1-t)^{M-1}\mathrm{d}t =&amp; -\frac{1}{M}\int_{0}^{1}t^{K}\mathrm{d}(1-t)^{M} \\ =&amp; \frac{K}{M}\int_{0}^{1}(1-t)^{M}t^{K-1}\mathrm{d}t \\ =&amp;&hellip; \\ =&amp; \frac{K!}{M(M+1)&hellip;(K+M-1)}\int_{0}^{1}(1-t)^{K+M-1} \mathrm{d}t \\ =&amp; \frac{(M-1)!K!}{(K+M)!} \tag{4.3}
+\end{align*} $$</p>
+<p>  将$(4.3)$式代入$(4.2)$式，可得</p>
+<p>$$ E[P_{fd}] = \frac{M!K!}{(K+M)!} $$</p>
+<p>  当$K$为一个正实数时，由于笔者水平问题，此处只给出一个级数表达式</p>
+<p>$$ \begin{align*}
+E[P_{fd}] =&amp; M\int_{0}^{1}t^{K}(1-t)^{M-1}\mathrm{d}t \\ =&amp; K\int_{0}^{1}(1-t)^{M}t^{K-1}\mathrm{d}t \\ =&amp; K\int_{0}^{1}(t^{\frac{K-1}{M}} - t^{\frac{K-1}{M}+1})^{M} \mathrm{d}t \\ =&amp; K\int_{0}^{1}\sum_{j=0}^{M}{M \choose j} t^{K+M-1-j}(-1)^{M-j}\mathrm{d}t \\ =&amp; K\sum_{j=0}^{M}{M \choose j} \frac{(-1)^{M-j}}{K+M-j} \tag{4.4}
+\end{align*} $$</p>
+<h4 id="__42-go-cfar仿真__"><strong>4.2. GO-CFAR仿真</strong></h4>
+<p>  假设虚警概率$P_{fd}=10^{-6}$，所选参考点数为10个，保护单元个数为20个，代入计算机穷举可求得$K \approx 12.75$。于是可编写如下Matlab代码</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -251,9 +333,10 @@ M_{X}(t) =&amp; \int_{0}^{\infty}\frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e
 </span><span class="lnt">20
 </span><span class="lnt">21
 </span><span class="lnt">22
+</span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">K</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>  <span class="c">% 阈值为3</span>
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">K</span> <span class="p">=</span> <span class="mf">12.75</span><span class="p">;</span>  <span class="c">% 阈值为12.75</span>
 <span class="n">M</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c">% 参考单元共10个</span>
 <span class="n">D</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c">% 保护单元共20个</span>
 
@@ -261,8 +344,8 @@ M_{X}(t) =&amp; \int_{0}^{\infty}\frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e
 
 <span class="n">x</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
 <span class="n">x</span><span class="p">(</span><span class="mi">150</span><span class="p">:</span><span class="mi">155</span><span class="p">)</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>    <span class="c">% 模拟目标回波信号</span>
-<span class="n">x</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 加入噪声</span>
-<span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>   <span class="c">% 模拟平方律检波</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 加入噪声</span>
+<span class="n">x</span> <span class="p">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>   <span class="c">% 模拟平方律检波</span>
 
 <span class="n">figure</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">% 绘制回波信号图</span>
@@ -270,21 +353,97 @@ M_{X}(t) =&amp; \int_{0}^{\infty}\frac{\beta^{\alpha}}{(\alpha-1)!}x^{\alpha-1}e
 
 <span class="n">T</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
 <span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-    <span class="n">T</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span> <span class="o">+</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">+</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">+</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 计算自适应门限</span>
+    <span class="n">T</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="p">[</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">+</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">+</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 计算自适应门限</span>
 <span class="k">end</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="c">% 绘制门限图</span>
+<span class="nb">disp</span><span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">K</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">M</span> <span class="o">-</span> <span class="n">D</span><span class="p">)</span>
 
+<span class="n">plot</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="c">% 绘制门限图</span>
 </code></pre></td></tr></table>
 </div>
 </div><div>
 <center>
-  <img src="/images/5_1.png" width="75%"/>
+  <img src="/images/5_2.png" width="75%"/>
   <br>
-  图1：仿真结果（仅截取部分）
+  图2：仿真结果（仅截取部分）
 </center>
 </div>
-<p>  其中橙色线为门限值，蓝色线为回波信号。可以看到在保护单元个数与阈值选取合理的情况下，较好地进行了目标检测。</p>
+<p>  与3.2节相同，橙色线为门限值，蓝色线为回波信号。可以看到相较于CA-CFAR，GO-CFAR可能具有更低的检测概率，相对而言，在杂波边缘便能取得更好的效果。</p>
+<h3 id="__5-so-cfar原理及仿真__"><strong>5. SO-CFAR原理及仿真</strong></h3>
+<h4 id="__51-so-cfar原理__"><strong>5.1. SO-CFAR原理</strong></h4>
+<p>  与GO-CFAR的原理类似，不同的是SO-CFAR（最小选择CFAR）在计算门限值的时候取$K\min(x[i])$来作为门限值。沿用4.1节的记号，可得</p>
+<p>$$ F_m(r) = 1 - P(x_m &gt; r) = 1 - (1 - F_x(r))^M = 1 - e^{-\frac{Mr}{2\sigma_n^2}} $$</p>
+<p>$$ P_m(r) = \frac{M}{2\sigma_n^2}e^{-\frac{Mr}{2\sigma_n^2}} $$</p>
+<p>  根据$(3.1)$式可得</p>
+<p>$$ \begin{align*}
+E[P_{fd}] =&amp; E[e^{-\frac{Kx_m}{2\sigma_n^2}}] \\ =&amp; \frac{M}{2\sigma_n^2}\int_{0}^{\infty}e^{-\frac{K+M}{2\sigma_n^2}r} \mathrm{d}r \\ =&amp; \frac{M}{K+M} \tag{5.1}
+\end{align*} $$</p>
+<h4 id="__52-so-cfar仿真__"><strong>5.2. SO-CFAR仿真</strong></h4>
+<p>  当所选参考点数为10个，保护单元个数为20个，$K = 100$时，代入$(5.1)$可求得虚警概率为$9.1\%$。于是可编写如下Matlab代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">K</span> <span class="p">=</span> <span class="mi">100</span><span class="p">;</span>  <span class="c">% 阈值为100</span>
+<span class="n">M</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c">% 参考单元共10个</span>
+<span class="n">D</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span> <span class="c">% 保护单元共20个</span>
+
+<span class="n">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.001</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>
+
+<span class="n">x</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="n">x</span><span class="p">(</span><span class="mi">150</span><span class="p">:</span><span class="mi">155</span><span class="p">)</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>    <span class="c">% 模拟目标回波信号</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">awgn</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 加入噪声</span>
+<span class="n">x</span> <span class="p">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>   <span class="c">% 模拟平方律检波</span>
+
+<span class="n">figure</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">% 绘制回波信号图</span>
+<span class="n">hold</span> <span class="n">on</span>
+
+<span class="n">T</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
+<span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">T</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="p">=</span> <span class="n">min</span><span class="p">(</span><span class="p">[</span><span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">-</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="p">:</span> <span class="nb">i</span><span class="o">-</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="nb">i</span><span class="o">+</span><span class="n">D</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span> <span class="p">:</span> <span class="nb">i</span><span class="o">+</span><span class="p">(</span><span class="n">M</span><span class="o">+</span><span class="n">D</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>   <span class="c">% 计算自适应门限</span>
+<span class="k">end</span>
+
+<span class="nb">disp</span><span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">K</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">length</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">M</span> <span class="o">-</span> <span class="n">D</span><span class="p">)</span><span class="p">)</span>
+
+<span class="nb">disp</span><span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="n">K</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">M</span> <span class="o">-</span> <span class="n">D</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="c">% 绘制门限图</span>
+</code></pre></td></tr></table>
+</div>
+</div><div>
+<center>
+  <img src="/images/5_3.png" width="75%"/>
+  <br>
+  图3：仿真结果（仅截取部分）
+</center>
+</div>
+<p>  可以看到，此时的虚警概率比较高，但同时如果加大门限阈值，会使得目标检测变得困难，这是SO-CFAR的一个缺点。</p>
     </div>
 
     
