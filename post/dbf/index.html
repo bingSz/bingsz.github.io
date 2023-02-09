@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>漫谈：数字波束形成 - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/dbf/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="漫谈：数字波束形成" />
+<meta property="og:description" content="  漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/dbf/" />
+<meta property="article:published_time" content="2023-02-09T15:01:55+08:00" />
+<meta property="article:modified_time" content="2023-02-09T15:01:55+08:00" />
+<meta itemprop="name" content="漫谈：数字波束形成">
+<meta itemprop="description" content="  漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。">
+<meta itemprop="datePublished" content="2023-02-09T15:01:55&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-09T15:01:55&#43;08:00" />
+<meta itemprop="wordCount" content="1386">
+
+
+
+<meta itemprop="keywords" content="essay," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="漫谈：数字波束形成"/>
+<meta name="twitter:description" content="  漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">漫谈：数字波束形成</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-09 </span>
+        <div class="post-category">
+            <a href="/categories/essay/"> essay </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。</p>
+<p>  多普勒滤波器组和数字波束形成这两个技术都可以用$\text{FFT}$来实现，而这两者我觉得本质也是一样的。多普勒滤波器组的提出背景是因为我们事先并不能知道目标的速度以及多普勒频移，因此需要在一些频率点上分布许多个窄带滤波器用以得到各个多普勒频移下的目标回波。例如在$\frac{2\pi k}{N}$点上的一个$n$点窄带滤波器系数可以表示为$[1, e^{-j2\pi \frac{k}{N}\cdot 1}, e^{-j2\pi \frac{k}{N}\cdot 2},&hellip;,e^{-j2\pi \frac{k}{N}\cdot (n-1)}]$。如果我们要获得在$[0, 2\pi )$上等间隔的滤波器组，一个方法便是令$k$等间隔取值，例如$k$可以取值为$[0, 1, 2, &hellip;, N-1]$。那么组合起来就会发现第$k$个滤波器的输出为$\sum_{n=0}^{N-1}x[i]e^{-j2\pi \frac{k}{N}n}$。仔细观察上式可以发现，这个就是一个$N$点$\text{FFT}$的第$k$个点的值。因此从这个角度来说，多普勒滤波器组可以使用$\text{FFT}$来加速这个计算过程。</p>
+<p>  那么数字波束形成的原理与多普勒滤波器组原理类似，都是需要构造一系列系数，然后发现使用$\text{FFT}$可以加速这个过程。因此从公式上来说，这两者的公式实际上是一样的。</p>
+<p>  现在我们来考虑波束形成这个过程，为了方便，我们仅考虑线阵情形。假设有$n$个线阵，第$0$个线阵接收到的信号为$x(t)$，目标回波与阵面的法相夹角为$\theta$，那么每个线阵接收到的信号相对于$0$号线阵的相位可以表示为$[1, e^{j\frac{2\pi}{\lambda}d \sin \theta}, e^{j\frac{2\pi}{\lambda}2d \sin \theta}, &hellip;, e^{j\frac{2\pi}{\lambda}(n-1)d \sin \theta}]$。为了使得在$\theta$方向上的回波信号最大，可以对于每个线阵接收到的信号作一个相移。对第$k$个线阵作相移$e^{-j \frac{2\pi}{\lambda}kd \sin \theta}$，于是相移后的线阵信号相加可以使得在$\theta$方向上的回波同相相加，从而使得在这个方向上的信号增强，而在其它方向上的信号减弱。这就达到了波束形成的目的。</p>
+<p>  但现在我们需要在一系列方位上进行扫描，这就需要形成一系列相移系数，使得这个虚拟波束在一个空间上扫描。于是可以形成一系列相移系数，如下所示</p>
+<p>$$ [1, e^{j\frac{2\pi}{\lambda}d \sin \theta_1}, e^{j\frac{2\pi}{\lambda}2d \sin \theta_1}, &hellip;, e^{j\frac{2\pi}{\lambda}(n-1)d \sin \theta_1}] $$</p>
+<p>$$ [1, e^{j\frac{2\pi}{\lambda}d \sin \theta_2}, e^{j\frac{2\pi}{\lambda}2d \sin \theta_2}, &hellip;, e^{j\frac{2\pi}{\lambda}(n-1)d \sin \theta_2}] $$</p>
+<p>$$ &hellip; $$</p>
+<p>$$ [1, e^{j\frac{2\pi}{\lambda}d \sin \theta_m}, e^{j\frac{2\pi}{\lambda}2d \sin \theta_m}, &hellip;, e^{j\frac{2\pi}{\lambda}(n-1)d \sin \theta_m}] $$</p>
+<p>  其中$m$为所需要扫描的角度个数。上述一系列相移系数使得相控阵雷达可以在多个角度进行扫描，但如果每次在形成不同波束时都重新相乘一次，那么必然会消耗掉大量的运算资源。如果我们对于各个角度值可以舍去一些精度，从而作一些近似，那么可以作如下近似</p>
+<p>$$ [1, e^{j\frac{2\pi}{N}0\cdot 1}, e^{j\frac{2\pi}{N}0\cdot 2}, &hellip;, e^{j\frac{2\pi}{N}0\cdot (N-1)}] $$</p>
+<p>$$ [1, e^{j\frac{2\pi}{N}1\cdot 1}, e^{j\frac{2\pi}{N}1\cdot 2}, &hellip;, e^{j\frac{2\pi}{N}1\cdot (N-1)}] $$</p>
+<p>$$ &hellip; $$</p>
+<p>$$ [1, e^{j\frac{2\pi}{N}(N-1)\cdot 1}, e^{j\frac{2\pi}{N}(N-1)\cdot 2}, &hellip;, e^{j\frac{2\pi}{N}(N-1)\cdot (N-1)}] $$</p>
+<p>  也就是说，我们在$[0, 2\pi)$上作了等间隔采样，然后用这些采样值来近似各个角度值。这种做法虽然牺牲了一些精确度，但却使得可以用$\text{FFT}$来解决这个问题，换个角度来说，等间隔采样近似通过牺牲精确度来换取性能。</p>
+<p>  当看到数字波束形成时，第一个想到的是什么呢？总之我第一个想到的是毫米波雷达的角度测量方法。毫米波雷达的角度测量方法也是使用多个天线，然后使用比相法来测量角度，这个本质是因为天线之间的间隔导致相位按照某一频率变化，而这个频率可以通过$\text{FFT}$捕捉到，因此可以反推出目标角度。数字波束形成的原理也是如此。</p>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/essay/">essay</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/cfarprob/">
+            <span class="next-text nav-default">CFAR中的概率问题证明</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
