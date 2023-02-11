@@ -50,7 +50,7 @@
 <meta itemprop="description" content="  最近学到了合成孔径雷达的成像算法，但在看陈老师的书时发现看得一头雾水，并且在书中省略了很多细节。经过资料查找与整理，在这里给出个人见解。">
 <meta itemprop="datePublished" content="2023-02-10T11:45:09&#43;08:00" />
 <meta itemprop="dateModified" content="2023-02-10T11:45:09&#43;08:00" />
-<meta itemprop="wordCount" content="4998">
+<meta itemprop="wordCount" content="5007">
 
 
 
@@ -296,7 +296,7 @@ r(t, f) =&amp; a(t - \frac{2R(f)}{c})\exp(-j\frac{f^2}{\gamma})\exp(j\pi \mu_1 (
 <span class="n">c</span> <span class="p">=</span> <span class="mf">3e8</span><span class="p">;</span> <span class="c">% 光速</span>
 <span class="n">lambda</span> <span class="p">=</span> <span class="n">c</span> <span class="o">/</span> <span class="n">fc</span><span class="p">;</span>
 
-<span class="n">r</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="p">;</span> <span class="c">% 初始化接收矩阵，共1000个回波脉冲，在横坐标上采集5000个点</span>
+<span class="n">r</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="p">;</span> <span class="c">% 初始化接收矩阵，共1000个回波脉冲，在横坐标上采集1000个点</span>
 </code></pre></td></tr></table>
 </div>
 </div><p>  随后模拟目标回波信号（假设已混频至基频）</p>
@@ -329,7 +329,7 @@ r(t, f) =&amp; a(t - \frac{2R(f)}{c})\exp(-j\frac{f^2}{\gamma})\exp(j\pi \mu_1 (
         
         <span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span> <span class="p">=</span> <span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">tm</span> <span class="o">-</span> <span class="n">target</span><span class="p">(</span><span class="nb">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">Ls</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c">...</span>
                             <span class="o">*</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="n">lambda</span><span class="p">)</span> <span class="c">...</span>
-                             <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">j</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span> <span class="o">.^</span> <span class="mi">2</span><span class="p">)</span><span class="p">;</span>
+                             <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">j</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">R</span> <span class="o">/</span> <span class="n">c</span><span class="p">)</span> <span class="o">.^</span> <span class="mi">2</span><span class="p">)</span><span class="p">;</span> <span class="c">% 忽略了一些常数项</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
