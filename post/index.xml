@@ -6,10 +6,19 @@
     <description>Recent content in Posts on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Feb 2023 15:01:55 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 10 Feb 2023 11:45:09 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>合成孔径雷达的RD成像算法及距离徙动矫正</title>
+      <link>https://bingsz.github.io/post/sarrcmc/</link>
+      <pubDate>Fri, 10 Feb 2023 11:45:09 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/sarrcmc/</guid>
+      <description>&lt;p&gt;  最近学到了合成孔径雷达的成像算法，但在看陈老师的书时发现看得一头雾水，并且在书中省略了很多细节。经过资料查找与整理，在这里给出个人见解。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>漫谈：数字波束形成</title>

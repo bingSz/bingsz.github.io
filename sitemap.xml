@@ -9,6 +9,27 @@
   </url>
   
   <url>
+    <loc>https://bingsz.github.io/post/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/post/sarrcmc/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://bingsz.github.io/categories/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -24,20 +45,6 @@
   
   <url>
     <loc>https://bingsz.github.io/categories/essay/</loc>
-    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/post/</loc>
-    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -65,14 +72,14 @@
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/tags/radar/</loc>
+    <loc>https://bingsz.github.io/categories/radar/</loc>
     <lastmod>2023-02-03T16:19:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/categories/radar/</loc>
+    <loc>https://bingsz.github.io/tags/radar/</loc>
     <lastmod>2023-02-03T16:19:03+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
