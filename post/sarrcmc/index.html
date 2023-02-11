@@ -50,7 +50,7 @@
 <meta itemprop="description" content="  最近学到了合成孔径雷达的成像算法，但在看陈老师的书时发现看得一头雾水，并且在书中省略了很多细节。经过资料查找与整理，在这里给出个人见解。">
 <meta itemprop="datePublished" content="2023-02-10T11:45:09&#43;08:00" />
 <meta itemprop="dateModified" content="2023-02-10T11:45:09&#43;08:00" />
-<meta itemprop="wordCount" content="5007">
+<meta itemprop="wordCount" content="5088">
 
 
 
@@ -229,12 +229,12 @@ r_1(t, t_m) =&amp; a(t - \frac{2R(t_m)}{c})\text{Sa}(\pi \Delta f_2 t_m)\text{Sa
 <p>  在前文介绍RD算法的时候可以发现，算法中有一个重要的假设，即假设目标的$R(t_m)$在目标处于孔径内成像时是恒定的（第一章中划粗线部分）。但事实上，在实际成像时，通常并不能使用该假设，或者说，上述假设在多数情况下，并不能达到可忽略的地步。这就是距离徙动问题，当雷达扫过目标时，由于与目标距离变化的原因而导致脉冲压缩结果弯曲。</p>
 <p>  许多人并不理解为什么要将慢时间维变换到频域中去处理，同时在陈伯孝的《现代雷达系统分析与设计》中也没有相关的说明，我一开始也不理解，有的人说是因为在频域中可以有更少的计算量，我认为这是错误的。下面我用公式告诉大家为什么要将慢时间维变换到频率域中。</p>
 <p>  将$(0.2.1)$式代入目标回波的表达式，得到</p>
-<p>$$ r(t, t_m) = a(t - \frac{2R(t_m)}{c})\exp(-j\pi \frac{2v^2 t_m^2}{\lambda R_s})\exp(j\pi \mu_1 (t - \frac{2R(t_m)}{c})^2)\exp(-j4\pi \frac{R_s}{\lambda}) $$</p>
+<p>$$ r(t, t_m) = a(t - \frac{2R(t_m)}{c})\exp(-j\pi \frac{2v^2 t_m^2}{\lambda R_s})\exp(j\pi \mu (t - \frac{2R(t_m)}{c})^2)\exp(-j4\pi \frac{R_s}{\lambda}) $$</p>
 <p>  根据驻定相位原理，在$t_m=\frac{f}{\gamma}$处展开（$\gamma = \frac{2v^2}{\lambda R_s}$），可得到当对$t_m$作傅里叶变换时，上式变为（忽略常数项）</p>
 <p>$$ \begin{align*}
 r(t, f) =&amp; a(t - \frac{2R(f)}{c})\exp(-j\frac{f^2}{\gamma})\exp(j\pi \mu_1 (t - \frac{2R(f)}{c})^2)\exp(-j4\pi \frac{R_s}{\lambda}) \\ \approx &amp; a(t - \frac{2R(f)}{c})\exp(-j\frac{f^2}{\gamma})\exp(j\pi \mu_1 (t - \frac{2R_s}{c} - \frac{2}{c}\frac{\lambda^2 R_s f^2}{8v^2})^2)\exp(-j4\pi \frac{R_s}{\lambda}) \tag{2.1}
 \end{align*} $$</p>
-<p>  第二个指数项的平方项中的变化是因为根据$(0.2.1)$式的近似，并且将$t_m=\frac{f}{\gamma}$代入得到。事实上，$(2.1)$式的推导隐含了一个近似，推导中假设第二个指数项的平方项对于傅里叶变换的贡献较小而近似可忽略</p>
+<p>  其中$\mu_1$是由于将慢时间维变换到了频域中而导致的调频斜率发生变化，此处不考虑这个值，推导过程可参考陈伯孝的《现代雷达系统分析与设计》。第二个指数项的平方项中的变化是因为根据$(0.2.1)$式的近似，并且将$t_m=\frac{f}{\gamma}$代入得到。事实上，$(2.1)$式的推导隐含了一个近似，推导中假设第二个指数项的平方项对于傅里叶变换的贡献较小而近似可忽略</p>
 <p>  仔细观察上式，可以发现一个很有趣的点，快时间维上的脉冲压缩后因距离徙动而导致的快时间维平移仅跟频率有关（观察第二个指数项），而与目标在成像范围内的位置无关。这是一个很重要的点，因为这意味着可以对所有点目标进行统一的距离徙动矫正，而不需要考虑目标位置。为了更好的说明这一点，下面我用数据来说明这一点。考虑下图所示的仅在快时间维上进行脉冲压缩但不变换到频率域的结果（图片摘自<a href="https://blog.csdn.net/a1367666195/article/details/106614707">SAR成像(七)：RD成像算法</a>）。</p>
 <div>
 <center>
@@ -369,7 +369,7 @@ r(t, f) =&amp; a(t - \frac{2R(f)}{c})\exp(-j\frac{f^2}{\gamma})\exp(j\pi \mu_1 (
     <span class="n">f</span> <span class="p">=</span> <span class="n">f1</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span><span class="p">;</span>
     <span class="n">dt</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">c</span> <span class="o">*</span> <span class="n">lambda</span>^<span class="mi">2</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">f</span>^<span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">v</span>^<span class="mi">2</span><span class="p">)</span><span class="p">;</span> <span class="c">% 计算需要补偿的时延</span>
     
-    <span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span> <span class="p">=</span> <span class="n">ifft</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">conj</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">.*</span> <span class="nb">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">size</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span><span class="p">)</span><span class="p">;</span> <span class="c">% 在快时间维上作匹配滤波</span>
+    <span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span> <span class="p">=</span> <span class="n">ifft</span><span class="p">(</span><span class="n">fft</span><span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="nb">j</span><span class="p">,</span> <span class="p">:</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">conj</span><span class="p">(</span><span class="n">H1</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span><span class="mi">1</span><span class="nb">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span> <span class="o">.*</span> <span class="nb">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">size</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="p">)</span> <span class="o">.*</span> <span class="nb">round</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span><span class="p">)</span><span class="p">)</span><span class="p">;</span> <span class="c">% 在快时间维上作匹配滤波，不考虑调频斜率变化</span>
 <span class="k">end</span>
 </code></pre></td></tr></table>
 </div>
