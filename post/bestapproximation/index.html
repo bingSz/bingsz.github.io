@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>矩阵论：子空间的最佳逼近 - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/bestapproximation/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="矩阵论：子空间的最佳逼近" />
+<meta property="og:description" content="  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/bestapproximation/" />
+<meta property="article:published_time" content="2023-02-20T20:59:23+08:00" />
+<meta property="article:modified_time" content="2023-02-20T20:59:23+08:00" />
+<meta itemprop="name" content="矩阵论：子空间的最佳逼近">
+<meta itemprop="description" content="  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。">
+<meta itemprop="datePublished" content="2023-02-20T20:59:23&#43;08:00" />
+<meta itemprop="dateModified" content="2023-02-20T20:59:23&#43;08:00" />
+<meta itemprop="wordCount" content="2129">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="矩阵论：子空间的最佳逼近"/>
+<meta name="twitter:description" content="  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">矩阵论：子空间的最佳逼近</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-20 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#__理论准备__">理论准备</a></li>
+            <li><a href="#__matlab仿真__">Matlab仿真</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。</p>
+<h3 id="__理论准备__"><strong>理论准备</strong></h3>
+<p>  在介绍最佳逼近的构造方法之前，要先介绍一些矩阵论方面的基础知识。为了研究的简单，下文均只研究有限维空间中的情况。首先定义线性空间概念，如果在数域$\mathrm{P}$上有一个非空集合$\mathrm{V}$，并且在$\mathrm{V}$上定义了加法（$+$）与从$\mathrm{P}$与$\mathrm{V}$到$\mathrm{V}$的数量乘法（$\cdot$），若满足如下条件，则称$\mathrm{V}$为$\mathrm{P}$上的一个线性空间</p>
+<ul>
+<li>(1) $\mathrm{V}$中的加法运算构成一个阿贝尔群</li>
+<li>(2) $\exists 1 \in \mathrm{V}$，$1 \cdot \alpha = \alpha$（$\alpha \in \mathrm{V}$）</li>
+<li>(3) $k \cdot (m \cdot \alpha) = (km) \cdot \alpha$（$k, m \in \mathrm{P}, \alpha \in \mathrm{V} $）</li>
+<li>(4) $(k+m)\cdot \alpha = k \cdot \alpha + m \cdot \alpha$（$k, m \in \mathrm{P}, \alpha \in \mathrm{V} $）</li>
+<li>(5) $k \cdot (\alpha + \beta) = k \cdot \alpha + k \cdot \beta$（$k \in \mathrm{P}, \alpha, \beta \in \mathrm{V}$）</li>
+</ul>
+<p>  在此基础上，很自然地，我们可以定义线性子空间的概念，当$\mathrm{V_1}$构成一个线性空间，并且$\mathrm{V_1} \subset \mathrm{V}$时，称$\mathrm{V_1}$为$\mathrm{V}$的线性子空间。</p>
+<p>  同时，我们要引入内积空间概念。我们将满足如下条件的$\mathrm{V} \rightarrow \mathrm{P}$的运算记为内积，表示为$(\alpha, \beta)$，其中$\alpha, \beta \in \mathrm{V}$</p>
+<ul>
+<li>(1) $(\alpha, \beta) = \overline{(\beta, \alpha)}$</li>
+<li>(2) $(\alpha + \beta, \gamma) = (\alpha, \gamma) + (\beta, \gamma)$</li>
+<li>(3) $(k \alpha, \beta) = k(\alpha, \beta)$</li>
+<li>(4) $(\alpha, \alpha) \geq 0$，且当且仅当$\alpha = 0$时，$(\alpha, \alpha) = 0$</li>
+</ul>
+<p>  其中，$\alpha, \beta, \gamma \in \mathrm{V}, k \in \mathrm{P}$。定义了内积的线性空间$\mathrm{V}$称之为内积空间。定义在这种定义下的$\mathrm{V}$中的两个元素$\alpha, \beta$的距离定义为$d(\alpha, \beta) = \sqrt{(\alpha - \beta, \alpha - \beta)}$，其中减号的定义为$\alpha-\beta = \alpha + (-\beta)$。</p>
+<p>  接下来我们对最佳逼近作一个定义，记$\mathrm{V_1}$为$\mathrm{V}$的一个线性子空间，$\alpha \in \mathrm{V}, \alpha_1 \in \mathrm{V_1}$，当满足如下等式时，我们称$\alpha_1$为$\alpha$在$\mathrm{V_1}$上的一个最佳逼近</p>
+<p>$$ d(\alpha, \alpha_1) = \inf_{\beta \in \mathrm{V_1}} d(\alpha, \beta) $$</p>
+<p>  事实上，更严谨地，接下来我们应当证明这样的最佳逼近是存在的，但这部分内容并不是本文的重点，因此本文省略一些严谨性方面的证明。接下来我们介绍一下最佳逼近的构造方法。</p>
+<p>  记$\alpha \in \mathrm{V}, \alpha_1 \in \mathrm{V_1}$，其中$\mathrm{V_1}$为$\mathrm{V}$的线性子空间。令$\beta = \alpha - \alpha_1$，可证明，当$\alpha_1$为最佳逼近时，$\beta$满足对$\forall \alpha&rsquo; \in \mathrm{V_1}, (\beta, \alpha&rsquo;) = 0$（换言之$\beta \perp \mathrm{V_1}$）。因此若记$\mathrm{V_1}$的基为$(\gamma_1, \gamma_2, &hellip;, \gamma_n)$，我们有</p>
+<p>$$ (\beta, \gamma_i) = (\alpha, \gamma_i) - (\alpha_1, \gamma_i) = 0(i = 1, 2, &hellip;, n) $$</p>
+<p>  若记$\alpha_1 = \sum_{k=1}^{n}x_k \gamma_k$，那么我们有</p>
+<p>$$ \sum_{k=1}^{n}x_k (\gamma_k, \gamma_i) = (\alpha, \gamma_i) $$</p>
+<p>  定义$(\gamma_1, \gamma_2, &hellip;, \gamma_n)$的度量矩阵（Gram矩阵）为</p>
+<p>$$ G(\gamma_1, \gamma_2, &hellip;, \gamma_n) = \begin{pmatrix}
+(\gamma_1, \gamma_1) &amp; (\gamma_1, \gamma_2) &amp; &hellip; &amp; (\gamma_1, \gamma_n) \\ (\gamma_2, \gamma_1) &amp; (\gamma_2, \gamma_2) &amp; &hellip; &amp; (\gamma_2, \gamma_n) \\ &amp; &amp; &hellip; \\ (\gamma_n, \gamma_1) &amp; (\gamma_n, \gamma_2) &amp; &hellip; &amp; (\gamma_n, \gamma_n)
+\end{pmatrix} $$</p>
+<p>  那么我们有</p>
+<p>$$ G(\gamma_1, \gamma_2, &hellip;, \gamma_n) \mathrm{x} = \mathrm{b} $$</p>
+<p>  其中$\mathrm{x} = (x_1, x_2, &hellip;, x_n)^T, \mathrm{b} = ((\alpha, \gamma_1), (\alpha, \gamma_2), &hellip;, (\alpha, \gamma_n))^T$。可以证明，由于$\gamma_1, \gamma_2, &hellip;, \gamma_n$线性无关，因此$G(\gamma_1, \gamma_2, &hellip;, \gamma_n)$可逆。于是便可求得最佳逼近</p>
+<h3 id="__matlab仿真__"><strong>Matlab仿真</strong></h3>
+<p>  此处用最小二乘法来作例子，假设共有$N$次观测，第$n$次观测的数据为$x_n$，并且记$x_n = (x_{n,1}, x_{n,2}, &hellip;, x_{n,m})^T$，并且假设$y_n=\lambda_1 x_{n, 1} + \lambda_2 x_{n, 2} + &hellip; + \lambda_m x_{n, m}$，其中$\lambda_i$为待定系数。那么最小二乘问题可表示为如下公式</p>
+<p>$$ \min \sum_{i=1}^{N}d(y_i, \sum_{k=1}^{m}\lambda_k x_{i, k}) $$</p>
+<p>  记$b = (y_1, y_2, &hellip;, y_N)^T, a_i = (x_{1, i}, x_{2, i}, &hellip;, x_{N, i})^T$，那么上式可化为如下式子</p>
+<p>$$ \min d(b, \sum_{k=1}^{m}\lambda_k a_k) $$</p>
+<p>  可以发现，上式就是由$(a_1, a_2, &hellip;, a_m)$张成的子空间对$b$的最佳逼近问题。若记$A = (a_1, a_2, &hellip;, a_m)$，那么$\lambda$的最佳逼近可由如下公式表示（注意度量矩阵$G(a_1, a_2, &hellip;, a_m) = A^TA$）</p>
+<p>$$ A^TA\lambda = A^Tb $$</p>
+<p>$$ \lambda = (A^TA)^{-1}A^Tb $$</p>
+<p>  于是可编写如下Matlab程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="c">%% 最佳逼近的仿真程序</span>
+
+<span class="c">% 假设每次观测分别为[1, 1], [1, 2], [2, 1]</span>
+<span class="c">% 假设输出结果为[2.9, 5.1, 3.9]&#39;</span>
+<span class="n">x</span> <span class="p">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">;</span>
+<span class="n">y</span> <span class="p">=</span> <span class="p">[</span><span class="mf">2.9</span><span class="p">;</span> <span class="mf">5.1</span><span class="p">;</span> <span class="mf">3.9</span><span class="p">]</span><span class="p">;</span>
+
+<span class="n">lambda</span> <span class="p">=</span> <span class="n">calcApprox</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">;</span>
+
+<span class="nb">disp</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span><span class="p">;</span>
+
+<span class="c">% calcApprox: 计算观测向量为x，输出结果为y时的最佳逼近，其中x的每个行向量为一次观测数据</span>
+<span class="k">function</span><span class="w"> </span>lambda <span class="w"></span><span class="p">=</span><span class="w"> </span><span class="nf">calcApprox</span><span class="p">(</span>x, y<span class="p">)</span><span class="w">
+</span><span class="w">    </span><span class="n">lambda</span> <span class="p">=</span> <span class="p">(</span><span class="n">x</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">\</span> <span class="n">x</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span><span class="p">;</span>
+<span class="k">end</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>  最终输出结果为</p>
+<p>$$ \lambda = \begin{pmatrix}
+0.8909 \\ 2.0909
+\end{pmatrix} $$</p>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/sarrcmc/">
+            <span class="next-text nav-default">合成孔径雷达的RD成像算法及距离徙动矫正</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

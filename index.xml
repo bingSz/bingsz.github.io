@@ -6,7 +6,7 @@
     <description>Recent content on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 10 Feb 2023 11:45:09 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 20 Feb 2023 20:59:23 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,6 +18,15 @@
       
       <guid>https://bingsz.github.io/about/</guid>
       <description>这是一个个人博客，主要用于记录一些本人日常中碰到的问题。 如果有任何疑问可以联系：1016574101@qq.com</description>
+    </item>
+    
+    <item>
+      <title>矩阵论：子空间的最佳逼近</title>
+      <link>https://bingsz.github.io/post/bestapproximation/</link>
+      <pubDate>Mon, 20 Feb 2023 20:59:23 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/bestapproximation/</guid>
+      <description>&lt;p&gt;  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。&lt;/p&gt;</description>
     </item>
     
     <item>

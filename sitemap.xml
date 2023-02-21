@@ -10,14 +10,21 @@
   
   <url>
     <loc>https://bingsz.github.io/post/</loc>
-    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://bingsz.github.io/</loc>
-    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/post/bestapproximation/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -37,14 +44,14 @@
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/categories/essay/</loc>
+    <loc>https://bingsz.github.io/tags/essay/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/tags/essay/</loc>
+    <loc>https://bingsz.github.io/categories/essay/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
