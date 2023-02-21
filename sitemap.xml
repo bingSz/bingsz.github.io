@@ -9,6 +9,27 @@
   </url>
   
   <url>
+    <loc>https://bingsz.github.io/categories/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/categories/matrixtheory/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/matrixtheory/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://bingsz.github.io/post/</loc>
     <lastmod>2023-02-20T20:59:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -17,6 +38,13 @@
   
   <url>
     <loc>https://bingsz.github.io/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/</loc>
     <lastmod>2023-02-20T20:59:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -37,13 +65,6 @@
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/categories/</loc>
-    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://bingsz.github.io/tags/essay/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -52,13 +73,6 @@
   
   <url>
     <loc>https://bingsz.github.io/categories/essay/</loc>
-    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/tags/</loc>
     <lastmod>2023-02-09T15:01:55+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -121,14 +135,14 @@
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/tags/matlab/</loc>
+    <loc>https://bingsz.github.io/categories/matlab/</loc>
     <lastmod>2023-01-20T16:29:31+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/categories/matlab/</loc>
+    <loc>https://bingsz.github.io/tags/matlab/</loc>
     <lastmod>2023-01-20T16:29:31+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
