@@ -10,7 +10,63 @@
   
   <url>
     <loc>https://bingsz.github.io/categories/</loc>
-    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/categories/matlab/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/matlab/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/post/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/categories/radar/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/radar/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/tags/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://bingsz.github.io/post/matlabsimulateradar/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -24,27 +80,6 @@
   
   <url>
     <loc>https://bingsz.github.io/tags/matrixtheory/</loc>
-    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/post/</loc>
-    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/</loc>
-    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/tags/</loc>
     <lastmod>2023-02-20T20:59:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -93,20 +128,6 @@
   </url>
   
   <url>
-    <loc>https://bingsz.github.io/tags/radar/</loc>
-    <lastmod>2023-02-03T16:19:03+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/categories/radar/</loc>
-    <lastmod>2023-02-03T16:19:03+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://bingsz.github.io/post/steppedfreqcoherentint/</loc>
     <lastmod>2023-02-02T18:53:02+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -129,20 +150,6 @@
   
   <url>
     <loc>https://bingsz.github.io/tags/fir/</loc>
-    <lastmod>2023-01-20T16:29:31+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/categories/matlab/</loc>
-    <lastmod>2023-01-20T16:29:31+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://bingsz.github.io/tags/matlab/</loc>
     <lastmod>2023-01-20T16:29:31+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

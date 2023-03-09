@@ -6,7 +6,7 @@
     <description>Recent content on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 20 Feb 2023 20:59:23 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 09 Mar 2023 18:42:05 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,6 +18,15 @@
       
       <guid>https://bingsz.github.io/about/</guid>
       <description>这是一个个人博客，主要用于记录一些本人日常中碰到的问题。 如果有任何疑问可以联系：1016574101@qq.com</description>
+    </item>
+    
+    <item>
+      <title>使用Matlab来作雷达的信号级仿真</title>
+      <link>https://bingsz.github.io/post/matlabsimulateradar/</link>
+      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/matlabsimulateradar/</guid>
+      <description>&lt;p&gt;  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真&lt;/p&gt;</description>
     </item>
     
     <item>

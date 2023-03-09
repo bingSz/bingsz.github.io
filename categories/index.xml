@@ -6,10 +6,28 @@
     <description>Recent content in Categories on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 20 Feb 2023 20:59:23 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 09 Mar 2023 18:42:05 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Matlab</title>
+      <link>https://bingsz.github.io/categories/matlab/</link>
+      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/categories/matlab/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Radar</title>
+      <link>https://bingsz.github.io/categories/radar/</link>
+      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/categories/radar/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>MatrixTheory</title>
@@ -26,24 +44,6 @@
       <pubDate>Thu, 09 Feb 2023 15:01:55 +0800</pubDate>
       
       <guid>https://bingsz.github.io/categories/essay/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Radar</title>
-      <link>https://bingsz.github.io/categories/radar/</link>
-      <pubDate>Fri, 03 Feb 2023 16:19:03 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/categories/radar/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Matlab</title>
-      <link>https://bingsz.github.io/categories/matlab/</link>
-      <pubDate>Fri, 20 Jan 2023 16:29:31 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/categories/matlab/</guid>
       <description></description>
     </item>
     
