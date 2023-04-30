@@ -6,10 +6,19 @@
     <description>Recent content in Radar on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Mar 2023 18:42:05 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 30 Apr 2023 20:19:18 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/tags/radar/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>分布式全相参雷达的相参景深</title>
+      <link>https://bingsz.github.io/post/coherentdepth/</link>
+      <pubDate>Sun, 30 Apr 2023 20:19:18 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/coherentdepth/</guid>
+      <description>&lt;p&gt;  相参景深这一概念在《分布式相参雷达相参效率及相参景深研究》中提出，这一概念是从发射相参增益在空间中的分布入手的。当各个雷达站对于空间中某点实现了完美发射相参（即时延和相位上同时完美对齐）后，该点周围的空间均可以获得一个较高的发射相参增益。大多数文献在衡量发射相参增益时，都是从时域入手的，而这一概念从空域入手研究的。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>使用Matlab来作雷达的信号级仿真</title>
