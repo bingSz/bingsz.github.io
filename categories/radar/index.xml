@@ -6,10 +6,19 @@
     <description>Recent content in Radar on sZhebin Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Mar 2023 18:42:05 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 07 Jun 2023 09:10:59 +0800</lastBuildDate>
     
 	<atom:link href="https://bingsz.github.io/categories/radar/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>分布式全相参雷达论文阅读笔记（一）</title>
+      <link>https://bingsz.github.io/post/radarsummary1/</link>
+      <pubDate>Wed, 07 Jun 2023 09:10:59 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/post/radarsummary1/</guid>
+      <description>&lt;p&gt;  分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>使用Matlab来作雷达的信号级仿真</title>

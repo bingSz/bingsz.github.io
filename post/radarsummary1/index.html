@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>分布式全相参雷达论文阅读笔记（一） - sZhebin Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="s Zhebin" /><meta name="description" content=" 分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。
+" /><meta name="keywords" content="Radar" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.63.2 with theme even" />
+
+
+<link rel="canonical" href="https://bingsz.github.io/post/radarsummary1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="分布式全相参雷达论文阅读笔记（一）" />
+<meta property="og:description" content="  分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/post/radarsummary1/" />
+<meta property="article:published_time" content="2023-06-07T09:10:59+08:00" />
+<meta property="article:modified_time" content="2023-06-07T09:10:59+08:00" />
+<meta itemprop="name" content="分布式全相参雷达论文阅读笔记（一）">
+<meta itemprop="description" content="  分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。">
+<meta itemprop="datePublished" content="2023-06-07T09:10:59&#43;08:00" />
+<meta itemprop="dateModified" content="2023-06-07T09:10:59&#43;08:00" />
+<meta itemprop="wordCount" content="13078">
+
+
+
+<meta itemprop="keywords" content="Radar," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="分布式全相参雷达论文阅读笔记（一）"/>
+<meta name="twitter:description" content="  分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Bing</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Bing</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">分布式全相参雷达论文阅读笔记（一）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-06-07 </span>
+        <div class="post-category">
+            <a href="/categories/radar/"> Radar </a>
+            <a href="/categories/summary/"> Summary </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#2-信号级相参">2. 信号级相参</a>
+          <ul>
+            <li><a href="#21-信号级融合检测">2.1. 信号级融合检测</a></li>
+            <li><a href="#22-接收相参及收发相参">2.2. 接收相参及收发相参</a></li>
+            <li><a href="#221-发射相参参数估计">2.2.1. 发射相参参数估计</a></li>
+            <li><a href="#222-接收相参参数估计">2.2.2. 接收相参参数估计</a></li>
+            <li><a href="#223-相参参数估计误差影响">2.2.3. 相参参数估计误差影响</a></li>
+            <li><a href="#224-另一种衡量发射相参性能的方法相参景深">2.2.4. 另一种衡量发射相参性能的方法：相参景深</a></li>
+            <li><a href="#23-雷达站时间及相位同步">2.3. 雷达站时间及相位同步</a></li>
+          </ul>
+        </li>
+        <li><a href="#3-协同探测区域">3. 协同探测区域</a>
+          <ul>
+            <li><a href="#31-基于方形栅格划分">3.1. 基于方形栅格划分</a></li>
+            <li><a href="#32-基于空间分辨单元划分">3.2. 基于空间分辨单元划分</a></li>
+          </ul>
+        </li>
+        <li><a href="#4-资源分配问题">4. 资源分配问题</a></li>
+        <li><a href="#5-信号相干问题">5. 信号相干问题</a></li>
+        <li><a href="#6-个人理解">6. 个人理解</a>
+          <ul>
+            <li><a href="#61-复杂目标的发射相参性能评估问题">6.1. 复杂目标的发射相参性能评估问题</a></li>
+            <li><a href="#62-复杂目标的发射相参标定点选取问题">6.2. 复杂目标的发射相参标定点选取问题</a></li>
+            <li><a href="#63-研究方向的一些猜测">6.3. 研究方向的一些猜测</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>  分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。</p>
+<h2 id="2-信号级相参">2. 信号级相参</h2>
+<h3 id="21-信号级融合检测">2.1. 信号级融合检测</h3>
+<p>  目前有大量的文献关于信号级融合检测，而信号级融合检测可简要概括为，在各协同探测雷达信号之间寻找一个统计量或者一种检测方法，使得多雷达信号融合后可产生更好的检测性能。</p>
+<p>  若记雷达站$i$所接收到的信号矢量为$\mathbf{r_i}=[r_{i,0}, r_{i,1}, &hellip;, r_{i,n-1}]^T$，发射信号为$\mathbf{s}=[s_0, s_1, &hellip;, s_{\tau-1}]^T$，经过一定延时，到达接收端$i$的发射信号为$\mathbf{s_i}$，噪声为$\mathbf{n}$。则雷达站$i$所接收到的信号可写为信号与噪声的叠加</p>
+<p>$$
+\mathbf{r_i}=\mathbf{s_i}+\mathbf{n}
+$$</p>
+<p>  通常假设每一通道的噪声均独立地服从零均值高斯分布，即$n \sim \frac{1}{\sqrt{2\pi}\sigma}\exp(-\frac{n^2}{2\sigma^2})$，而现代雷达通常使用$\mathrm{IQ}$中频正交采样，因此雷达噪声可看作一个实部与虚部均服从某一高斯分布的复数。该噪声可写为$n_z=n_I+jn_Q$，其中$n_I$与$n_Q$均服从高斯分布。一个噪声的强度可用其模长来衡量，有多种方法推导$n_z$的模长所服从的概率分布，此处介绍一种方法。</p>
+<p>  将$n_z$改写为极坐标形式，即$n_z=r\exp(j\theta)$。于是有</p>
+<p>$$
+\begin{cases}
+n_I = r\cos(\theta) \\ n_Q = r\sin(\theta)
+\end{cases}
+$$</p>
+<p>  从而$n_I$与$n_Q$的联合概率密度函数可写为</p>
+<p>$$
+f(n_I, n_Q)=\frac{1}{2\pi \sigma^2}\exp(-\frac{n_I^2+n_Q^2}{2\sigma^2})=\frac{1}{2\pi\sigma^2}\exp(-\frac{r^2}{2\sigma^2})
+$$</p>
+<p>  将上式作一个换元可得到（注意需要乘一个雅可比矩阵）</p>
+<p>$$
+f(r, \theta)=\frac{r}{2\pi\sigma^2}\exp(-\frac{r^2}{2\sigma^2})
+$$</p>
+<p>  因此边缘分布函数为</p>
+<p>$$
+\begin{align*}
+&amp;f(r) = \frac{r}{\sigma^2}\exp(-\frac{r^2}{2\sigma^2}) \<br>
+&amp;f(\theta) = \frac{1}{2\pi}
+\end{align*}
+$$</p>
+<p>  从上述推导可发现，$n_z$的模长服从瑞利分布，相位服从均匀分布，推导结果是符合直觉的。当信号幅度为一个恒定值$A$时，信号与噪声的叠加服从莱斯分布。莱斯分布具有复杂的表达式，并且许多计算将变得非常复杂。为了方便计算，假设目标服从$\mathrm{Swerling}\ 1$型起伏模型，因此目标回波幅度服从瑞利分布，记该分布为$\frac{r}{A^2}\exp(-\frac{r^2}{2A^2})$。但是瑞利分布在某些情况下并不能化简，因此通常将信号进行平方律检波，检波后的信号幅度服从指数分布，有相关的理论与工程研究表明，两者所得到的结果是相似的。在这种情况下进一步推导可以得到，仅存在噪声与同时存在目标与噪声时的概率分布函数分别为</p>
+<p>$$
+\begin{align*}
+f_n(r) = \frac{1}{\sigma}\exp(-\frac{r}{\sigma}) \<br>
+f_s(r) = \frac{1}{\sigma+A}\exp(-\frac{r}{\sigma+A})
+\end{align*}
+$$</p>
+<p>  因此当给出观测信号矢量$\mathbf{r_i}$时，其对应的概率在两种假设$H_0$（无目标存在）与$H_1$（有目标存在）下分别为</p>
+<p>$$
+\begin{cases}
+H_0: f(\mathbf{r_i}|H_0) = \prod_j \frac{1}{\sigma}\exp(-\frac{r_{i,j}}{\sigma}) \\ H_1: f(\mathbf{r_i}|H_1) = \prod_j \frac{1}{\sigma+A}\exp(-\frac{r_{i,j}}{\sigma+A})
+\end{cases}
+\tag{2.1.1}
+$$</p>
+<p>  取对应的似然比检验量$L(\mathbf{r_i})$为（忽略常数项）</p>
+<p>$$
+\begin{align*}
+\ln L(\mathbf{r_i})=&amp;\sum_{j}(\frac{r_{i,j}}{\sigma}-\frac{r_{i,j}}{A+\sigma}) \\ 
+=&amp;\sum_{j}\frac{Ar_{i,j}}{\sigma(A+\sigma)}
+\end{align*}
+$$</p>
+<p>  记$v_{i,j}=\frac{Ar_{i,j}}{\sigma(A+\sigma)}$，并将其代入至(2.1.1)式中可得</p>
+<p>$$
+\begin{cases}
+H_0: f(v_{i, j}|H_0) = \frac{A+\sigma}{A}\exp(-\frac{A+\sigma}{A}v_{i,j}) \\ 
+H_1: f(v_{i, j}|H_1) = \frac{\sigma}{A}\exp(-\frac{\sigma}{A}v_{i,j})
+\end{cases}
+\tag{2.1.2}
+$$</p>
+<p>  当给定虚警概率时，便可通过(2.1.2)式的$H_0$假设下的概率密度函数来计算求解出门限值，从而完成目标融合检测的任务。</p>
+<h3 id="22-接收相参及收发相参">2.2. 接收相参及收发相参</h3>
+<p>  记雷达站$i$所发射的波形为（假设幅度经过归一化）</p>
+<p>$$
+s_i(t) = u(t)\exp(j2\pi f_0 t + j\theta_i)
+$$</p>
+<p>  其中$u(t)$为该信号的包络，$f_0$为信号的载频，$\theta_i$为雷达站$i$的初始相位。若雷达站$i$发射波形被雷达站$j$所接收，则路程上总的延时为$\tau_{ij}=\tau_i+\tau_j$，其中$\tau_i$表示从雷达站$i$到目标的单程时间，$\tau_j$表示从雷达站$j$到目标的单程时间。雷达站$j$所接收到的波形可表示为</p>
+<p>$$
+r_{ij}(t) = u(t-\tau_{ij})\exp(j2\pi f_0 (t-\tau_{ij}) + j\theta_i)
+$$</p>
+<p>  若所有雷达站同时发射信号，则雷达站$j$的第$i$个通道所接收到的信号可表示为</p>
+<p>$$
+r_{j}(t) = \sum_{i}(n(t)+u(t-\tau_{ij})\exp(j2\pi f_0 (t-\tau_{ij}) + j\theta_i)) \tag{2.2.1}
+$$</p>
+<p>  接收相参指的是对所有雷达站接收到的信号经过时移与相移后再做一次相参合成，即最终信号为</p>
+<p>$$
+r(t) = \sum_{j}\sum_{i}(n(t) + u(t-\tau_{ij}-\hat{\tau}_0)\exp(j2\pi f_0 (t-\tau_{ij}) + j\theta_i+j\hat{\theta}_i))
+$$</p>
+<p>  若不考虑信号对齐问题，记$n(t)$功率为$\sigma^2$，经过接收相参后的噪声功率为$N^2\sigma^2$，其中$N$为雷达站个数。若记$s_i(t)$的功率为$1$，则接收相参后的信号功率为$N^4$。此时的信噪比为$\mathrm{SNR}=\frac{N^2}{\sigma^2}$，相比之前的$\frac{1}{\sigma^2}$，提高了$N^2$倍。</p>
+<p>  若信号同时也实现了发射相参，那么(2.2.1)式可改写为</p>
+<p>$$
+r_{j}(t) = n(t)+\sum_{i}u(t-\tau_{ij})\exp(j2\pi f_0 (t-\tau_{ij}) + j\theta_i) \tag{2.2.2}
+$$</p>
+<p>  重复之前的步骤可计算得到此时的信噪比$\mathrm{SNR}=\frac{N^3}{\sigma^2}$，相比提高了$N^3$倍。</p>
+<h3 id="221-发射相参参数估计">2.2.1. 发射相参参数估计</h3>
+<p>  为了实现前文所说的收发相参，不仅需要发射端进行精确地时延补偿和相位补偿，同时在接收端也需要进行时延与相位补偿。其中时延补偿$\tau$与相位补偿$\phi$便被称为相参参数。</p>
+<p>  相参参数估计的准确与否很大程度上影响了收发相参的相参性能，若估计不当，在最坏的情况下还会降低信噪比。相参参数的估计方法主要有两种方法：峰值提取法与互相关方法。事实上还有许多超分辨率方法，但此处不予讨论。</p>
+<p><font size=4> <strong>1. 峰值提取法</strong> </font></p>
+<p>  峰值提取法的基本思想是通过提取正交波形各个通道的时延差与相位差来对发射信号进行相参调整。记发射信号为（幅度经过归一化）</p>
+<p>$$
+s_i(t)=u_i(t - \Delta t_i)\exp(j2\pi f_0 (t - \Delta t_i) + j\theta_i)
+$$</p>
+<p>  其中$u_i(t)$为信号复包络，记$r_{ij}(t)$为雷达站$j$接收到雷达站$i$发射的信号，$r_{ij}$可表示为</p>
+<p>$$
+r_{ij}(t) = u(t-\tau_{ij} - \Delta t_i)\exp(j2\pi f_0 (t-\tau_{ij} - \Delta t_i) + j\theta_i)
+$$</p>
+<p>  其中$\tau_{ij}=\tau_i+\tau_j$，$\tau_i$表示雷达站$i$至目标的单程时延，$\tau_j$表示雷达站$j$至目标的单程时延。雷达站$j$接收到的信号可表示为（假设共$M$个雷达站，且均发射接收信号）</p>
+<p>$$
+r_j(t) = \sum_{i=0}^{M-1}r_{ij}(t) = \sum_{i=0}^{M-1}u(t-\tau_{ij} - \Delta t_i)\exp(j2\pi f_0 (t-\tau_{ij} - \Delta t_i) + j\theta_i)
+$$</p>
+<p>  通过匹配滤波可将各路正交信号分离开来，于是雷达站$j$接收到的第$i$路信号为</p>
+<p>$$
+r_j^{(i)}(t)=\sqrt{D_i}\mathrm{sinc}(\pi B (t-\tau_{ij} - \Delta t_i))\exp(j\theta_i)
+$$</p>
+<p>  其中$D_i$为时宽带宽积。为了将发射信号在目标处同时同相叠加，需要雷达站$i$作一个时延补偿，记为$\hat{\tau}_i$。当信号同时到达目标处时，有$\tau_i+\hat{\tau}_i + \Delta t_i=\tau_j+\hat{\tau}_j + \Delta t_j$。移项后可得</p>
+<p>$$
+\hat{\tau}_i - \hat{\tau}_j = (\tau_j - \tau_i) + (\Delta t_j - \Delta t_i)
+$$</p>
+<p>  若记雷达站$0$为基准雷达站，其余雷达站均根据该雷达站进行时延相位调整，则有$0$号雷达站接收到的雷达站$i$的正交波形的峰值位于$\tau_{i}+\tau_0+\Delta t_i$处，而$0$号雷达站接收到的自身回波峰值位于$\tau_0+\tau_0+\Delta t_0$处，两者峰值的时延差$\Delta t_{p,i0}^{(0)}$即为</p>
+<p>$$
+\Delta t_{p,i0}^{(0)} = \hat{\tau}_i - \hat{\tau}_j = \tau_i - \tau_0 + (\Delta t_i - \Delta t_0) \tag{2.2.3}
+$$</p>
+<p>  $\Delta t_{p,i0}^{(0)}$的上标$(0)$表示$0$号雷达站所接收到的回波，下标$p$表示峰值，$i0$表示雷达站$i$的正交波形与雷达站$0$的正交波形。(2.2.3)式表明，为了使信号在目标处实现发射相参，只需要根据正交波形的延时差进行校正即可。</p>
+<p>  对于相位的推导过程是同理的，为了使发射信号在目标处实现发射相参，只需要根据正交波形峰值处的相位差来校正即可。</p>
+<p><font size=4> <strong>2. 互相关法</strong> </font></p>
+<p>  互相关法的前期处理与峰值提取法相同，不同之处在于，峰值提取法是通过提取各通道正交波形的峰值处的时间差与相位差来获得相参参数的，而互相关法是直接对这两路信号作一个互相关，互相关结果的峰值所对应的时间便是需要补偿的时间差，所对应相位即是所需要补偿的相位差。</p>
+<p>  互相关法的本质是将峰值提取转换为了互相关操作，因此互相关法要求正交波形之间的正交性良好，否则不能得到一个较好的结果。记$r_j^{(i)}(t)$为匹配滤波后的结果，则将雷达站$0$接收到的信号通道中，其本身所对应的正交波形与雷达站$i$所对应的波形作互相关可得</p>
+<p>$$
+A(t) = r_{i}^{(0)}(t) * r_{i}^{*(i)}(-t)
+$$</p>
+<p>  $A(t)$的峰值所对应的时间便是雷达站$i$与雷达站$0$所需要补偿的时延差，峰值所对应的相位便是雷达站$i$与雷达站$0$所需要补偿的相位差。</p>
+<p>  </p>
+<p><font size=4> <strong>3. MUSIC超分辨率方法</strong> </font></p>
+<p><font size=4> <strong>4. 相位测距方法</strong> </font></p>
+<p>  相位测距方法的基本原理是，距离的细小变化都会引起相位的较大变化，因此可以通过相位来反推出更加精细的距离信息。但相位的取值仅在$[0, 2\pi]$，因此相位测距方法的关键在于解模糊。</p>
+<p><strong>(TODO)</strong></p>
+<h3 id="222-接收相参参数估计">2.2.2. 接收相参参数估计</h3>
+<p><font size=4> <strong>1. 接收相参参数的有偏估计</strong> </font></p>
+<p>  当对发射信号作了发射相参后，信号将在目标处同相叠加，理论上来讲，发射相参性能仅与正交波形的测量的精确程度与发射校正精度有关，但接收相参却不同于发射相参。通过相参校正后，接收相参参数是一个有偏估计，即估计本身便带有一定的误差。</p>
+<p>  假设叠加后目标处的信号为$s_t(t)$，可写为</p>
+<p>$$
+\begin{align*}
+s_t(t) =&amp; \sum_{i=0}^{M-1}u(t-\tau_{i} - \Delta t_i - \Delta t_{p,i0}^{(0)})\exp(j2\pi f_0 (t-\tau_{i} - \Delta t_i - \Delta t_{p,i0}^{(0)}) + j\theta_i + j\hat{\theta}_i) \\ 
+=&amp; Mu(t-\tau_{0} - \Delta t_0)\exp(j2\pi f_0 (t-\tau_{0} - \Delta t_0) + j\theta_0)
+\end{align*}
+$$</p>
+<p>  其中$\hat{\theta}_i$为发射补偿的相位。记雷达站$i$接收到的信号为$r_i(t)$，则有</p>
+<p>$$
+\begin{align*}
+r_i(t) = Mu(t-\tau_{0i} - \Delta t_0 + \Delta t_i)\exp(j2\pi f_0 (t-\tau_{0i} - \Delta t_0 + \Delta t_i) + j\theta_0 - j\theta_1)
+\end{align*}
+$$</p>
+<p>  若使用先前所使用的发射相参参数进行调整，可以发现，雷达站$i$的接收信号为</p>
+<p>$$
+\begin{align*}
+r_i(t) = Mu(t-2\tau_{0} - 2\Delta \hat{t}_t)\exp(j2\pi f_0 (t-2\tau_{0} - 2\Delta \hat{t}_t) + j2\Delta \hat{\theta}_i) \tag{2.2.4}
+\end{align*}
+$$</p>
+<p>  其中$\Delta \hat{t}_i = \Delta t_0 - \Delta t_i$，$\Delta \hat{\theta}_i = \theta_0 - \theta_i$。</p>
+<p>  (2.2.4)式意味着，接受相参的相参结果的好与差同各雷达站之间的信号同步误差有关，且接收相参误差为各雷达站信号同步误差的两倍。因此，从上述讨论中可以看出，使用先前发射相参的参数进行接收相参参数估计是一个有偏估计。</p>
+<p><font size=4> <strong>2. 使用频率步进信号来提高接收相参性能</strong> </font></p>
+<p>  北理工团队提出一种使用频率步进信号来合成高分辨率信号的方法。该方法首先发射正交波形得到相参参数的估计值，随后发射频率步进信号进行发射与接收相参。接收端接收到信号后，首先将频率步进信号作接收相参，随后再对慢时间维上的频率步进信号间作一个相参积累。这样便可得到较高质量的接收相参结果。</p>
+<p>  为了方便对比，首先来对单一的线性调频信号作仿真，记发射信号为$s(t)$</p>
+<p>$$
+s(t) = u(t)\exp(j2\pi f_0 t + j\pi \mu t^2)
+$$</p>
+<p>  其中$u(t) = \mathrm{rect}(\frac{t}{T})$，$\mu=\frac{B}{T}$，$T$为脉冲宽度，$B$为信号带宽。当两个接收信号有一个微小的时间差$\Delta t$时，由于线性调频信号脉冲压缩后具有窄的波束宽度，微小的时间差会导致结果无法对齐而失去接收相参的效果，仿真结果如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/LFMError.png' width=70%>
+    <br>图2.2.1：线性调频信号的接收误差
+    </center>
+</div>
+<p>  其中，蓝色与红色线分别表示各雷达站接收信号，黄色线表示最终合成信号。若使用频率步进信号，并且最终合成一个等效带宽的信号的话，结果将会得到很大地改善，这是因为每个子信号的带宽较小，从而具有较宽的波束宽度，因此对接收相参误差不敏感。</p>
+<p>  假设有10个子信号，每个信号的带宽为$\frac{B}{10}$，则每个子信号的接收相参效果如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/StepLFMError.png' width=70%>
+    <br>图2.2.2：线性调频信号的接收误差
+    </center>
+</div>
+<p>  可以看到，频率步进信号的子信号对时延误差并不敏感，因此可将采样后的子信号峰值看作均位于同一个采样点。然后将每个子信号作一个相参积累，合成得到最终的信号，最终结果如下所示。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/StepLFMTotalError.png' width=70%>
+    <br>图2.2.2：线性调频信号的接收误差
+    </center>
+</div>
+<p>  从图中可以看到，使用步进频率合成等效宽带信号最终接收相参后的信号幅度大于直接使用线性调频信号得到的结果，这意味着使用步进频率信号将具有更好的鲁棒性，具有更好的噪声容忍性。通过计算可得，直接使用线性调频信号得到的信噪比增益约为$\mathrm{1dB}$，而使用步进频率得到的信噪比增益可达到$\mathrm{2dB}$。这证明了步进频率信号在接收相参上的优越性。</p>
+<h3 id="223-相参参数估计误差影响">2.2.3. 相参参数估计误差影响</h3>
+<p>  本节主要讨论相参参数估计误差对最终相参结果的影响，从形式上看，相参参数的估计误差将导致发射与接收相参时不能完美对准波形，从而导致性能损耗。</p>
+<p><font size=4> <strong>1. 发射相参效率讨论</strong> </font></p>
+<p>  若记发射信号为</p>
+<p>$$
+s_0(t)=u(t)\exp(j2\pi f_0 t + j\phi&rsquo;_i)
+$$</p>
+<p>  其中$u(t)$为其包络，$f_0$为其载频大小。则在空间中某处的信号为（假设幅度已经过归一化）</p>
+<p>$$
+s_1(t) = u(t-\tau_1)\exp(j2\pi f_0 (t-\tau_1) + j\phi&rsquo;_i)
+$$</p>
+<p>  其中$\tau_1=\frac{R_1}{c}$，$R_1$表示第一个雷达站至目标的距离。若有多个雷达发射站发射信号，并在目标处叠加，则合成后的信号为</p>
+<p>$$
+s_A(t) = \sum_{i=1}^{N}u(t-\tau_i)\exp(j2\pi f_0 (t-\tau_i) + j\phi&rsquo;_i) \tag{2.2.5}
+$$</p>
+<p>  目前已经有大量的研究关于分布式全相参雷达的相参补偿，以使发射信号在目标处产生同相叠加，记雷达$i$的时移和相位补偿分别为$t_i$与$\phi_i$，则有</p>
+<p>$$
+s_A(t) = \sum_{i=1}^{N}u(t-\tau_i-t_i)\exp(j2\pi f_0 (t-\tau_i-t_i) + j\phi&rsquo;_i + j\phi_i)
+$$</p>
+<p>  对于慢时间维上的包络$u(t)$而言，可以近似有</p>
+<p>$$
+\tau_1+t_1\approx\tau_2+t_2\approx&hellip;\approx\tau_N+t_N
+$$</p>
+<p>  将其代入(2.2.5)式可得</p>
+<p>$$
+s_A(t) = u(t-\tau_1-t_1)\sum_{i=1}^{N}\exp(j2\pi f_0 (t-\tau_i-t_i) + j\phi&rsquo;_i+j\phi_i)
+$$</p>
+<p>  记$\tau&rsquo;_i=\tau_i+t_i$，发射信号在目标处的能量为</p>
+<p>$$
+\begin{align*}
+E_s =&amp; \int_{-\infty}^{+\infty}s_A(t)s_A^*(t)\mathrm{d}t \\ 
+=&amp; \int_{\tau_1+t_1}^{\tau_1+t_1+T_r}\sum_{i=1}^{N}\exp(j\phi_i-j2\pi f_0\tau_i&rsquo;)\sum_{i=1}^{N}\exp(-j\phi_i+j2\pi f_0\tau_i&rsquo;) \mathrm{d}t \\ 
+=&amp; T_r\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(j(\phi&rsquo;_i+\phi_i-(\phi&rsquo;_k + \phi_k))-j2\pi f_0 (\tau_i&rsquo;-\tau_k&rsquo;)) \\ 
+=&amp; T_r\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(j\Delta \phi_{ik}'-j2\pi f_0 \Delta \tau_{ik}')\tag{2.2.6}
+\end{align*}
+$$</p>
+<p>  其中$\Delta \phi_{ik}&lsquo;=\phi&rsquo;_i+\phi_i-(\phi&rsquo;_k + \phi_k)$，$\Delta \tau_{ik}&rsquo; = \tau_i&rsquo;-\tau_k'$。接下来作相关仿真，若不考虑相位同步误差，即$\Delta \phi_{ik}&lsquo;=0$，则(2.2.6)式可写为</p>
+<p>$$
+E_s = T_r\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(-j2\pi f_0 \Delta \tau_{ik}')
+$$</p>
+<p>  定义相关发射相参效率为$\eta$</p>
+<p>$$
+\eta = \frac{\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(-j2\pi f_0 \Delta \tau_{ik}')}{N^2}
+$$</p>
+<p>  设置仿真条件为$N=2$，则可得到不同时间同步误差下的相参效率如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitError.png' width=70%>
+    <br>图2.2.3：发射相参性能随时间同步误差变化
+    </center>
+</div>
+<p>  其中横坐标为归一化的距离误差，当取1时表示时间同步误差带来的距离误差为一个波长长度。当分布式多雷达站时，发射相参性能与时间同步误差的关系仍然可通过上图得到。从上图可以看到，当距离误差约0.2波长时，发射相参效率降低$\mathrm{3dB}$。这意味着，如果要得到较好的发射相参性能，需要控制发射相参的距离误差在波长级才能完成。</p>
+<p>  当不考虑时延误差时，(2.2.6)式可写为</p>
+<p>$$
+E_s = T_r\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(j\Delta \phi&rsquo;_{ik})
+$$</p>
+<p>  同理可得到发射相参效率为</p>
+<p>$$
+\eta = \frac{\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(j\Delta \phi&rsquo;_{ik})}{N^2}
+$$</p>
+<p>  观察可以发现上式与时间同步误差的发射相参性能评估公式在结构上是一致的，因此仿真当$N=2$时的结果如下</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitPhaseError.png' width=70%>
+    <br>图2.2.4：发射相参性能随相位同步误差变化
+    </center>
+</div>
+<p>  从上图可知，当相位误差为$0.1\times 2\pi$之内时，发射相参效率损失小于$\mathrm{1dB}$；当相位误差小于$0.2\times 2\pi$时，发射相参效率损失小于$\mathrm{3dB}$。</p>
+<p><font size=4> <strong>2. 接收相参效率讨论</strong> </font></p>
+<p>  接收相参与发射相参的讨论本质上是一致的，不同之处在于，接收相参需要考虑接收机噪声问题。平稳高斯白噪声的加减、时移、相移并不改变噪声的统计性质，因此在进行接收相参时，只需要考虑噪声的功率变化即可。</p>
+<p>  当$N$个接收站作接收相参时，目标信号功率提高$N^2$倍，与此同时，噪声功率提高$N$倍，因此信噪比提高$N$倍。当没有完美接收相参时，噪声功率仍然为$N$倍，但信号功率则会降低。因此此时衡量接收相参效率的公式与衡量发射相参效率时的公式是类似的。不同之处在于，衡量接收相参时，还需要考虑到各个雷达站自身所带有的相位误差或者时间同步误差。</p>
+<p>  由(2.2.4)式可得，接收相参的参数误差为原本各雷达站自身误差的两倍。模仿(2.2.6)式的推导，可以得到接收相参后信号的能量为</p>
+<p>$$
+\begin{align*}
+E_s = T_r\sum_{i=1}^{N}\sum_{k=1}^{N}\exp(j2\Delta \phi_{ik}'-j4\pi f_0 \Delta \tau_{ik}')\tag{2.2.7}
+\end{align*}
+$$</p>
+<p>  注意，上式基于发射完美相参的基础上，上式中的$\Delta \phi_{ik}&lsquo;$与$\Delta \tau_{ik}&lsquo;$与(2.2.6)式中的不同，指代的是各个雷达站之间的时间与相位同步误差。</p>
+<h3 id="224-另一种衡量发射相参性能的方法相参景深">2.2.4. 另一种衡量发射相参性能的方法：相参景深</h3>
+<p>  有许多文献针对发射相参性能进行了讨论，其中有一个有意思概念是相参景深概念。这个概念的名字来源于摄影领域，是指在摄影机镜头或其他成像器前沿能够取得清晰图像的成像所测定的被摄物体前后距离范围。分布式雷达的发射相参过程事实上可以看作摄像机的聚焦过程，对空间中某个点进行发射相参后，在该点周围的一定范围内都将有较好的发射相参效率。接下来从公式角度推导。</p>
+<p>  重新考虑(2.2.6)式，将其稍微改写一下，可以得到（为了方便，不妨假设$\tau_1'=0$）</p>
+<p>$$
+\begin{align*}
+E_s =&amp; \int_{0}^{T_r}\sum_{i=1}^{N}\sum_{j=1}^{N}\exp(-j2\pi\mu t(\tau_i&rsquo;-\tau_j&rsquo;)-j2\pi f_0 (\tau_i&rsquo;-\tau_k&rsquo;)+j\pi \mu (\tau_i'^2-\tau_j'^2)+j(\phi_i-\phi_j))\mathrm{d}t \\ 
+=&amp; T_r\sum_{i=1}^{N}\sum_{j=1}^{N}\exp(-jk\frac{T_r}{2}-j2\pi f_0\Delta\tau_{ij}')\mathrm{Sa}(k\frac{T_r}{2})\exp(j\pi \mu (\tau_i'^2-\tau_j'^2)+j(\phi_i-\phi_j)) \\ 
+=&amp; T_r(N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(-\frac{kT_r}{2}-j2\pi f_0\Delta{\tau_{ij}'}+\pi\mu(\tau_i'^2-\tau_j'^2)+\Delta\phi_{ij})\mathrm{Sa}(k\frac{T_r}{2})) \\ 
+=&amp; T_r(N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(-2\pi(f_0+\frac{B}{2})\Delta{\tau_{ij}'}+\pi\mu(\tau_i'^2-\tau_j'^2)+\Delta\phi_{ij})\mathrm{Sa}(k\frac{T_r}{2}))
+\end{align*}
+$$</p>
+<p>  其中$k=2\pi\mu\Delta{\tau_{ij}'}$，$\Delta\tau&rsquo;_{ij}=(\tau_i&rsquo;-\tau_j&rsquo;)$，$\Delta\phi_{ij}=\phi_i-\phi_j$，$B=\mu T_r$。由于前文已经假设$\tau_1'=0$，因此上式中的二阶量可以忽略，即$\pi\mu(\tau_i'^2-\tau_j'^2)\approx0$，于是上式可化为</p>
+<p>$$
+E_s = T_r(N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(-2\pi(f_0+\frac{B}{2})\Delta{\tau_{ij}'}+\Delta\phi_{ij})\mathrm{Sa}(\pi B \Delta \tau_{ij}'))
+$$</p>
+<p>  于是发射相参效率有</p>
+<p>$$
+\eta = \frac{N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(-2\pi(f_0+\frac{B}{2})\Delta{\tau_{ij}'}+\Delta\phi_{ij})\mathrm{Sa}(\pi B \Delta \tau_{ij}')}{N^2}
+$$</p>
+<p>  本节不考虑除了路程导致的各发射信号相位不同步问题，因此$\Delta \phi_{ij}=0$，于是有</p>
+<p>$$
+\eta = \frac{N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(2\pi(f_0+\frac{B}{2})\Delta\tau_{ij}')\mathrm{Sa}(\pi B \Delta \tau_{ij}')}{N^2} \tag{2.2.8}
+$$</p>
+<p>  记$\Delta\tau_{ij}^{(0)}$表示雷达站$i$与$j$至目标$0$的时延差。现假设该分布式相参雷达系统对空间中某一标定点$P_0(x_0, y_0)$已实现精准时间、相位校正，即对于该点$\Delta\tau_{ij}^{(0)}=0$。对于空间中另一点$P_1(x_1,y_1)$存在一个由于路程差导致的时延差$\Delta\tau_{ij}^{(1)}$，假设雷达站$i$至目标$j$的距离为$R_{ij}$，因此有</p>
+<p>$$
+R_{i1}-R_{j1}=c\Delta\tau_{ij}^{(1)} + (R_{i0}-R_{j0})
+$$</p>
+<p>  这意味着，当只考虑两个雷达站时，空间中具有相同延时的地方构成一个双曲面。根据(2)式，假设$B$与$f_0$呈一定的整倍数关系，并且$f_0 \gg B$，则空间中具有相同发射相参增益的位置应当满足$\Delta\tau_{ij}'\approx\frac{k}{f_0}$，其中$k$为一个整数。上述意味着，发射相参增益的变化具有空间周期性，当不考虑天线方向图调制时，满足下式的位置处具有最大增益</p>
+<p>$$
+R_{i1}-R_{j1}=k\lambda + (R_{i0}-R_{j0}) \tag{2.2.9}
+$$</p>
+<p>  其中$k$为一个整数。</p>
+<p>  当信号为一个窄带信号时，可将带宽$B$看作远小于$f_0$，同时为了方便，仅考虑(2.2.8)式中的求和项，可得</p>
+<p>$$
+\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(2\pi f_0 \Delta\tau_{ij}') \tag{2.2.10}
+$$</p>
+<p>  各个雷达站至目标的距离可写为如下公式</p>
+<p>$$
+R_{ij} = \sqrt{(x_i-x_j)^2+(y_i-y_j)^2+(z_i-z_j)^2}
+$$</p>
+<p>  当目标的横坐标$x$远大于$y$时，各个雷达站至目标的距离差可作如下近似</p>
+<p>$$
+\begin{align*}
+R_{ij} - R_{kj} =&amp; \sqrt{(x_i-x_j)^2+(y_i-y_j)^2+(z_i-z_j)^2} - \sqrt{(x_k-x_j)^2+(y_k-y_j)^2+(z_k-z_j)^2} \\ 
+\approx &amp; C + \frac{(y_i-y_j)^2}{2(x_i-x_j)}-\frac{(y_k-y_j)^2}{2(x_k-x_j)} + \frac{(z_i-z_j)^2}{2(x_i-x_j)}-\frac{(z_k-z_j)^2}{2(x_k-x_j)}
+\end{align*}
+$$</p>
+<p>  其中$C$为一个常数。观察上式可以发现，当目标处于充分远的位置时，横坐标上的变动对距离差几乎没有影响。对上式取微分可得</p>
+<p>$$
+\Delta(R_{ij}-R_{kj})=(\frac{y_k-y_j}{x_k-x_j}-\frac{y_i-y_j}{x_i-x_j})\Delta y_j + (\frac{z_k-z_j}{x_k-x_j}-\frac{z_i-z_j}{x_i-x_j})\Delta z_j
+$$</p>
+<p>  这意味着发射相参增益的空间周期随纵坐标的改变而改变，发射相参增益的变化周期随纵坐标的增大而增大。若不考虑$\Delta z_j$，$\Delta\tau_{ik}&lsquo;$可写为</p>
+<p>$$
+\Delta\tau_{ik}&lsquo;=\frac{\Delta(R_{ij}-R_{kj})}{c}=\frac{\Delta y_j}{c}(\frac{y_k-y_j}{x_k-x_j}-\frac{y_i-y_j}{x_i-x_j})
+$$</p>
+<p>  当$x_j=\mathrm{100000m}, x_k=\mathrm{0}, x_i=\mathrm{250m}, y_k=y_i=0,y_j=\mathrm{4000m}$时，$\Delta y_j$需达到$\mathrm{1500m}$才会使得$\Delta\tau_{ij}&lsquo;$变化半个周期。当对相参效率进行估计时，可作一个非紧致估计，即取$\Delta\tau_{ik}&lsquo;$为最坏的估计情况，并将此最坏的估计情况作为发射相参空间的估计。</p>
+<p>  当信号为一个宽带信号时，与上述分析同理，可以看成上述公式被一个$\mathrm{Sa}$函数调制，将$\mathrm{Sa}$函数的主瓣所对应的各个峰值称为主要极大值，简称主极大。</p>
+<p>  当目标纵坐标远大于横坐标时，与上述分析同理。当目标纵坐标与横坐标相近，但均远大于高度时，可看作上述所分析的发射相参增益空间分布关于标定点$P_0$作一个旋转，因此也是同理的。</p>
+<p>  当目标处于较近的位置时，即横坐标、纵坐标与高度的数量级相近时，情况会变得更加复杂。此时可直接对上式距离差$R_{ij}-R_{kj}$作一个微分，可得到</p>
+<p>$$
+\begin{align*}
+\Delta(R_{ij}-R_{kj}) = &amp;\frac{(x_i-x_j)\Delta x+(y_i-y_j)\Delta y + (z_i-z_j)\Delta z}{R_{ij}} \\ 
+&amp;-\frac{(x_k-x_j)\Delta x+(y_k-y_j)\Delta y + (z_k-z_j)\Delta z}{R_{kj}} \tag{2.2.11}
+\end{align*}
+$$</p>
+<p>  通常而言，若分布式雷达系统是线阵分布，则相参景深在线阵分布的轴向上不敏感；若分布式雷达系统是面阵分布，则相参景深在面阵法向上不敏感；若分布式雷达系统在空间中分布，则相参景深在空间中呈现一个点。</p>
+<p>  接下来对相参景深进行仿真，首先仿真窄带情况，四个雷达站的位置如下所示</p>
+<style>
+.center 
+{
+  width: auto;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="center">
+<center>表2.2.1：仿真雷达站方位</center>
+<table>
+<thead>
+<tr>
+<th align="center">雷达站编号</th>
+<th align="center">x(km)</th>
+<th align="center">y(km)</th>
+<th align="center">z(km)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">40</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">20</td>
+<td align="center">20$\sqrt 3$</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">40</td>
+<td align="center">10$\sqrt 3$</td>
+<td align="center">0.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>  假设标定点$P_0$位于$[50.05\mathrm{km}, 0, 4\mathrm{km}]^T$处，各雷达站载频为$f_0=\mathrm{1GHz}$，带宽为$B=\mathrm{1MHz}$</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitCoherent1.png' width=70%>
+    <br>图2.2.5：近场窄带发射相参景深
+    </center>
+</div>
+<p>  观察发现，当分布式雷达站基线长度为数十千米数量级时，标定点方位可看作处于近场，此时的发射相参景深为一系列空间中周期分布的点。当雷达站发射信号为宽带信号时，如$B=\mathrm{500MHz}$，空间中的发射相参景深作用可看作窄带情况下叠加了一个$\mathrm{Sa}$函数调制，如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitCoherent2.png' width=70%>
+    <br>图2.2.6：近场宽带发射相参景深
+    </center>
+</div>
+<p>  可以看到，宽带、近场情况下，空间中的发射相参景深可看作一个非常细小的点，这从另一方面证明了发射相参精度需要有很高要求。事实上，分布式相参雷达的提出是为了扩展原本雷达的探测范围的，因此分布式相参雷达通常工作于远场环境，接下来仿真远场时的发射相参景深。假设标定点位于$P_0=[500.05\mathrm{km}, 0, 4\mathrm{km}]^T$处，并且各雷达站发射窄带信号，空间中的发射相参景深如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitCoherent3.png' width=70%>
+    <br>图2.2.7：远场窄带发射相参景深
+    </center>
+</div>
+<p>  可以看到，远场情况下，发射相参景深在线阵轴向方向上的变化不敏感，而在垂直于轴向方向上的变化较为敏感。当发射信号为一个宽带信号时，同理可以将空间上的发射相参景深看作被一个$\mathrm{Sa}$函数调制而成，宽带信号的仿真结果如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/TransmitCoherent4.png' width=70%>
+    <br>图2.2.8：远场窄带发射相参景深
+    </center>
+</div>
+<h3 id="23-雷达站时间及相位同步">2.3. 雷达站时间及相位同步</h3>
+<p>  从上一节的分析中可以发现，如果要提高系统的接收相参性能，需要提高各雷达站之间的相参同步精度，而目前有许多种时延与相位参数同步方式，从传输媒介来分类可分为无线同步与有线同步。根据《地基分布式相参雷达技术研究综述》一文，无线同步通常是指通过各雷达站之间互相发射波形来进行时间相位同步或者通过卫星进行实时授时来达到相位与时间同步，有线同步方法通常是指基于射频的同步技术或者基于光纤的同步技术。从同步方式来分类可以有主从式同步方法与分布式同步方法，主从式同步方法指的是通过一个主雷达站向其它从雷达站发射相关信号进行同步，而分布式同步方法指的就是去除了主雷达站，各个雷达站之间相互进行相参参数同步。</p>
+<h4 id="231-分布式同步方法">2.3.1. 分布式同步方法</h4>
+<p>  根据《天基分布式雷达相位估计与同步方法》一文，分布式同步方法中的循环往返相位同步方法可参考下图，本节仅考虑相位与频率的同步方法。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/SyncCycle.png' width=70%>
+    <br>图2.3.1：循环往返相位同步方法
+    </center>
+</div>
+<p>  假设雷达站$0$向雷达站$1$的发射波形为</p>
+<p>$$
+s_{0, 1}(t) = u(t)\exp(j2\pi f_0 t + j \phi_0)
+$$</p>
+<p>  雷达站$1$接收到的信号为</p>
+<p>$$
+r_{0, 1}(t) = u(t-\tau_{0,1})\exp(j2\pi f_0 (t - \tau_{0,1}) + j \phi_0 + j\phi^{s}_{0,1})
+$$</p>
+<p>  为了更严谨地表述，上式中$\phi^{s}_{0,1}$表示由路径带来的相位误差。雷达站$1$接收到信号之后根据捕获到的频率与相位来对自身进行调整，随后由雷达站$1$发射信号给雷达站$2$，如此反复，直到雷达站$K$发射信号至雷达站$0$。同时为了得到更高的相位与频率同步性能，按照图2.3.1的同步流程逆时针同步一遍，即从雷达站$0$发射信号至雷达站$K$，雷达站$K$发射信号至雷达站$K-1$，&hellip;&hellip;，雷达站$1$发射信号至雷达站$0$。</p>
+<p>(PS: 这部分内容论文中写得较为简略，我还没理解这部分的全部原理)</p>
+<h2 id="3-协同探测区域">3. 协同探测区域</h2>
+<p>  由于分布式全相参雷达同样属于协同探测领域，而为了使多个雷达站之间工作的条理性，有必要划分一个协同探测区域。当协同探测区域在空间中扫描时，各雷达站对准该协同探测区域来获得信噪比增益。关于协同探测区域的划分方法有许多，主要是基于天线的半功率宽度来划分协同探测区域，即两雷达站的半功率波束宽度在空间中所交成的空间记为一个协同探测区域。由于半功率波束在空间中是一个圆锥形状，当雷达站较多时，各雷达站的半功率波束交集可近似看作一个球，因此空间中的协同探测区域划分通常是通过划分为一个个球来实现的。</p>
+<p>  当划分完空间协同探测区域后，就需要考虑各雷达站在协同探测区域中的探测问题了。由于半功率波束宽度通常宽于距离分辨率，因此一个协同探测区域通常占据了雷达站多个距离单元。考虑如何对协同探测区域进一步划分多个协同探测单元是有必要的。划分方法主要有两种，一种是基于方形栅格划分法，另一种是基于空间分辨单元划分法。</p>
+<h3 id="31-基于方形栅格划分">3.1. 基于方形栅格划分</h3>
+<p>  基于方形栅格划分方法可以看作是根据原本划分好的协同探测单元来反推出各雷达站中的距离门号。因此一个协同探测单元可能包含多个距离门。划分方法如下所示（图来自郭凯德《组网雷达协同探测技术研究》）</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/CoDetectArea1.png' width=70%>
+    <br>图3.1：方形栅格划分方法
+    </center>
+</div>
+<p>  将一个协同探测单元划分为一个个的方形单元，因此对于各个雷达站的考虑仅需要在此方形单元的基础上考虑便可，优点便是考虑方便，而缺点便是会丢失一定的精度，因为一个方形单元中可能包含多个距离采样点。</p>
+<h3 id="32-基于空间分辨单元划分">3.2. 基于空间分辨单元划分</h3>
+<p>  方形栅格划分方法是在空间中划分出区域，随后通过区域反推出各雷达站的距离门号。当然也有另外的一种划分方法，可以考虑雷达站的各个距离门在空间中所交成的空间，随后利用这些交成的空间对协同探测区域进行划分，划分方法如下所示（图来自郭凯德《组网雷达协同探测技术研究》）</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/CoDetectArea2.png' width=70%>
+    <br>图3.2：空间分辨单元划分方法
+    </center>
+</div>
+<p>  这种方法与前述方法不同之处在于很好地保留了各雷达站的精度，但相对的，当雷达站个数上升时，协同探测单元的个数将指数级上升。因此在较多雷达站协同探测时，通常不采用这种方法。</p>
+<h2 id="4-资源分配问题">4. 资源分配问题</h2>
+<h2 id="5-信号相干问题">5. 信号相干问题</h2>
+<p>  当各雷达站满足大基线、稀疏布阵、高分辨率等特点时，就需要考虑雷达站接收回波信号的相干问题，这意味着接收相参时将不能使用简单的同相叠加方法来获得较好地相参增益。</p>
+<p>  使用FEKO对其内置的一个直升机模型进行各散射角的一维距离像仿真可得到，不同角度的一维距离像如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/HeliHRRP1.png' width=40%>
+    <img src='/images/RadarSummary1/HeliHRRP2.png' width=40%>
+    <br>图5.1：不同角度的直升机一维距离像
+    </center>
+</div>
+<p>  可以看到，此时回波信号已经失去了相干性，接收相参与发射相参将会变得较为复杂。事实上刘宏伟在《网络化雷达协同探测》文章中给出了各雷达站回波信号间去相关的条件，如下所示</p>
+<p>$$
+\frac{f_ed_t}{c} \ge \frac{1}{2}
+$$</p>
+<p>  其中$f_e=\sqrt{\Delta f^2 + f_0(f_0+\Delta f)\sin(\frac{\Delta \Psi}{2})}\cos(\frac{\Delta \alpha}{2})$，$c$为光速，$d_t$为目标尺寸，$f_0$为载频，$\Delta f$为两接收通道之间的工作频率差，$\Delta \Phi$表示接收通道观测时间间隔内目标转动的角度间隔，$\Delta \alpha$表示两接收通道观测目标的角度差。</p>
+<p>  当不考虑各雷达站之间的频率差异与目标转动问题时，上式便可写为</p>
+<p>$$
+f_e = f_0\sin(\frac{\Delta \alpha}{2})
+$$</p>
+<p>  这意味着，当分布式雷达站之间的距离相差较远时，公式中$\Delta \alpha$较大，雷达回波已经去相干了，因此在这种情况下的接收相参问题将会变得比较复杂。</p>
+<h2 id="6-个人理解">6. 个人理解</h2>
+<h3 id="61-复杂目标的发射相参性能评估问题">6.1. 复杂目标的发射相参性能评估问题</h3>
+<p>  目前有大量的文献讨论了分布式相参雷达的发射相参性能评估问题，文献中指出，如果需要得到较好的发射相参性能，需要将发射相参误差控制在波长级别。但在这些文献中都把一个复杂目标近似成了一个点目标，我认为这是不合理的。虽然理论与工程的大量实践证明可以将复杂目标近似为一个点目标，然后分别对点目标进行考虑，但这些都基于一个假设：电磁响应在各个点目标处几乎是一致的。发射相参问题由于需要波长级别的精度，因此各个点目标处的发射相参性能是不同的，所以不能对这些点目标进行一概讨论。
+  吴剑旗院士的《一种大基线分布雷达近场相参探测技术》中指出可以通过精细划分距离单元来提高收发全相参的性能。对于单个采样点来考虑的话是正确的，但是当面临一个复杂扩展目标时，这种评估就有失分寸了。假设空间中存在一个标定点$P_0$，并且分布式相参雷达对于这个标定点而言是能够实现完美发射相参的。对于一个复杂扩展目标而言，假设可以近似为$P_1$，$P_2$，&hellip;&hellip;，$P_N$一系列散射点，可能在其中一部分散射点$P_{i1}$，$P_{i2}$，&hellip;&hellip;，$P_{ia}$处达到较好的发射相参性能，而在其中一部分散射点处$P_{j1}$，$P_{j2}$，&hellip;&hellip;，$P_{jb}$处不能达到较好的发射相参性能，于是只能在接收机的某个采样点处达到较好的性能，但从该目标的总体能量来说，并不能达到较好的结果。
+  王元昊的《分布式相参雷达相参效率及相参景深研究》中引入了“相参景深”概念来评估发射相参性能问题，文中给出了空间中某点发射相参性能评估的公式如下（恰是(2.2.8)式）</p>
+<p>$$
+\eta = \frac{N+2\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\cos(2\pi(f_0+\frac{B}{2})\Delta\tau_{ij}')\mathrm{Sa}(\pi B \Delta \tau_{ij}')}{N^2}
+$$</p>
+<p>  在一个目标的尺寸中，发射相参性能可能产生了剧烈的变化，此时显然不能直接使用点目标公式来进行讨论分析，如果仿照上式，便可得到对于一个复杂目标的发射相参性能评估公式应当如下所示</p>
+<p>$$
+\begin{align*}
+\eta =&amp; \frac{\sum_{m=1}^{M}\sigma_{m}N + 2\sum_{m=1}^{M}\sigma_{m}\sum_{i=1}^{N-1}\sum_{k=i+1}^{N}\cos(2\pi(f_0+\frac{B}{2})\Delta\tau_{ik}&lsquo;^{(m)})\mathrm{Sa}(\pi B \Delta \tau_{ik}&lsquo;^{(m)})}{\sum_{m=1}^{M}\sigma_{m}N^2} \<br>
+=&amp; \frac{\sum_{m=1}^{M}\sigma_{m}N + 2\sum_{m=1}^{M}\sigma_{m}\sum_{i=1}^{N-1}\sum_{k=i+1}^{N}E(\Delta t_{ik})}{\sum_{m=1}^{M}\sigma_{m}N^2}\tag{6.1}
+\end{align*}
+$$</p>
+<h3 id="62-复杂目标的发射相参标定点选取问题">6.2. 复杂目标的发射相参标定点选取问题</h3>
+<p>  传统方法中通常是选取回波幅度最大的点作为发射相参标定点进行标定。对飞机进行建模，并且使用上述公式进行仿真验证，通过穷举法得到最佳的发射相参增益标定点。两者比较可以发现，回波幅度最大的点并不一定是最优的发射相参增益标定点，两者偶尔可差两倍之多。但通过目标来计算最佳发射相参标定点是不现实且效率低下的。并且目标处于运动状态，而标定点选取通常在波长级别，两者并不能很好地耦合。</p>
+<h3 id="63-研究方向的一些猜测">6.3. 研究方向的一些猜测</h3>
+<h4 id="631-使用一种新型的空间扫描方式">6.3.1. 使用一种新型的空间扫描方式</h4>
+<p>  通过前几节的分析可知复杂目标的发射相参点选取是一个比较困难的问题，同时由于现实世界中的目标通常是一个运动的复杂目标，因此实时地根据正交回波来调整发射相参标定点是一件不现实的事情。再者，由于分布式全相参雷达提出的初衷便是增加探测距离，而使用正交波形来估计相参参数的话，又回到了原点，仍然无法超越现有的MIMO雷达探测距离。</p>
+<p>  因此，我认为，可以从调整各雷达站之间相对于标定点的时延与相位同步差值来实现分布式相参雷达在协同探测区域中的空间扫描。换言之，用调整时延与相位来扫描协同探测区域，来替代现有的通过正交波形来获得相关相参参数。</p>
+<p>  接下来进行详细地讨论，假定各雷达站方位如表6.3.1所示，并且假定各雷达站对于空间中某点$P_0$已实现完美发射相参（事实上$P_0$是不可知的，因为我们并没有进行正交波形的发射相参调整，但空间中确实存在这样的一个点$P_0$），如下所示（假设$P_0$位于$[500.05\mathrm{km}, 0, 4 \mathrm{km}]^T$）</p>
+<div class="center">
+<center>表6.3.1：仿真雷达站方位</center>
+<table>
+<thead>
+<tr>
+<th align="center">雷达站编号</th>
+<th align="center">x(km)</th>
+<th align="center">y(km)</th>
+<th align="center">z(km)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">40</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">20</td>
+<td align="center">20$\sqrt 3$</td>
+<td align="center">0</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">40</td>
+<td align="center">10$\sqrt 3$</td>
+<td align="center">0.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/Scan1.png' width=70%>
+    <br>图6.3.1：标定点附近的相参景深
+    </center>
+</div>
+<p>  可以看到的是，在空间中$[500.05\mathrm{km}, 0, 4 \mathrm{km}]^T$附近的点具有较高的发射相参性能，接下来我们调整各个雷达站之间的相位差值，例如将3号雷达站的相位提前$\frac{\pi}{3}$，可以得到如下结果。可以明显看到，在同一高度下，空间中的发射相参景深明显的移动了。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/Scan2.png' width=70%>
+    <br>图6.3.2：调整后相位后的相参景深
+    </center>
+</div>
+<p>  若将1号雷达站与2号雷达站的相位分别提前$\pi$与$\frac{\pi}{2}$，可以发现此时的相参效率较高点并不处于$\mathrm{4km}$高度，而是变成了$\mathrm{4.174km}$。上述仿真结果意味着通过调节相位来对空间进行扫描是可行的。</p>
+<p>  观察上述结果可以发现，当调节相位时，相参景深通常在横坐标上平移，而当调节各雷达站的发射时延时，发射景深将在纵坐标上作平移，如下所示（当2号雷达站延时$\mathrm{2.823ns}$，3号雷达站延时$\mathrm{1.308ns}$时）</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary1/Scan3.png' width=70%>
+    <br>图6.3.3：调整后时延后的相参景深
+    </center>
+</div>
+<p>  从上述讨论可以发现，通过调节各雷达站之间的相位与时间差值来实现在空间中的扫描是可行的，这意味着并不需要发射正交波形来获得先验相参参数信息，而只需要获得一个大概的相参参数，随后通过调整时间与相位差值来对空间扫描即可。不过上述空间扫描方法需要注意的一个点在于，发射波形应当同时到达目标处，这意味着时延估计精度仅需要达到“大约同时到达目标处”即可，大大降低了时延估计精度要求。</p>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/radar/">Radar</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/coherentdepth/">
+            <span class="next-text nav-default">分布式全相参雷达的相参景深</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        tags: 'ams',
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
