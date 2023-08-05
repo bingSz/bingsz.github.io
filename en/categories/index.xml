@@ -2,82 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Categories on Song&#39;s Blog</title>
-    <link>https://bingsz.github.io/en/categories/</link>
+    <link>http://localhost:1313/en/categories/</link>
     <description>Recent content in Categories on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en</language>
-    <lastBuildDate>Fri, 04 Aug 2023 18:38:48 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/categories/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Radar</title>
-      <link>https://bingsz.github.io/en/categories/radar/</link>
-      <pubDate>Fri, 04 Aug 2023 18:38:48 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/radar/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Summary</title>
-      <link>https://bingsz.github.io/en/categories/summary/</link>
-      <pubDate>Fri, 04 Aug 2023 18:38:48 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/summary/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Matlab</title>
-      <link>https://bingsz.github.io/en/categories/matlab/</link>
-      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/matlab/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Simulation</title>
-      <link>https://bingsz.github.io/en/categories/simulation/</link>
-      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/simulation/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MatrixTheory</title>
-      <link>https://bingsz.github.io/en/categories/matrixtheory/</link>
-      <pubDate>Mon, 20 Feb 2023 20:59:23 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/matrixtheory/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>SAR</title>
-      <link>https://bingsz.github.io/en/categories/sar/</link>
-      <pubDate>Fri, 10 Feb 2023 11:45:09 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/sar/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Essay</title>
-      <link>https://bingsz.github.io/en/categories/essay/</link>
-      <pubDate>Thu, 09 Feb 2023 15:01:55 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/essay/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>FIR</title>
-      <link>https://bingsz.github.io/en/categories/fir/</link>
-      <pubDate>Fri, 20 Jan 2023 16:29:31 +0800</pubDate>
-      
-      <guid>https://bingsz.github.io/en/categories/fir/</guid>
-      <description></description>
-    </item>
-    
+    <language>en</language><atom:link href="http://localhost:1313/en/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

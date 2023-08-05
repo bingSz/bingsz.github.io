@@ -5,20 +5,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>文章 | Song&#39;s Blog</title>
+<title>📚文章 | Song&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="文章 - Song&#39;s Blog">
-<meta name="author" content="Sulv">
-<link rel="canonical" href="https://bingsz.github.io/en/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.bf5f9f73cf17311d52cedbcda82c922e91b2f566d88a85ad9f5b5a08b586bd5f.css" integrity="sha256-v1&#43;fc88XMR1SztvNqCySLpGy9WbYioWtn1taCLWGvV8=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://bingsz.github.io/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="description" content="📚文章 - Song&#39;s Blog">
+<meta name="author" content="Song">
+<link rel="canonical" href="http://localhost:1313/en/posts/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="https://bingsz.github.io/en/posts/index.xml">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/en/posts/index.xml">
 <noscript>
     <style>
         #theme-toggle,
@@ -56,13 +56,28 @@
 
     </style>
 </noscript>
-<meta property="og:title" content="文章" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="📚文章" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://bingsz.github.io/en/posts/" />
+<meta property="og:url" content="http://localhost:1313/en/posts/" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="文章"/>
+<meta name="twitter:title" content="📚文章"/>
 <meta name="twitter:description" content=""/>
 
 
@@ -74,8 +89,8 @@
     {
       "@type": "ListItem",
       "position":  1 ,
-      "name": "文章",
-      "item": "https://bingsz.github.io/en/posts/"
+      "name": "📚文章",
+      "item": "http://localhost:1313/en/posts/"
     }
   ]
 }
@@ -84,6 +99,20 @@
 
 <body class="list" id="top">
 <script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
     if (localStorage.getItem("pref-theme") === "dark") {
         document.body.classList.add('dark');
     } else if (localStorage.getItem("pref-theme") === "light") {
@@ -91,23 +120,22 @@
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add('dark');
     }
-
 </script>
 
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <a href="http://localhost:1313/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
                         <circle cx="12" cy="12" r="5"></circle>
                         <line x1="12" y1="1" x2="12" y2="3"></line>
                         <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -123,210 +151,147 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
-                    <span>🔍搜索</span>
+                <a href="http://localhost:1313/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
                 </a>
             </li>
             <li>
-                <a href="https://bingsz.github.io/en/" title="🏠主页">
-                    <span>🏠主页</span>
+                <a href="http://localhost:1313/en/" title="🏠主页">
+                <span>🏠主页</span>
                 </a>
             </li>
             <li>
-                <a href="https://bingsz.github.io/en/posts" title="📚文章">
-                    <span class="active">📚文章</span>
+                <a href="http://localhost:1313/en/posts" title="📚文章">
+                <span class="active">📚文章</span>
                 </a>
             </li>
             <li>
-                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
-                    <span>🔖标签</span>
+                <a href="http://localhost:1313/en/tags" title="🔖标签">
+                <span>🔖标签</span>
                 </a>
             </li>
             <li>
-                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
-                    <span>🙋🏻‍♂️关于</span>
+                <a href="http://localhost:1313/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
                 </a>
             </li>
         </ul>
     </nav>
 </header>
 <main class="main"> 
-<header class="page-header"><div class="breadcrumbs"><a href="https://bingsz.github.io/en/">Home</a></div>
-  <h1>
-    文章
-  </h1>
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/en/">🏠 主页</a></div>
+  <h1>📚文章</h1>
 </header>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>分布式全相参雷达论文阅读笔记（二）
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-08-04 18:38:48 +0800 CST'>2023-08-04</span>&nbsp;·&nbsp;16 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 分布式全相参雷达论文阅读笔记（二）" href="https://bingsz.github.io/en/posts/radarsummary2/"></a>
+<article class="post-entry">
+  <div class="post-info">
+    <header class="entry-header">
+      <h2>👨🏻‍💻 技术
+      </h2>
+    </header>
+    <section class="entry-content">
+      <p>
+        
+        
+      </p>
+    </section>
+  </div> 
+  <a class="entry-link" aria-label="post link to 👨🏻‍💻 技术" href="http://localhost:1313/en/posts/tech/"></a>
 </article>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>分布式全相参雷达论文阅读笔记（一）
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 分布式全相参雷达论文阅读笔记（一）。主要内容有：基于模值的信号级融合检测，收发相参的同步方法，利用频率步进信号提高接收相参性能，相参参数估计误差影响分析和协同探测区域划分方法。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-06-07 09:10:59 +0800 CST'>2023-06-07</span>&nbsp;·&nbsp;26 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 分布式全相参雷达论文阅读笔记（一）" href="https://bingsz.github.io/en/posts/radarsummary1/"></a>
+<article class="post-entry">
+  <div class="post-info">
+    <header class="entry-header">
+      <h2>🧱 建站
+      </h2>
+    </header>
+    <section class="entry-content">
+      <p>
+        
+        
+      </p>
+    </section>
+  </div> 
+  <a class="entry-link" aria-label="post link to 🧱 建站" href="http://localhost:1313/en/posts/blog/"></a>
 </article>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>分布式全相参雷达的相参景深
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 相参景深这一概念在《分布式相参雷达相参效率及相参景深研究》中提出，这一概念是从发射相参增益在空间中的分布入手的。当各个雷达站对于空间中某点实现了完美发射相参（即时延和相位上同时完美对齐）后，该点周围的空间均可以获得一个较高的发射相参增益。大多数文献在衡量发射相参增益时，都是从时域入手的，而这一概念从空域入手研究的。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-04-30 20:19:18 +0800 CST'>2023-04-30</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 分布式全相参雷达的相参景深" href="https://bingsz.github.io/en/posts/coherentdepth/"></a>
+<article class="post-entry">
+  <div class="post-info">
+    <header class="entry-header">
+      <h2>🏖 生活
+      </h2>
+    </header>
+    <section class="entry-content">
+      <p>
+        
+        
+      </p>
+    </section>
+  </div> 
+  <a class="entry-link" aria-label="post link to 🏖 生活" href="http://localhost:1313/en/posts/life/"></a>
 </article>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>使用Matlab来作雷达的信号级仿真
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-03-09 18:42:05 +0800 CST'>2023-03-09</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 使用Matlab来作雷达的信号级仿真" href="https://bingsz.github.io/en/posts/matlabsimulateradar/"></a>
+<article class="post-entry">
+  <div class="post-info">
+    <header class="entry-header">
+      <h2>📕 阅读
+      </h2>
+    </header>
+    <section class="entry-content">
+      <p>
+        
+        
+      </p>
+    </section>
+  </div> 
+  <a class="entry-link" aria-label="post link to 📕 阅读" href="http://localhost:1313/en/posts/read/"></a>
 </article>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>矩阵论：子空间的最佳逼近
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-02-20 20:59:23 +0800 CST'>2023-02-20</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 矩阵论：子空间的最佳逼近" href="https://bingsz.github.io/en/posts/bestapproximation/"></a>
-</article>
+<br />
+<br />
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>合成孔径雷达的RD成像算法及距离徙动矫正
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 最近学到了合成孔径雷达的成像算法，但在看陈老师的书时发现看得一头雾水，并且在书中省略了很多细节。经过资料查找与整理，在这里给出个人见解。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-02-10 11:45:09 +0800 CST'>2023-02-10</span>&nbsp;·&nbsp;11 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 合成孔径雷达的RD成像算法及距离徙动矫正" href="https://bingsz.github.io/en/posts/sarrcmc/"></a>
-</article>
+<br />
+</main>
 
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>漫谈：数字波束形成
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-02-09 15:01:55 +0800 CST'>2023-02-09</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 漫谈：数字波束形成" href="https://bingsz.github.io/en/posts/dbf/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>CFAR中的概率问题证明
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 最近学到了陈伯孝的《现代雷达系统的分析与设计》中的CFAR部分，里面有一些结论并没有给出严谨证明，在这里进行补充证明。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-02-03 16:19:03 +0800 CST'>2023-02-03</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to CFAR中的概率问题证明" href="https://bingsz.github.io/en/posts/cfarprob/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>频率步进脉冲雷达的相参积累
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 最近笔者学到频率步进脉冲雷达的相参积累，觉得其中的原理比较有趣，所以作一个记录。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-01-31 16:09:02 +0800 CST'>2023-01-31</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 频率步进脉冲雷达的相参积累" href="https://bingsz.github.io/en/posts/steppedfreqcoherentint/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>模糊函数相关性质证明
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 在陈伯孝的《现代雷达系统分析与设计》中给出了模糊函数的若干性质，但书上缺少了详细证明，此处给出这些性质的详细证明。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-01-26 20:26:13 +0800 CST'>2023-01-26</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to 模糊函数相关性质证明" href="https://bingsz.github.io/en/posts/ambiguityfuncattribution/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>TI毫米波雷达的距离分辨率
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 目前毫米波雷达芯片，如IWR系列或者AWR系列，采用的测距原理均是通过测量发射脉冲与接收脉冲的频率差来测量距离（与连续波雷达相似），那么在该种情况下距离分辨率应当是多少呢？
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-01-22 16:16:50 +0800 CST'>2023-01-22</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to TI毫米波雷达的距离分辨率" href="https://bingsz.github.io/en/posts/mmwavedistanceaccuracy/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Matlab中频率取样法设计FIR滤波器的不同
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2023-01-20 16:29:31 +0800 CST'>2023-01-20</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Song</footer>
-  <a class="entry-link" aria-label="post link to Matlab中频率取样法设计FIR滤波器的不同" href="https://bingsz.github.io/en/posts/matlabfirdifference/"></a>
-</article>
-    </main>
-    
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://bingsz.github.io/en/">Song&#39;s Blog</a></span>
     <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+        Copyright
+        &copy;
+        2022-2023
+        <a href="http://localhost:1313/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
     </span>
 </footer>
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
 </a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
 
 <script>
     let menu = document.getElementById('menu')
@@ -355,12 +320,11 @@
             }
         });
     });
-
 </script>
 <script>
-    var mybutton = document.getElementById("top-link");
+    let mybutton = document.getElementById("top-link");
     window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
             mybutton.style.visibility = "visible";
             mybutton.style.opacity = "1";
         } else {
@@ -368,10 +332,13 @@
             mybutton.style.opacity = "0";
         }
     };
-
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
         if (document.body.className.includes("dark")) {
             document.body.classList.remove('dark');
             localStorage.setItem("pref-theme", 'light');
@@ -379,8 +346,28 @@
             document.body.classList.add('dark');
             localStorage.setItem("pref-theme", 'dark');
         }
-    })
+    });
+</script>
 
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
 </script>
 </body>
 
