@@ -2,61 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/en/posts/tech/</loc>
-    <lastmod>2023-02-21T12:20:21+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/posts/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/</loc>
-    <lastmod>2023-02-21T12:20:21+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/categories/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/</loc>
-    <lastmod>2023-02-21T12:20:21+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/radar/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/tech/tech1/</loc>
-    <lastmod>2023-02-21T12:20:21+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/categories/radar/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/tags/blog/</loc>
-    <lastmod>2022-05-05T00:18:23+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/blog/blog/</loc>
-    <lastmod>2022-05-05T00:18:23+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/summary/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/tags/</loc>
-    <lastmod>2022-05-05T00:18:23+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/categories/summary/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/blog/</loc>
-    <lastmod>2022-05-05T00:18:23+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/posts/radarsummary2/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/tags/life/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/</loc>
+    <lastmod>2023-08-04T18:38:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/life/life/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/posts/radarsummary1/</loc>
+    <lastmod>2023-06-07T09:10:59+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/life/</loc>
-    <lastmod>2022-05-05T00:18:15+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/posts/coherentdepth/</loc>
+    <lastmod>2023-04-30T20:19:18+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/read/</loc>
-    <lastmod>2022-05-05T00:18:06+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/matlab/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/tags/read/</loc>
-    <lastmod>2022-05-05T00:18:06+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/categories/matlab/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/read/read/</loc>
-    <lastmod>2022-05-05T00:18:06+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/simulation/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/tags/tech/</loc>
-    <lastmod>2022-05-05T00:17:58+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/categories/simulation/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/posts/tech/tech/</loc>
-    <lastmod>2022-05-05T00:17:58+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/posts/matlabsimulateradar/</loc>
+    <lastmod>2023-03-09T18:42:05+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/about/</loc>
-    <lastmod>2021-11-06T14:57:28+08:00</lastmod>
+    <loc>https://bingsz.github.io/en/tags/matrixtheory/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/search/</loc>
+    <loc>https://bingsz.github.io/en/categories/matrixtheory/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/categories/</loc>
+    <loc>https://bingsz.github.io/en/posts/bestapproximation/</loc>
+    <lastmod>2023-02-20T20:59:23+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/en/series/</loc>
+    <loc>https://bingsz.github.io/en/tags/sar/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/categories/sar/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/sarrcmc/</loc>
+    <lastmod>2023-02-10T11:45:09+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/tags/essay/</loc>
+    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/categories/essay/</loc>
+    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/dbf/</loc>
+    <lastmod>2023-02-09T15:01:55+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/cfarprob/</loc>
+    <lastmod>2023-02-03T16:19:03+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/steppedfreqcoherentint/</loc>
+    <lastmod>2023-02-02T18:53:02+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/ambiguityfuncattribution/</loc>
+    <lastmod>2023-01-26T20:26:13+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/mmwavedistanceaccuracy/</loc>
+    <lastmod>2023-01-22T16:16:50+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/tags/fir/</loc>
+    <lastmod>2023-01-20T16:29:31+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/categories/fir/</loc>
+    <lastmod>2023-01-20T16:29:31+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/matlabfirdifference/</loc>
+    <lastmod>2023-01-20T16:29:31+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/search/</loc>
+  </url><url>
+    <loc>https://bingsz.github.io/en/series/</loc>
+  </url><url>
+    <loc>https://bingsz.github.io/en/about/</loc>
   </url>
 </urlset>
