@@ -115,15 +115,15 @@
       <description>&lt;p&gt;  通常的频率取样法设计$\text{FIR}$滤波器是通过对频域的采样取逆傅里叶变换得到，而$\text{Matlab}$中的做法则不同。&lt;/p&gt;</description>
     </item>
     
-    
     <item>
       <title>关于</title>
       <link>https://bingsz.github.io/en/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 20 Jan 2023 16:29:31 +0800</pubDate>
       
       <guid>https://bingsz.github.io/en/about/</guid>
       <description>这是一个个人博客，主要用于记录一些本人日常中碰到的问题。 如果有任何疑问可以联系：1016574101@qq.com</description>
     </item>
+    
     
   </channel>
 </rss>
