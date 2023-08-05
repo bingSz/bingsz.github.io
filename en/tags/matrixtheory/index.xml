@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>MatrixTheory on Song&#39;s Blog</title>
-    <link>https://github.com/bingsz/bingsz.github.io/en/tags/matrixtheory/</link>
+    <link>https://bingsz.github.io/en/tags/matrixtheory/</link>
     <description>Recent content in MatrixTheory on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 20 Feb 2023 20:59:23 +0800</lastBuildDate><atom:link href="https://github.com/bingsz/bingsz.github.io/en/tags/matrixtheory/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 20 Feb 2023 20:59:23 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/tags/matrixtheory/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>矩阵论：子空间的最佳逼近</title>
-      <link>https://github.com/bingsz/bingsz.github.io/en/posts/bestapproximation/</link>
+      <link>https://bingsz.github.io/en/posts/bestapproximation/</link>
       <pubDate>Mon, 20 Feb 2023 20:59:23 +0800</pubDate>
       
-      <guid>https://github.com/bingsz/bingsz.github.io/en/posts/bestapproximation/</guid>
+      <guid>https://bingsz.github.io/en/posts/bestapproximation/</guid>
       <description>&lt;p&gt;  最近在学矩阵论方面的内容，感觉其中的子空间最佳逼近方法比较有意思，所以作一个记录。简单来说，子空间的最佳逼近方法给出了一种通过子空间来拟合原空间中元素的一种方法，并且这种方法在某种距离度量下是最优的。但是因为笔者学的是工科，因此此处的许多地方都不具有数学上的严谨性，仅作为一种逼近方法来介绍。&lt;/p&gt;</description>
     </item>
     
