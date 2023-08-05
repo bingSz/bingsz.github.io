@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <title>分布式全相参雷达论文阅读笔记（二） | Song&#39;s Blog</title>
 <meta name="keywords" content="Radar, Summary">
-<meta name="description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。">
+<meta name="description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。">
 <meta name="author" content="Song">
 <link rel="canonical" href="https://bingsz.github.io/en/posts/radarsummary2/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
@@ -95,7 +95,7 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="分布式全相参雷达论文阅读笔记（二）" />
-<meta property="og:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。" />
+<meta property="og:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://bingsz.github.io/en/posts/radarsummary2/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-08-04T18:38:48+08:00" />
@@ -103,7 +103,7 @@ var _hmt = _hmt || [];
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="分布式全相参雷达论文阅读笔记（二）"/>
-<meta name="twitter:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。"/>
+<meta name="twitter:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。"/>
 
 
 <script type="application/ld+json">
@@ -133,12 +133,12 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "分布式全相参雷达论文阅读笔记（二）",
   "name": "分布式全相参雷达论文阅读笔记（二）",
-  "description": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n",
+  "description": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n",
   "keywords": [
     "Radar", "Summary"
   ],
-  "articleBody": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n1. 互相关时延对齐补偿方法 1.1. 基本原理 对于独立同分布的噪声，其互相关量可近似为0，而对于待对齐的量（如雷达接收信号或强干扰信号），在对齐时互相关量取值较大，不对齐时互相关量取值较小。基于这一基本原理，互相关时延对齐补偿方法通过寻找两个信号的最大互相关所在位置来确定对齐时延。需要注意的是，对于雷达接收信号，互相关时延对齐补偿法通常不能取得较好的效果，这是因为虽然独立同分布噪声的互相关量可近似为0，但并不为0，因此当噪声功率过大时，噪声的互相关量便会淹没信号。而这对于一整段接收信号来说是非常常见的，因为目标回波信号通常只占据整个接收时间段的一小部分。\n更详细地说，记两个雷达站接收到的信号如下所示\n$$ \\begin{equation} \\begin{aligned} s_0(t) = u(t)\\exp(2\\pi f_0 t) + n_0(t) \\\\ s_1(t) = u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t) \\end{aligned} \\end{equation} $$\n其中$n_0(t)$，$n_1(t)$为两个雷达站接收到的不同噪声，$u(t)$为雷达信号包络，$f_0$为雷达发射的载频。当对两者作互相关运算时\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t) + n_0(t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t)) \\\\ =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\\\ \u0026+ u(t)\\exp(2\\pi f_0 t) * n_1(t) \\\\ \u0026+ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) \\\\ \u0026+ n_0(t)*n_1(t) \\end{aligned} \\end{equation} $$\n其中$*$表示互相关运算。易知有如下关系成立\n$$ \\begin{equation} \\begin{cases} u(t)\\exp(2\\pi f_0 t) * n_1(t) = 0 \\\\ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) = 0 \\ n_0(t) * n_1(t)=0 \\end{cases} \\end{equation} $$\n将上述关系式代入(2)式中，可以得到\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\ \\approx \u0026 \\delta(t - \\tau) \\end{aligned} \\end{equation} $$\n其中$\\delta(t)$表示冲激函数。上式意味着，将两段雷达回波接收信号作互相关，随后将最大值所在处作为时延补偿量是可行的。但是实际上，利用互相关量来直接对齐回波信号是非常困难的，因为(2.3)式只是一个近似值，实际上(2.3)式的三个式子并不完全等于0，当噪声互相关的功率充分大时，便会淹没信号。\n例如令接收信号的向量为$\\mathbf{x}$，其中仅在某几个距离门内有信号，而在其余距离门中均被噪声充斥。那么作互相关时，便会有大量的噪声进入到互相关运算中，从而导致真实回波信号被淹没。假设两个雷达接收到的回波信号信噪比为20dB，如图2-1所示\n图1.1：两部雷达接收回波信号\r对这两个雷达回波信号作互相关时，得到如图2-2所示结果，可以发现回波信号的互相关结果已经被淹没在了噪声中。这是因为在现实世界中，只能有限采样信号点数，这导致两个噪声作互相关时，并不严格为0。当这部分功率高于信号作互相关后的功率时，便会将信号部分淹没。\n图1.2：互相关结果\r如果待对齐的信号在整段接收信号中均存在，并且功率充分大（此处的功率充分大指的是作互相关后，不被噪声淹没即可），那么就可以使用互相关方法来进行时延对齐补偿。典型的一个应用场景是压制式干扰信号的对齐。由于压制式干扰信号通常具有较高的功率，并且在整段接收信号上均存在，因此可以使用上述互相关方法来进行对齐。\n那么有没有方法对接收信号作互相关对齐呢？答案是肯定的。既然对整段信号作互相关时，会导致大量的噪声泄漏出来，那么不妨将整段信号进行分段处理。通过将整段雷达接收信号划分为若干段，随后对对应段作互相关处理，可以有效的抑制噪声。但随之便会导致另一个问题，那就是划分为若干段时，接收信号需要恰好在某一段中，这样才能通过互相关方法来进行对齐。这个问题的一个解决方法便是可以使用不同方法来进行分段，从而降低信号落入不同段的概率。\n记雷达站$i$的接收信号为$\\mathbf{x}_i$，如下所示\n$$ \\begin{equation} \\mathbf{x}_i= \\begin{pmatrix} x_{i,1} \\\\ x_{i,2} \\\\ … \\\\ x_{i,N} \\end{pmatrix} \\end{equation} $$\n将各个雷达接收信号$\\mathbf{x}_i$划分为若干段$\\mathbf{x}_{i,1}, \\mathbf{x}_{i,2}, …, \\mathbf{x}_{i,M}$，其中$M=\\lfloor \\frac{N}{K} \\rfloor$，$K$为每一段信号的长度。$\\mathbf{x}_{i,j}$如下所示\n$$ \\begin{equation} \\mathbf{x}_{i,j} = \\begin{pmatrix} x_{i,(j-1)K+1} \\\\ x_{i,(j-1)K+2} \\\\ … \\\\ x_{i,(j-1)K+K} \\end{pmatrix} \\end{equation} $$\n随后将两个分段后的雷达站接收信号$\\mathbf{x}_{i,j}$对应作互相关运算，得到$\\mathbf{y}_{i, k}^{(j)}$如下所示。\n$$ \\begin{equation} \\mathbf{y}_{i, k}^{(j)} = \\mathbf{x}_{i, j} * \\mathbf{x}_{k, j} \\end{equation} $$\n最后将$\\mathbf{y}_{i, k}^{(k)}$合并为一整段$\\mathbf{y}$，并通过分析$\\mathbf{y}_{i, k}$（如下所示）的最大值所在处便可将雷达站$i$与雷达站$k$进行时延对齐。\n$$ \\begin{equation} \\mathbf{y}_{i, k} = \\begin{pmatrix} \\mathbf{y}_{i, k}^{(1)} \\\\ \\mathbf{y}_{i, k}^{(2)} \\\\ … \\\\ \\mathbf{y}_{i, k}^{(M)} \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{y}_{i, k}$的最大值所在距离门号为$m$，那么所需的时延补偿量$\\Delta$如下所示\n$$ \\begin{equation} \\Delta = m \\mod K - \\frac{K}{2} \\end{equation} $$\n1.2. 代码与仿真分析 互相关时延对齐方法对于压制式的干扰信号具有较好的对齐效果，接下来首先对压制式干扰信号进行对齐仿真分析。仿真代码如下所示\nnumADC = 500; % 采样点数 Delta = 100; % 干扰信号到达两雷达站的时延差 JNR = 10; % 干噪比 j = wgn(1, numADC, JNR); % 生成干扰信号 x1 = wgn(1, numADC, 0) + [zeros(1, 100), j(1:end - 100)]; % 叠加干扰信号 x2 = wgn(1, numADC, 0) + j; figure; % 绘制出两段接收信号 subplot(2, 1, 1); plot(x1, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); subplot(2, 1, 2); plot(x2, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); y = ifft(fft(x1) .* conj(fft(x2))); % 作互相关操作 figure; % 绘制出互相关结果 plot(y, 'linewidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); 相关的仿真参数如下所示\n描述 参数 采样点数 500 干噪比（单位：dB） 0, 10, 20, 30 干扰信号时延差（单位：采样点数） 100 通过改变代码部分的JNR变量可得到不同干噪比下的仿真结果，不同干噪比下的仿真结果如下所示（已作了归一化）\n图1.3：仿真结果\r从上图可以发现，干噪比越大，时延对齐的仿真效果越好，并且这几种情况均得到了正确的时延参数。这是因为干噪比越大，干扰在整个接收信号中的分量便越大，当作互相关运算时，相当于作了一次匹配滤波，从而在干扰信号时延差的地方取到最大值，因此可以得到两个雷达站的干扰信号时延差。\n对于回波信号对齐的代码如下所示，下述代码首先对接收信号进行分段处理，随后对相应段作互相关处理，并把互相关处理保存在变量y中，最后通过(9)式便可计算出所需补偿的时延数。\nN = 500; % 采样点数 K = 20; % 分段长度 SNR = 20; % 信噪比 x1 = zeros(1, N); x2 = zeros(1, N); x1(257) = 1; % 添加回波信号 x2(245) = 1; x1 = awgn(complex(x1), SNR); % 添加噪声 x2 = awgn(complex(x2), SNR); y = zeros(1, N); for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 y(ind) = fftshift(ifft(fft(x1(ind)) .* conj(fft(x2(ind))))); % 作互相关 end [~, maxind] = max(abs(y)); delta = mod(maxind, K) - 1 - K/2; % 减一是因为Matlab中从1开始计数 disp(delta); figure; plot(abs(y), 'lineWidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); xlim([0, 500]); 通过改变代码中的SNR变量，便可得到不同信噪比条件下的仿真结果，不同信噪比下的仿真结果如图1.4所示（已作了归一化）\n相关仿真参数如下所示\n描述 参数 采样点数 500 分段长度 20 信噪比（单位：dB） 5, 10, 15, 20 回波信号时延差（单位：采样点数） 8 图1.4：仿真结果（信噪比分别为5dB, 10dB, 15dB, 20dB）\r从图1.4可以发现，当分段长度为20，信噪比为15dB左右时，互相关时延对齐方法才能得到较好的效果。这意味着互相关时延对齐方法只有在高信噪比条件下才能良好地工作。\n从上述对于互相关方法的分析中可以看到，互相关方法需要事先确定分段长度，如果分段长度选取不当，导致目标回波信号在两个雷达站中落入不同分段内，那么就无法获得对应的时延差了。基于这个问题，互累积量方法能够对此进行一定的改善。互累积量方法不需要事先对回波信号进行分段处理，而只需要知道最大时延差即可。这部分内容将在下一小节详细讲解。\n2. 互累积量对齐方法 2.1. 基本原理 互累积量对齐方法更多应用在雷达的回波信号对齐上，相较于互相关方法，互累积量方法不需要考虑分段大小。但是缺点便是在低信噪比时对齐结果不够稳定，并且相较于互相关方法，对信噪比要求更高。\n对于两个向量$\\mathbf{a}$，$\\mathbf{b}$，他们的三阶互累积量如下定义\n$$ \\begin{equation} \\begin{aligned} C_{111}(\\alpha, \\beta) = \\sum_i a_{i}^{*}a_{i+\\alpha}a_{i+\\beta} \\\\ C_{121}(\\alpha, \\beta) = \\sum_i a_{i}^{*}b_{i+\\alpha}a_{i+\\beta} \\end{aligned} \\end{equation} $$\n独立噪声的三阶互累积量为0，而回波信号的三阶互累积量通常取一个较大的值，通过这种差别可以对接收信号进行时延对齐。假设有两个雷达站，并且雷达站$i$的接收信号经过采样后得到的序列为$r_i(n)$，从理想化角度考虑，雷达站2的信号可如下表示\n$$ \\begin{equation} r_2(n) = Ar_1(n - n_0) \\end{equation} $$\n其中$n_0$表示两雷达站的时延差，$A$表示两雷达站回波信号之间的振幅之比。事实上，$n_0$取值通常可以被限定在某个范围内，因为两雷达站之间的时延差可以通过一些粗略的估计手段来估计而得。不妨假设$n_0$的取值范围为$[-D_0, D_0]$。那么雷达站2的回波信号可表示为（不考虑噪声，这是因为不同雷达站之间的噪声不相关，因此可不考虑）\n$$ \\begin{equation} r_{2}(n) = \\sum_{k=-D_{0}}^{D_{0}}\\alpha(k)r_{1}(n-k) \\end{equation} $$\n其中$\\alpha(k)$如下定义\n$$ \\begin{equation} \\alpha(k) = \\begin{cases} 0 \u0026 k \\neq n_0 \\\\ A \u0026 k = n_0 \\end{cases} \\end{equation} $$\n将(8)式代入$C_{121}(\\alpha,\\beta)$表达式中，可得到\n$$ \\begin{equation} \\begin{aligned} C_{121}(\\alpha, \\beta) =\u0026 \\sum_i r_{1}(i)^*r_{2}(i+\\alpha)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\sum_i \\alpha(k) r_{1}(i)^*r_{1}(i+\\alpha-k)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\alpha(k) C_{111}(\\alpha-k, \\beta) \\end{aligned} \\end{equation} $$\n如果可以得到$\\alpha(k)$的值，那么便可以得到雷达站2接收到的回波与雷达站1接收到的回波之间的时延差，因为$\\alpha(k)$最大值所在序号便是两者的时延差。记$\\mathbf{V}$如下所示\n$$ \\begin{equation} \\mathbf{V}= \\begin{pmatrix} C_{121}(-D_{0}, -D_{0}) \\\\ C_{121}(-D_{0}, -D_{0}+1) \\\\ … \\\\ C_{121}(-D_{0}, D_{0}) \\\\ C_{121}(-D_{0}+1, -D_{0}) \\\\ … \\\\ C_{121}(D_{0}, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{L}(k)$如下所示\n$$ \\begin{equation} \\mathbf{L}(k)= \\begin{pmatrix} C_{111}(-D_{0}-k, -D_{0}) \\\\ C_{111}(-D_{0}-k, -D_{0}+1) \\\\ … \\\\ C_{111}(-D_{0}-k, D_{0}) \\\\ C_{111}(-D_{0}+1-k, -D_{0}) \\\\ … \\\\ C_{111}(D_{0}-k, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{A}$为由$\\alpha(k)$构成的列向量，记$\\mathbf{L}$为\n$$ \\begin{equation} \\mathbf{L}= \\begin{pmatrix} \\mathbf{L}(-D_{0}) \u0026 \\mathbf{L}(-D_{0}+1) \u0026 … \u0026 \\mathbf{L}(D_{0}) \\end{pmatrix} \\end{equation} $$\n根据(10)式可知，有下式成立\n$$ \\begin{equation} \\mathbf{V} = \\mathbf{L}\\mathbf{A} \\end{equation} $$\n则$\\mathbf{A}$的计算可由下式给出\n$$ \\begin{equation} \\mathbf{A} = \\mathbf{L}^{-1}\\mathbf{V} \\end{equation} $$\n其中$\\mathbf{L}^{-1}$表示$\\mathbf{L}$的广义逆。$\\mathbf{A}$的最大值所对应的下标，即为雷达站2相对于雷达站1需要补偿的时延数。\n互累积量的另一种理解方式是，通过构造一个特殊的矩阵方程，使得该方程的解便是时延差需要的补偿数，那么通过求解该方程便能得到所需要的时延补偿数。至于为什么互累积量不需要进行分段处理，这是因为事实上在一开始的时候已经引入最大时延差这一先验信息，基于这一先验信息，可以将运算次数大大减小。\n2.2. 代码与仿真分析 首先来比较一下互相关方法与互累积量方法之间的噪声抑制性能差别。以下代码给出了互相关与互累积量的噪声抑制性能之间的比较\nN = 1000; % 采样点数 K = 10; % 互相关方法分段长度 sig = zeros(2, N); % 生成两段测试信号 sig = awgn(complex(sig), 0); % 添加噪声 ret1 = zeros(1, N); % 计算分段互相关 for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 ret1(ind) = fftshift(ifft(fft(sig(1, ind)) .* conj(fft(sig(2, ind))))); % 作互相关 end ret2 = conj(sig(1, :)) .* sig(2, :) .* sig(1, :); % 计算互累积量 disp(mean(abs(ret1).^2)); % 显示互相关方法的平均功率 disp(mean(abs(ret2).^2)); % 显示互累积量方法的平均功率 figure; % 作图 subplot(2, 1, 1); plot(abs(ret1)); xlabel('距离门'); ylabel('幅度'); subplot(2, 1, 2); plot(abs(ret2)); xlabel('距离门'); ylabel('幅度'); 以下是上述程序的运行结果\n图2.1：两种方法比较\r并且程序输出两种处理方法的噪声功率在分段长度为10时，可以相差五倍左右。上述结果意味着互累积量具有比互相关方法更佳的噪声抑制效果。\n接下来进行仿真互累积量的对齐方法，为了仿真方便，本文将互累积量方法计算时延补偿数这一过程封装在了一个名为calcX的函数中\nfunction x = calcX(sig1, sig2, Dmax) ... end 其中sig1，sig2分别表示第一个雷达站的接收信号与第二个雷达站的接收信号，Dmax表示两个雷达站时延差的最大值，这表示两个雷达站时延差的取值范围是$[-\\mathrm{Dmax}, \\mathrm{Dmax}]$。在该函数中，首先计算$\\mathbf{V}$矩阵，$\\mathbf{V}$矩阵的计算代码如下所示\n% 计算T121矩阵 T121 = zeros(2 * Dmax + 1, 2 * Dmax + 1); for i = 1 : 2*Dmax+1 for j = 1 : 2*Dmax+1 ti = i - Dmax; % 开始计算C121(i-Dmax, j-Dmax) tj = j - Dmax; tsig1 = circshift(sig1, tj); % 对信号取循环时延操作 tsig2 = circshift(sig2, ti); % 计算时延后的临时信号的互累积量，即C121(ti, tj) T121(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end % 对矩阵作一个拉伸操作即可得到最终结果 T121 = reshape(T121, (2*Dmax+1)^2, 1); 上述代码中T121变量即对应着前文所述的$\\mathbf{V}$矩阵，对于$\\mathbf{L}$矩阵的计算方法同理可得\nT111 = zeros((2*Dmax+1)^2, 2*Dmax+1); for i = 1 : 2*Dmax+1 tmp = zeros(2*Dmax+1, 2*Dmax+1); for j = 1 : 2*Dmax+1 for k = 1 : 2*Dmax+1 ti = i - Dmax + j - Dmax; tj = k - Dmax; tsig1 = circshift(sig1, tj); tsig2 = circshift(sig1, ti); tmp(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end T111(:, i) = reshape(tmp, (2*Dmax+1)^2, 1); end 上述代码中T111变量即对应着$\\mathbf{L}$矩阵。当计算得到$\\mathbf{V}$与$\\mathbf{L}$矩阵后，通过广义逆，便可将最终的结果求解出来，如下所示\nx = pinv(T111) * T121; 借助上述calcX函数，可以轻易地对互累积量方法进行仿真。假设雷达站1与雷达站2时延相差5个采样点，令最大时延数$D_0$为10个采样点，当信噪比为20dB时，互累积量方法得到的变量x如下所示（注意，为求得时延差，需要将最大值所对应序号减去$D_0$）\n图2.2：互累积量方法结果\r从上图可以看到，互累积量方法已经能够正确得到相应的时延结果。但是随之而来的一个问题是，互累积量方法在不同信噪比条件下的工作性能是如何的。经过测试可以得到如下所示结果\n图2.3：互累积量方法不同信噪比下正确率\r从上图观察可得，为了使时延校正正确率达到70%，雷达回波信号的信噪比需要达到16dB。下图为互相关方法在不同信噪比条件下的正确率（分段长度为20），从下图可以看到，当正确率为70%时，要求回波信噪比大于12.3dB。这意味着虽然互累积量方法不需要确定分段大小，但是互累积量所需要的信噪比相较于互相关方法更高。\n图2.4：互相关方法不同信噪比下正确率\r总结来说，对于互相关方法，如果能够通过多种方式使得目标回波落入同一分段内，那么可以使用互相关方法来进行时延对齐；而倘若不能保证目标回波落入同一分段内，但是接收信号信噪比较大，那么互累积量方法便是更好的选择，因为互累积量只需要知道最大的时延差便可。\n上述两种方法均是单一的基于接收信号进行对齐的，事实上可以通过事先发射正交波形来获得时延差。这种方法被称为基于MIMO模式的相参参数估计方法，这种方法对目标回波信噪比没有要求，只需要发射的正交波形能够被探测到即可。因此该方法能够在多种条件下进行对齐补偿。\n3. CFAR统计量融合方法 3.1. 基本原理 CFAR的全称是Constant False-Alarm Rate，即恒虚警率。CFAR的基本思想是通过设立一系列的参考单元，来估计背景噪声功率，随后通过估计而得的背景噪声功率来决定门限值。这种方法并不通过预先设定的门限值来进行比较，因此具有自适应的特点。同时由于是通过估计而得的背景噪声功率来决定门限值，因此也具有恒虚警的性质。有关CFAR的具体内容可参考网上的一系列资料。\n对于一个单雷达而言，若记被检测单元的幅值为$r_0$，参考单元幅值的均值为$\\bar{r}$，那么判决域可表示为\n$$ \\begin{equation} r_0 \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\bar{r} \\end{equation} $$\n其中$K$为一个常数，用于调整虚警率。作一个变形，上式可表示为似然比检验的形式，如下所示\n$$ \\begin{equation} \\frac{r_0}{\\bar{r}} \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\end{equation} $$\n对于组网雷达而言，每个雷达可向融合中心传输统计量$\\frac{r_0}{\\bar{r}}$，随后融合中心将这些接收到的统计量简单相加，便可得到融合后的结果。这种方法方便快捷，但缺点是没有考虑到各个雷达站之间的差异性，如信噪比差异等等。因此这种方法被称为次优的CFAR统计量融合检测算法。融合中心的统计量如下所示\n$$ \\begin{equation} z = \\sum_i \\frac{r_i}{\\bar{r}} \\end{equation} $$\n由于该统计量难以求解得到概率密度函数，因此可通过蒙特卡洛模拟的方式来确定门限值。\n接下来讨论考虑了各雷达站之间差异的融合方法，这种方法从奈曼皮尔逊准则的似然比检验出发进行推导。当目标RCS满足SwerlingI或II型时，接收回波中，有无目标时的幅度概率密度函数如下所示\n$$ \\begin{equation} \\begin{cases} f(x | H_0) = \\frac{1}{\\sigma_n}\\exp(-\\frac{x}{\\sigma_n}) \\\\ f(x | H_1) = \\frac{1}{\\sigma_n (\\mu + 1)}\\exp(-\\frac{x}{\\sigma_n (\\mu + 1)}) \\end{cases} \\end{equation} $$\n其中$\\sigma_n$为噪声功率，$\\mu$为信噪比。而统计量$t_i = \\frac{r_i}{\\bar{r}}$的分布函数推导如下所示\n$$ \\begin{equation} \\begin{aligned} 1 - F(T | H_0) =\u0026 P(r_i \u003e \\bar{r}T | H_0) \\\\ =\u0026 \\displaystyle\\int_{0}^{+\\infty}f(\\bar{r} | H_0)\\exp(-\\frac{\\bar{r}T}{\\sigma_n}) \\mathrm{d}\\bar{r} \\\\ =\u0026 1 - (1 + \\frac{T}{n})^{-n} \\end{aligned} \\end{equation} $$\n其中$f(\\bar{r} | H_0)$为$\\bar{r}$所满足的概率密度分布，即$n$变量指数分布叠加所形成的概率密度函数；$n$为参考单元个数。\n同理可得$F(T|H_1)$如下所示\n$$ \\begin{equation} F(T | H_1) = 1 - (1 + \\frac{T}{n(1+\\mu)})^{-n} \\end{equation} $$\n对(24)式与(25)式分别求导可得到概率密度函数为\n$$ \\begin{equation} \\begin{cases} f(t | H_0) = (\\frac{n}{n+t})^{n+1} \\\\ f(t | H_1) = \\frac{n^{n+1}(1+\\mu)^{n}}{(n(1+\\mu) + t)^{n+1}} \\end{cases} \\end{equation} $$\n于是可进一步得到统计中心似然比检验的统计量为\n$$ \\begin{equation} \\begin{aligned} z =\u0026 \\ln \\prod_i \\frac{f(t_i | H_1)}{f(t_i | H_0)} \\\\ =\u0026 \\sum_i (\\ln (f(t_i | H_1)) - \\ln (f(t_i | H_0))) \\\\ =\u0026 \\sum_i (n_i \\ln (1 + \\mu_i) + (n_i + 1)\\ln(\\frac{n_i + t_i}{n_i(1+\\mu_i)+t_i})) \\end{aligned} \\end{equation} $$\n上述的统计量需要知道每个雷达站的参考单元个数与信噪比，由于实际情况下一般很难知道雷达站所接收信号的信噪比，因此一般使用(22)式的统计量来进行融合。\n3.2. 代码与仿真分析 本节主要来进行CFAR统计量融合的仿真。\n仿真参数如下所示\n描述 参数 采样点数 1000 雷达站个数 5, 10, 15, 20 载频 1GHz 脉冲重复周期 1ms 参考单元个数 50 保护单元个数 40 首先定义一些基本常数，如下所示\nc = 3e9; % 光速 N = 5; % 雷达站个数 f0 = 1e9; % 载频1GHz T = 1e-3; % 脉冲重复周期 lambda = c / f0; % 载频波长 随后进行接收矩阵的生成并计算CFAR统计量，如下所示\n% 构造接收矩阵 x = zeros(1000, N); x(600, :) = 1; x = awgn(x, k/10); % 第二个参数为信噪比 % 计算各雷达站的CA-CFAR统计量 x = x.^2; % 平方律检波 refNum = 50; % 参考单元个数 protectNum = 20; % 一边的保护单元个数 t = zeros(size(x, 1) - refNum - 2*protectNum, size(x, 2)); for i = 1 : size(t, 1) tmp = sum(x(i:(i+refNum/2-1))) + sum(x((i+refNum/2+protectNum*2+1) : (i+refNum+protectNum*2))); tmp = tmp / refNum; t(i, :) = x(i + refNum/2 + protectNum, :) / tmp; end % 非相干CA-CFAR统计量融合 y = sum(t, 2); 当然，在进行检测时，通常需要知道一定虚警概率下的门限阈值，从表达式上来说，阈值并不是一个简单计算的量。因此此处使用蒙特卡洛模拟来进行阈值的计算。在上述程序中，通过蒙特卡洛模拟计算，如果将y的阈值定为17，那么10dB信噪比下的虚警概率便是1%左右。在该门限下，对检测概率作蒙特卡洛模拟计算，可得到如下结果\n图3.1：五雷达站下的检测概率\r改变雷达站个数，并重复上述步骤，可得到如下结果\n图3.2：不同雷达站个数下的检测概率\r图3.1与3.2结果说明了增加雷达站个数来提高组网雷达的性能是可行的。事实上，从另一个角度来说，增加组网雷达站的个数，本质上是使得有无目标情况下的两个概率密度函数具有更高的区分度。如下所示图3-3，通过蒙特卡罗模拟了信噪比10dB下的，二十个雷达站的有无目标时的概率密度函数。而3.4则是展示了单雷达站下的有无目标的概率密度函数对比。\n图3.3：有无目标时的概率密度函数对比\r图3.4：有无目标时的概率密度函数对比\r从图3.3与3.4观察可得，增加雷达站个数本质上是让不同的概率密度函数之间有了更好的区分度。如果从这一思路出发，显然可以通过其它的优化函数方法来获得更佳的融合统计量，因此笔者认为接下来可以从最优化函数的角度出发，来得到最优的统计量，以使得到最佳的概率密度区分度。这个便是深度学习方法在组网雷达融合检测中的一个切入点。\n",
-  "wordCount" : "7686",
+  "articleBody": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n1. 互相关时延对齐补偿方法 1.1. 基本原理 对于独立同分布的噪声，其互相关量可近似为0，而对于待对齐的量（如雷达接收信号或强干扰信号），在对齐时互相关量取值较大，不对齐时互相关量取值较小。基于这一基本原理，互相关时延对齐补偿方法通过寻找两个信号的最大互相关所在位置来确定对齐时延。需要注意的是，对于雷达接收信号，互相关时延对齐补偿法通常不能取得较好的效果，这是因为虽然独立同分布噪声的互相关量可近似为0，但并不为0，因此当噪声功率过大时，噪声的互相关量便会淹没信号。而这对于一整段接收信号来说是非常常见的，因为目标回波信号通常只占据整个接收时间段的一小部分。\n更详细地说，记两个雷达站接收到的信号如下所示\n$$ \\begin{equation} \\begin{aligned} s_0(t) = u(t)\\exp(2\\pi f_0 t) + n_0(t) \\\\ s_1(t) = u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t) \\end{aligned} \\end{equation} $$\n其中$n_0(t)$，$n_1(t)$为两个雷达站接收到的不同噪声，$u(t)$为雷达信号包络，$f_0$为雷达发射的载频。当对两者作互相关运算时\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t) + n_0(t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t)) \\\\ =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\\\ \u0026+ u(t)\\exp(2\\pi f_0 t) * n_1(t) \\\\ \u0026+ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) \\\\ \u0026+ n_0(t)*n_1(t) \\end{aligned} \\end{equation} $$\n其中$*$表示互相关运算。易知有如下关系成立\n$$ \\begin{equation} \\begin{cases} u(t)\\exp(2\\pi f_0 t) * n_1(t) = 0 \\\\ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) = 0 \\ n_0(t) * n_1(t)=0 \\end{cases} \\end{equation} $$\n将上述关系式代入(2)式中，可以得到\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\ \\approx \u0026 \\delta(t - \\tau) \\end{aligned} \\end{equation} $$\n其中$\\delta(t)$表示冲激函数。上式意味着，将两段雷达回波接收信号作互相关，随后将最大值所在处作为时延补偿量是可行的。但是实际上，利用互相关量来直接对齐回波信号是非常困难的，因为(2.3)式只是一个近似值，实际上(2.3)式的三个式子并不完全等于0，当噪声互相关的功率充分大时，便会淹没信号。\n例如令接收信号的向量为$\\mathbf{x}$，其中仅在某几个距离门内有信号，而在其余距离门中均被噪声充斥。那么作互相关时，便会有大量的噪声进入到互相关运算中，从而导致真实回波信号被淹没。假设两个雷达接收到的回波信号信噪比为20dB，如图2-1所示\n图1.1：两部雷达接收回波信号\r对这两个雷达回波信号作互相关时，得到如图2-2所示结果，可以发现回波信号的互相关结果已经被淹没在了噪声中。这是因为在现实世界中，只能有限采样信号点数，这导致两个噪声作互相关时，并不严格为0。当这部分功率高于信号作互相关后的功率时，便会将信号部分淹没。\n图1.2：互相关结果\r如果待对齐的信号在整段接收信号中均存在，并且功率充分大（此处的功率充分大指的是作互相关后，不被噪声淹没即可），那么就可以使用互相关方法来进行时延对齐补偿。典型的一个应用场景是压制式干扰信号的对齐。由于压制式干扰信号通常具有较高的功率，并且在整段接收信号上均存在，因此可以使用上述互相关方法来进行对齐。\n那么有没有方法对接收信号作互相关对齐呢？答案是肯定的。既然对整段信号作互相关时，会导致大量的噪声泄漏出来，那么不妨将整段信号进行分段处理。通过将整段雷达接收信号划分为若干段，随后对对应段作互相关处理，可以有效的抑制噪声。但随之便会导致另一个问题，那就是划分为若干段时，接收信号需要恰好在某一段中，这样才能通过互相关方法来进行对齐。这个问题的一个解决方法便是可以使用不同方法来进行分段，从而降低信号落入不同段的概率。\n记雷达站$i$的接收信号为$\\mathbf{x}_i$，如下所示\n$$ \\begin{equation} \\mathbf{x}_i= \\begin{pmatrix} x_{i,1} \\\\ x_{i,2} \\\\ … \\\\ x_{i,N} \\end{pmatrix} \\end{equation} $$\n将各个雷达接收信号$\\mathbf{x}_i$划分为若干段$\\mathbf{x}_{i,1}, \\mathbf{x}_{i,2}, …, \\mathbf{x}_{i,M}$，其中$M=\\lfloor \\frac{N}{K} \\rfloor$，$K$为每一段信号的长度。$\\mathbf{x}_{i,j}$如下所示\n$$ \\begin{equation} \\mathbf{x}_{i,j} = \\begin{pmatrix} x_{i,(j-1)K+1} \\\\ x_{i,(j-1)K+2} \\\\ … \\\\ x_{i,(j-1)K+K} \\end{pmatrix} \\end{equation} $$\n随后将两个分段后的雷达站接收信号$\\mathbf{x}_{i,j}$对应作互相关运算，得到$\\mathbf{y}_{i, k}^{(j)}$如下所示。\n$$ \\begin{equation} \\mathbf{y}_{i, k}^{(j)} = \\mathbf{x}_{i, j} * \\mathbf{x}_{k, j} \\end{equation} $$\n最后将$\\mathbf{y}_{i, k}^{(k)}$合并为一整段$\\mathbf{y}$，并通过分析$\\mathbf{y}_{i, k}$（如下所示）的最大值所在处便可将雷达站$i$与雷达站$k$进行时延对齐。\n$$ \\begin{equation} \\mathbf{y}_{i, k} = \\begin{pmatrix} \\mathbf{y}_{i, k}^{(1)} \\\\ \\mathbf{y}_{i, k}^{(2)} \\\\ … \\\\ \\mathbf{y}_{i, k}^{(M)} \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{y}_{i, k}$的最大值所在距离门号为$m$，那么所需的时延补偿量$\\Delta$如下所示\n$$ \\begin{equation} \\Delta = m \\mod K - \\frac{K}{2} \\end{equation} $$\n1.2. 代码与仿真分析 互相关时延对齐方法对于压制式的干扰信号具有较好的对齐效果，接下来首先对压制式干扰信号进行对齐仿真分析。仿真代码如下所示\nnumADC = 500; % 采样点数 Delta = 100; % 干扰信号到达两雷达站的时延差 JNR = 10; % 干噪比 j = wgn(1, numADC, JNR); % 生成干扰信号 x1 = wgn(1, numADC, 0) + [zeros(1, 100), j(1:end - 100)]; % 叠加干扰信号 x2 = wgn(1, numADC, 0) + j; figure; % 绘制出两段接收信号 subplot(2, 1, 1); plot(x1, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); subplot(2, 1, 2); plot(x2, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); y = ifft(fft(x1) .* conj(fft(x2))); % 作互相关操作 figure; % 绘制出互相关结果 plot(y, 'linewidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); 相关的仿真参数如下所示\n描述 参数 采样点数 500 干噪比（单位：dB） 0, 10, 20, 30 干扰信号时延差（单位：采样点数） 100 通过改变代码部分的JNR变量可得到不同干噪比下的仿真结果，不同干噪比下的仿真结果如下所示（已作了归一化）\n图1.3：仿真结果\r从上图可以发现，干噪比越大，时延对齐的仿真效果越好，并且这几种情况均得到了正确的时延参数。这是因为干噪比越大，干扰在整个接收信号中的分量便越大，当作互相关运算时，相当于作了一次匹配滤波，从而在干扰信号时延差的地方取到最大值，因此可以得到两个雷达站的干扰信号时延差。\n对于回波信号对齐的代码如下所示，下述代码首先对接收信号进行分段处理，随后对相应段作互相关处理，并把互相关处理保存在变量y中，最后通过(9)式便可计算出所需补偿的时延数。\nN = 500; % 采样点数 K = 20; % 分段长度 SNR = 20; % 信噪比 x1 = zeros(1, N); x2 = zeros(1, N); x1(257) = 1; % 添加回波信号 x2(245) = 1; x1 = awgn(complex(x1), SNR); % 添加噪声 x2 = awgn(complex(x2), SNR); y = zeros(1, N); for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 y(ind) = fftshift(ifft(fft(x1(ind)) .* conj(fft(x2(ind))))); % 作互相关 end [~, maxind] = max(abs(y)); delta = mod(maxind, K) - 1 - K/2; % 减一是因为Matlab中从1开始计数 disp(delta); figure; plot(abs(y), 'lineWidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); xlim([0, 500]); 通过改变代码中的SNR变量，便可得到不同信噪比条件下的仿真结果，不同信噪比下的仿真结果如图1.4所示（已作了归一化）\n相关仿真参数如下所示\n描述 参数 采样点数 500 分段长度 20 信噪比（单位：dB） 5, 10, 15, 20 回波信号时延差（单位：采样点数） 8 图1.4：仿真结果（信噪比分别为5dB, 10dB, 15dB, 20dB）\r从图1.4可以发现，当分段长度为20，信噪比为15dB左右时，互相关时延对齐方法才能得到较好的效果。这意味着互相关时延对齐方法只有在高信噪比条件下才能良好地工作。\n从上述对于互相关方法的分析中可以看到，互相关方法需要事先确定分段长度，如果分段长度选取不当，导致目标回波信号在两个雷达站中落入不同分段内，那么就无法获得对应的时延差了。基于这个问题，互累积量方法能够对此进行一定的改善。互累积量方法不需要事先对回波信号进行分段处理，而只需要知道最大时延差即可。这部分内容将在下一小节详细讲解。\n2. 互累积量对齐方法 2.1. 基本原理 互累积量对齐方法更多应用在雷达的回波信号对齐上，相较于互相关方法，互累积量方法不需要考虑分段大小。但是缺点便是在低信噪比时对齐结果不够稳定，并且相较于互相关方法，对信噪比要求更高。\n对于两个向量$\\mathbf{a}$，$\\mathbf{b}$，他们的三阶互累积量如下定义\n$$ \\begin{equation} \\begin{aligned} C_{111}(\\alpha, \\beta) = \\sum_i a_{i}^{*}a_{i+\\alpha}a_{i+\\beta} \\\\ C_{121}(\\alpha, \\beta) = \\sum_i a_{i}^{*}b_{i+\\alpha}a_{i+\\beta} \\end{aligned} \\end{equation} $$\n独立噪声的三阶互累积量为0，而回波信号的三阶互累积量通常取一个较大的值，通过这种差别可以对接收信号进行时延对齐。假设有两个雷达站，并且雷达站$i$的接收信号经过采样后得到的序列为$r_i(n)$，从理想化角度考虑，雷达站2的信号可如下表示\n$$ \\begin{equation} r_2(n) = Ar_1(n - n_0) \\end{equation} $$\n其中$n_0$表示两雷达站的时延差，$A$表示两雷达站回波信号之间的振幅之比。事实上，$n_0$取值通常可以被限定在某个范围内，因为两雷达站之间的时延差可以通过一些粗略的估计手段来估计而得。不妨假设$n_0$的取值范围为$[-D_0, D_0]$。那么雷达站2的回波信号可表示为（不考虑噪声，这是因为不同雷达站之间的噪声不相关，因此可不考虑）\n$$ \\begin{equation} r_{2}(n) = \\sum_{k=-D_{0}}^{D_{0}}\\alpha(k)r_{1}(n-k) \\end{equation} $$\n其中$\\alpha(k)$如下定义\n$$ \\begin{equation} \\alpha(k) = \\begin{cases} 0 \u0026 k \\neq n_0 \\\\ A \u0026 k = n_0 \\end{cases} \\end{equation} $$\n将(8)式代入$C_{121}(\\alpha,\\beta)$表达式中，可得到\n$$ \\begin{equation} \\begin{aligned} C_{121}(\\alpha, \\beta) =\u0026 \\sum_i r_{1}(i)^*r_{2}(i+\\alpha)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\sum_i \\alpha(k) r_{1}(i)^*r_{1}(i+\\alpha-k)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\alpha(k) C_{111}(\\alpha-k, \\beta) \\end{aligned} \\end{equation} $$\n如果可以得到$\\alpha(k)$的值，那么便可以得到雷达站2接收到的回波与雷达站1接收到的回波之间的时延差，因为$\\alpha(k)$最大值所在序号便是两者的时延差。记$\\mathbf{V}$如下所示\n$$ \\begin{equation} \\mathbf{V}= \\begin{pmatrix} C_{121}(-D_{0}, -D_{0}) \\\\ C_{121}(-D_{0}, -D_{0}+1) \\\\ … \\\\ C_{121}(-D_{0}, D_{0}) \\\\ C_{121}(-D_{0}+1, -D_{0}) \\\\ … \\\\ C_{121}(D_{0}, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{L}(k)$如下所示\n$$ \\begin{equation} \\mathbf{L}(k)= \\begin{pmatrix} C_{111}(-D_{0}-k, -D_{0}) \\\\ C_{111}(-D_{0}-k, -D_{0}+1) \\\\ … \\\\ C_{111}(-D_{0}-k, D_{0}) \\\\ C_{111}(-D_{0}+1-k, -D_{0}) \\\\ … \\\\ C_{111}(D_{0}-k, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{A}$为由$\\alpha(k)$构成的列向量，记$\\mathbf{L}$为\n$$ \\begin{equation} \\mathbf{L}= \\begin{pmatrix} \\mathbf{L}(-D_{0}) \u0026 \\mathbf{L}(-D_{0}+1) \u0026 … \u0026 \\mathbf{L}(D_{0}) \\end{pmatrix} \\end{equation} $$\n根据(10)式可知，有下式成立\n$$ \\begin{equation} \\mathbf{V} = \\mathbf{L}\\mathbf{A} \\end{equation} $$\n则$\\mathbf{A}$的计算可由下式给出\n$$ \\begin{equation} \\mathbf{A} = \\mathbf{L}^{-1}\\mathbf{V} \\end{equation} $$\n其中$\\mathbf{L}^{-1}$表示$\\mathbf{L}$的广义逆。$\\mathbf{A}$的最大值所对应的下标，即为雷达站2相对于雷达站1需要补偿的时延数。\n互累积量的另一种理解方式是，通过构造一个特殊的矩阵方程，使得该方程的解便是时延差需要的补偿数，那么通过求解该方程便能得到所需要的时延补偿数。至于为什么互累积量不需要进行分段处理，这是因为事实上在一开始的时候已经引入最大时延差这一先验信息，基于这一先验信息，可以将运算次数大大减小。\n2.2. 代码与仿真分析 首先来比较一下互相关方法与互累积量方法之间的噪声抑制性能差别。以下代码给出了互相关与互累积量的噪声抑制性能之间的比较\nN = 1000; % 采样点数 K = 10; % 互相关方法分段长度 sig = zeros(2, N); % 生成两段测试信号 sig = awgn(complex(sig), 0); % 添加噪声 ret1 = zeros(1, N); % 计算分段互相关 for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 ret1(ind) = fftshift(ifft(fft(sig(1, ind)) .* conj(fft(sig(2, ind))))); % 作互相关 end ret2 = conj(sig(1, :)) .* sig(2, :) .* sig(1, :); % 计算互累积量 disp(mean(abs(ret1).^2)); % 显示互相关方法的平均功率 disp(mean(abs(ret2).^2)); % 显示互累积量方法的平均功率 figure; % 作图 subplot(2, 1, 1); plot(abs(ret1)); xlabel('距离门'); ylabel('幅度'); subplot(2, 1, 2); plot(abs(ret2)); xlabel('距离门'); ylabel('幅度'); 以下是上述程序的运行结果\n图2.1：两种方法比较\r并且程序输出两种处理方法的噪声功率在分段长度为10时，可以相差五倍左右。上述结果意味着互累积量具有比互相关方法更佳的噪声抑制效果。\n接下来进行仿真互累积量的对齐方法，为了仿真方便，本文将互累积量方法计算时延补偿数这一过程封装在了一个名为calcX的函数中\nfunction x = calcX(sig1, sig2, Dmax) ... end 其中sig1，sig2分别表示第一个雷达站的接收信号与第二个雷达站的接收信号，Dmax表示两个雷达站时延差的最大值，这表示两个雷达站时延差的取值范围是$[-\\mathrm{Dmax}, \\mathrm{Dmax}]$。在该函数中，首先计算$\\mathbf{V}$矩阵，$\\mathbf{V}$矩阵的计算代码如下所示\n% 计算T121矩阵 T121 = zeros(2 * Dmax + 1, 2 * Dmax + 1); for i = 1 : 2*Dmax+1 for j = 1 : 2*Dmax+1 ti = i - Dmax; % 开始计算C121(i-Dmax, j-Dmax) tj = j - Dmax; tsig1 = circshift(sig1, tj); % 对信号取循环时延操作 tsig2 = circshift(sig2, ti); % 计算时延后的临时信号的互累积量，即C121(ti, tj) T121(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end % 对矩阵作一个拉伸操作即可得到最终结果 T121 = reshape(T121, (2*Dmax+1)^2, 1); 上述代码中T121变量即对应着前文所述的$\\mathbf{V}$矩阵，对于$\\mathbf{L}$矩阵的计算方法同理可得\nT111 = zeros((2*Dmax+1)^2, 2*Dmax+1); for i = 1 : 2*Dmax+1 tmp = zeros(2*Dmax+1, 2*Dmax+1); for j = 1 : 2*Dmax+1 for k = 1 : 2*Dmax+1 ti = i - Dmax + j - Dmax; tj = k - Dmax; tsig1 = circshift(sig1, tj); tsig2 = circshift(sig1, ti); tmp(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end T111(:, i) = reshape(tmp, (2*Dmax+1)^2, 1); end 上述代码中T111变量即对应着$\\mathbf{L}$矩阵。当计算得到$\\mathbf{V}$与$\\mathbf{L}$矩阵后，通过广义逆，便可将最终的结果求解出来，如下所示\nx = pinv(T111) * T121; 借助上述calcX函数，可以轻易地对互累积量方法进行仿真。假设雷达站1与雷达站2时延相差5个采样点，令最大时延数$D_0$为10个采样点，当信噪比为20dB时，互累积量方法得到的变量x如下所示（注意，为求得时延差，需要将最大值所对应序号减去$D_0$）\n图2.2：互累积量方法结果\r从上图可以看到，互累积量方法已经能够正确得到相应的时延结果。但是随之而来的一个问题是，互累积量方法在不同信噪比条件下的工作性能是如何的。经过测试可以得到如下所示结果\n图2.3：互累积量方法不同信噪比下正确率\r从上图观察可得，为了使时延校正正确率达到70%，雷达回波信号的信噪比需要达到16dB。下图为互相关方法在不同信噪比条件下的正确率（分段长度为20），从下图可以看到，当正确率为70%时，要求回波信噪比大于12.3dB。这意味着虽然互累积量方法不需要确定分段大小，但是互累积量所需要的信噪比相较于互相关方法更高。\n图2.4：互相关方法不同信噪比下正确率\r总结来说，对于互相关方法，如果能够通过多种方式使得目标回波落入同一分段内，那么可以使用互相关方法来进行时延对齐；而倘若不能保证目标回波落入同一分段内，但是接收信号信噪比较大，那么互累积量方法便是更好的选择，因为互累积量只需要知道最大的时延差便可。\n上述两种方法均是单一的基于接收信号进行对齐的，事实上可以通过事先发射正交波形来获得时延差。这种方法被称为基于MIMO模式的相参参数估计方法，这种方法对目标回波信噪比没有要求，只需要发射的正交波形能够被探测到即可。因此该方法能够在多种条件下进行对齐补偿。\n3. CFAR统计量融合方法 3.1. 基本原理 CFAR的全称是Constant False-Alarm Rate，即恒虚警率。CFAR的基本思想是通过设立一系列的参考单元，来估计背景噪声功率，随后通过估计而得的背景噪声功率来决定门限值。这种方法并不通过预先设定的门限值来进行比较，因此具有自适应的特点。同时由于是通过估计而得的背景噪声功率来决定门限值，因此也具有恒虚警的性质。有关CFAR的具体内容可参考网上的一系列资料。\n对于一个单雷达而言，若记被检测单元的幅值为$r_0$，参考单元幅值的均值为$\\bar{r}$，那么判决域可表示为\n$$ \\begin{equation} r_0 \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\bar{r} \\end{equation} $$\n其中$K$为一个常数，用于调整虚警率。作一个变形，上式可表示为似然比检验的形式，如下所示\n$$ \\begin{equation} \\frac{r_0}{\\bar{r}} \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\end{equation} $$\n对于组网雷达而言，每个雷达可向融合中心传输统计量$\\frac{r_0}{\\bar{r}}$，随后融合中心将这些接收到的统计量简单相加，便可得到融合后的结果。这种方法方便快捷，但缺点是没有考虑到各个雷达站之间的差异性，如信噪比差异等等。因此这种方法被称为次优的CFAR统计量融合检测算法。融合中心的统计量如下所示\n$$ \\begin{equation} z = \\sum_i \\frac{r_i}{\\bar{r}} \\end{equation} $$\n由于该统计量难以求解得到概率密度函数，因此可通过蒙特卡洛模拟的方式来确定门限值。\n接下来讨论考虑了各雷达站之间差异的融合方法，这种方法从奈曼皮尔逊准则的似然比检验出发进行推导。当目标RCS满足SwerlingI或II型时，接收回波中，有无目标时的幅度概率密度函数如下所示\n$$ \\begin{equation} \\begin{cases} f(x | H_0) = \\frac{1}{\\sigma_n}\\exp(-\\frac{x}{\\sigma_n}) \\\\ f(x | H_1) = \\frac{1}{\\sigma_n (\\mu + 1)}\\exp(-\\frac{x}{\\sigma_n (\\mu + 1)}) \\end{cases} \\end{equation} $$\n其中$\\sigma_n$为噪声功率，$\\mu$为信噪比。而统计量$t_i = \\frac{r_i}{\\bar{r}}$的分布函数推导如下所示\n$$ \\begin{equation} \\begin{aligned} 1 - F(T | H_0) =\u0026 P(r_i \u003e \\bar{r}T | H_0) \\\\ =\u0026 \\displaystyle\\int_{0}^{+\\infty}f(\\bar{r} | H_0)\\exp(-\\frac{\\bar{r}T}{\\sigma_n}) \\mathrm{d}\\bar{r} \\\\ =\u0026 1 - (1 + \\frac{T}{n})^{-n} \\end{aligned} \\end{equation} $$\n其中$f(\\bar{r} | H_0)$为$\\bar{r}$所满足的概率密度分布，即$n$变量指数分布叠加所形成的概率密度函数；$n$为参考单元个数。\n同理可得$F(T|H_1)$如下所示\n$$ \\begin{equation} F(T | H_1) = 1 - (1 + \\frac{T}{n(1+\\mu)})^{-n} \\end{equation} $$\n对(24)式与(25)式分别求导可得到概率密度函数为\n$$ \\begin{equation} \\begin{cases} f(t | H_0) = (\\frac{n}{n+t})^{n+1} \\\\ f(t | H_1) = \\frac{n^{n+1}(1+\\mu)^{n}}{(n(1+\\mu) + t)^{n+1}} \\end{cases} \\end{equation} $$\n于是可进一步得到统计中心似然比检验的统计量为\n$$ \\begin{equation} \\begin{aligned} z =\u0026 \\ln \\prod_i \\frac{f(t_i | H_1)}{f(t_i | H_0)} \\\\ =\u0026 \\sum_i (\\ln (f(t_i | H_1)) - \\ln (f(t_i | H_0))) \\\\ =\u0026 \\sum_i (n_i \\ln (1 + \\mu_i) + (n_i + 1)\\ln(\\frac{n_i + t_i}{n_i(1+\\mu_i)+t_i})) \\end{aligned} \\end{equation} $$\n上述的统计量需要知道每个雷达站的参考单元个数与信噪比，由于实际情况下一般很难知道雷达站所接收信号的信噪比，因此一般使用(22)式的统计量来进行融合。\n3.2. 代码与仿真分析 本节主要来进行CFAR统计量融合的仿真。\n仿真参数如下所示\n描述 参数 采样点数 1000 雷达站个数 5, 10, 15, 20 载频 1GHz 脉冲重复周期 1ms 参考单元个数 50 保护单元个数 40 首先定义一些基本常数，如下所示\nc = 3e9; % 光速 N = 5; % 雷达站个数 f0 = 1e9; % 载频1GHz T = 1e-3; % 脉冲重复周期 lambda = c / f0; % 载频波长 随后进行接收矩阵的生成并计算CFAR统计量，如下所示\n% 构造接收矩阵 x = zeros(1000, N); x(600, :) = 1; x = awgn(x, k/10); % 第二个参数为信噪比 % 计算各雷达站的CA-CFAR统计量 x = x.^2; % 平方律检波 refNum = 50; % 参考单元个数 protectNum = 20; % 一边的保护单元个数 t = zeros(size(x, 1) - refNum - 2*protectNum, size(x, 2)); for i = 1 : size(t, 1) tmp = sum(x(i:(i+refNum/2-1))) + sum(x((i+refNum/2+protectNum*2+1) : (i+refNum+protectNum*2))); tmp = tmp / refNum; t(i, :) = x(i + refNum/2 + protectNum, :) / tmp; end % 非相干CA-CFAR统计量融合 y = sum(t, 2); 当然，在进行检测时，通常需要知道一定虚警概率下的门限阈值，从表达式上来说，阈值并不是一个简单计算的量。因此此处使用蒙特卡洛模拟来进行阈值的计算。在上述程序中，通过蒙特卡洛模拟计算，如果将y的阈值定为17，那么10dB信噪比下的虚警概率便是1%左右。在该门限下，对检测概率作蒙特卡洛模拟计算，可得到如下结果\n图3.1：五雷达站下的检测概率\r改变雷达站个数，并重复上述步骤，可得到如下结果\n图3.2：不同雷达站个数下的检测概率\r图3.1与3.2结果说明了增加雷达站个数来提高组网雷达的性能是可行的。事实上，从另一个角度来说，增加组网雷达站的个数，本质上是使得有无目标情况下的两个概率密度函数具有更高的区分度。如下所示图3-3，通过蒙特卡罗模拟了信噪比10dB下的，二十个雷达站的有无目标时的概率密度函数。而3.4则是展示了单雷达站下的有无目标的概率密度函数对比。\n图3.3：有无目标时的概率密度函数对比\r图3.4：有无目标时的概率密度函数对比\r从图3.3与3.4观察可得，增加雷达站个数本质上是让不同的概率密度函数之间有了更好的区分度。如果从这一思路出发，显然可以通过其它的优化函数方法来获得更佳的融合统计量，因此笔者认为接下来可以从最优化函数的角度出发，来得到最优的统计量，以使得到最佳的概率密度区分度。这个便是深度学习方法在组网雷达融合检测中的一个切入点。\n4. 基于噪声子空间投影的干扰去除方法 4.1. 基本原理 基于噪声子空间投影来去除干扰的方法基于一个基本假设，即多雷达站所接收到的干扰具有强相关性，而目标回波不具有相关性（或具有弱相关性）。与第一章所基于的假设不同的是，本章假设各个雷达站所接收到的雷达回波不具有相关性。如果目标回波具有相关性，那么在去除干扰的同时，也会将目标回波同时去除。\n基于噪声子空间投影的干扰去除方法的基本原理是，由于各个雷达站所接收到的干扰信号具有相关性并且具有大能量特征，因此对各个雷达站所接收到的信号作特征值分解时，干扰信号将会构成一个具有大特征值的干扰子空间，而噪声信号由于能量较小，仅会构成特征值较小的噪声子空间。当将雷达回波投影至噪声子空间时，便会将干扰去除。同时由于目标回波能量在整段雷达回波信号中占据较小能量，且不具有相关性，因此在投影至噪声子空间过程中，并不会去除目标回波信号。\n记雷达站$i$所接收到的回波信号为$r_i(t)$，如下所示\n$$ \\begin{equation} r_i(t) = s_i(t)+c_i(t)+n_i(t) \\end{equation} $$\n其中$s_i(t)$为目标回波信号，$c_i(t)$为干扰信号，$n_i(t)$为噪声。对上述接收信号进行采样，得到雷达站$i$的接收向量，如下所示\n$$ \\begin{equation} \\mathbf{r}_i= \\begin{pmatrix} r_i(T_s) \\\\ r_i(2T_s) \\\\ … \\\\ r_i(nT_s) \\end{pmatrix} \\end{equation} $$\n其中$n$为雷达站接收信号采样点数，$T_s$为采样间隔。多个雷达站所接收到的信号构成一个矩阵，如下所示\n$$ \\begin{equation} \\mathbf{r}= \\begin{pmatrix} \\mathbf{r}_1 \u0026 \\mathbf{r}_2 \u0026 … \u0026 \\mathbf{r}_N \\end{pmatrix} \\end{equation} $$\n其中$N$为雷达站个数。通过接收回波矩阵可得到各雷达站接收信号的自相关与互相关为\n$$ \\begin{equation} \\mathbf{R}_{r}=\\mathbf{r}^{H}\\mathbf{r} \\end{equation} $$\n由于不同雷达站之间的噪声、噪声与信号、噪声与干扰之间没有相关性，因此在计算上述自相关矩阵时，可以直接将这几项忽略，只需要考虑信号自相关与干扰自相关与互相关即可。此时自相关矩阵可写为\n$$ \\begin{equation} \\mathbf{R}_{r} = \\mathbf{R}_{s} + \\mathbf{R}_{j} + \\mathbf{R}_{n} \\end{equation} $$\n其中$\\mathbf{R}_{s}$为信号的自相关矩阵，$\\mathbf{R}_{j}$为干扰的自相关矩阵，$\\mathbf{R}_{n}$为噪声的自相关矩阵。\n记雷达站$i$的目标回波信号为$\\alpha_i s_i(t)$，其中$s_i(t)$为发射机发射信号在空间中经过双程延时后的信号，$\\alpha_i$为由于目标RCS起伏特性导致的复幅度。上式仅考虑了雷达信号自发自收的情况，事实上对于雷达站多发多收的情况下的分析是一致的。此时信号回波的自相关矩阵为\n$$ \\begin{equation} \\mathbf{R}_{s}= \\begin{pmatrix} \\alpha_1^2 C_1 \u0026 0 \u0026 … \u0026 0 \\\\ 0 \u0026 \\alpha_2^2 C_2 \u0026 … \u0026 0 \\\\ … \\\\ 0 \u0026 0 \u0026 … \u0026 \\alpha_N^2 C_N \\end{pmatrix} \\end{equation} $$\n其中$C_i=\\int_{-\\infty}^{+\\infty}s_i(t)^2\\mathrm{d}t$（假设各雷达信号已完成对齐）。可以发现信号回波的自相关矩阵是满秩的，这意味着信号回波将分布在整个接收回波空间中。\n由于各雷达站接收到的干扰信号通常由一个干扰机发出，因此干扰信号之间存在强相关性。假设雷达站$i$接收到的干扰信号为$\\beta_i j(t)$（假设干扰与目标回波信号同时对齐，这意味着干扰机需要与真实目标相差较小距离），其中$\\beta_i$表示由于路程导致的信号幅度差异，$j(t)$表示干扰机发射的干扰信号。此时干扰信号的自相关矩阵可表示为\n$$ \\begin{equation} \\mathbf{R}_{j}= \\begin{pmatrix} \\beta_1^2 D_{11} \u0026 \\beta_1 \\beta_2 D_{12} \u0026 … \u0026 \\beta_1 \\beta_N D_{1N} \\\\ \\beta_2 \\beta_1 D_{12} \u0026 \\beta_2^2 D_{22} \u0026 … \u0026 \\beta_2 \\beta_N D_{2N} \\\\ … \\\\ \\beta_N \\beta_1 D_{1N} \u0026 \\beta_N \\beta_2 D_{2N} \u0026 … \u0026 \\beta_N^2 D_{NN} \\end{pmatrix} \\end{equation} $$\n其中$D_{ij}=\\int_{-\\infty}^{+\\infty}j_i(t)j_j^*(t)\\mathrm{d}t$。由于每个雷达站接收到同一干扰机的干扰信号，因此上式中的所有$D_{ij}$均相等仅相差某一幅角，不妨记为$D$。观察干扰信号的自相关矩阵可以发现每一列均为如下所示向量的某个倍数，因此干扰信号的自相关矩阵的秩为1。\n$$ \\begin{equation} \\begin{pmatrix} \\beta_1 D \\\\ \\beta_2 D \\\\ … \\\\ \\beta_N D \\end{pmatrix} \\end{equation} $$\n借助干扰信号与目标回波信号在空间分布上的差异，即可去除干扰信号。噪声自相关矩阵与信号自相关矩阵同理分析，可得到为一个对角阵，同样满足满秩条件。\n对接收信号的自相关矩阵作特征值分解，可得到如下结果\n$$ \\begin{equation} \\mathbf{R}_r = \\sum_{i=1}^{N}\\lambda_i \\mathbf{v}_i\\mathbf{v}_i^T \\end{equation} $$\n其中由于干扰信号占据较大能量，因此具有大的特征值，而噪声与目标回波信号的能量相对较小，因此在分析时可忽略不计。记$\\lambda_1, \\lambda_2, …, \\lambda_N$降序排列，由于干扰信号对应大的特征值，因此可去除前几个特征值与特征向量，而保留后面的特征值与特征向量，得到如下矩阵\n$$ \\begin{equation} \\mathbf{P} = \\sum_{i=q}^{N}\\mathbf{v}_i\\mathbf{v}_i^T \\end{equation} $$\n记$\\mathbf{z}$为$\\mathbf{r}$经过矩阵$\\mathbf{P}$投影后的结果，如下所示\n$$ \\begin{equation} \\mathbf{z} = \\mathbf{r}\\mathbf{P} \\end{equation} $$\n此时投影后的向量$\\mathbf{z}$的自相关矩阵如下所示\n$$ \\begin{equation} \\begin{aligned} \\mathbf{R}_z =\u0026 \\mathbf{P}^H\\mathbf{R}_r\\mathbf{P} \\\\ =\u0026 \\mathbf{P}^H(\\sum_{i=1}^{N}\\lambda_i \\mathbf{v}_i\\mathbf{v}_i^T) \\mathbf{P} \\\\ =\u0026 \\sum_{i=q}^{N}\\lambda_i \\mathbf{P}^H\\mathbf{v}_i\\mathbf{v}_i^T\\mathbf{P} \\\\ =\u0026 \\mathbf{P}^H\\mathbf{R}_s\\mathbf{P} + \\mathbf{P}^H\\mathbf{R}_n\\mathbf{P} \\end{aligned} \\end{equation} $$\n可以看到此时投影后的向量$\\mathbf{z}$的自相关矩阵中已经没有了干扰信号的自相关分量，这意味着下式成立\n$$ \\begin{equation} \\mathbf{P}^H\\mathbf{j}^H\\mathbf{j}\\mathbf{P}=0 \\end{equation} $$\n即下式成立\n$$ \\begin{equation} \\mathbf{j}\\mathbf{P}=0 \\end{equation} $$\n可以看到此时干扰分量已经成功被去除。事实上根据前文的推导可知，当干扰机数量小于组网雷达数量时，便可成功将干扰去除，这是因为此时的干扰信号构成的空间仍然不是满秩的，通过空间分布之间的差异，便可成功去除。\n还可证明经过上述干扰抑制操作后，信噪比是不变的。从形式上看，将回波信号投影到噪声子空间后，由于回波信号是满秩的，因此回波信号强度只减小为了之前的常数倍；而噪声信号同样是满秩的，经过投影后，减小到了同样常数倍。因此两者相除后，信噪比是不变的。\n4.2 代码与仿真分析 在使用噪声子空间投影法去除干扰信号之前，需要先将干扰信号进行对齐，随后才可使用该方法去除干扰信号。对齐方法在第二章已经详细叙述过了，此处就不再演示，因此本节的仿真程序默认回波信号的干扰已经经过了对齐。Matlab代码如下所示\nJ = wgn(1000, 1, 10, 'complex'); % 干扰信号 s = zeros(1000, 2); % 目标回波信号 s(500, 1) = 1 * exp(1i * 1); s(500, 2) = 1 * exp(1i * 2); x = awgn(complex(s), 20); % 加入噪声 x = x + [J .* exp(1i * (1 : length(J))'), J .* exp(1i * (1 : length(J))')]; figure; plot(abs(x(:, 1))); % 绘制出接收信号 R = x' * x; [E, V] = eig(R); [B, I] = sort(diag(abs(V)), 'descend'); P = E(:, I(2:end)); % 去除大特征值后的投影矩阵 P = P * P'; y = (P * x')'; % 进行投影 figure; plot(abs(y(:, 1))); % 绘制出去除干扰后的信号 首先生成干扰信号与目标回波信号，随后给目标回波信号加入独立噪声与相关干扰，最后计算投影矩阵来将具有相关性的干扰信号去除。仿真的接收信号如下所示\n图4.1：雷达接收信号\r可以看到此时干扰信号已经完全将回波信号淹没了，接下来利用投影矩阵对齐进行投影可以得到如下结果\n图4.2：投影后的信号\r可以发现已经成功去除了干扰信号。该方法的原理是，借助两雷达站接收到的干扰信号的相关性来去除，换言之，如果接收回波信号具有相关性，那么回波信号将会随干扰信号一同被去除。这个方法在运用时需要注意两个要点，一个是干扰信号之间需要存在相关性才能去除，另一个是回波信号之间不能存在相关性，否则会随干扰一同被去除。\n5. 基于张量的融合方法 多雷达站信号级融合可通过互相关方法进行融合，其基本思想为，首先对接收信号作滑窗处理，随后对各个雷达站对应序号的滑窗作互相关处理，并将互相关结果作为最终结果输出。当进行目标检测时，只需要从互相关结果分析便可。\n事实上互相关方法可以看作接收信号被一个张量投影后的结果（这在下文会具体描述），基于张量融合方法的基本思想是，如果能够在某一优化目标函数下，最优化该投影张量，那么最终便能够得到相较于互相关方法更好的结果。这一优化目标函数有许多种取法，在本节中，目标函数选取为投影结果的信息熵，这是因为当目标存在时，投影结果的幅度应当是层次可分明的，而不存在目标时，投影结果应当是平坦全是噪声的。基于这种思路，该方法的步骤如下所示\n选取一个合理的最优化函数，如信号投影结果的信息熵 借助Matlab生成一系列训练数据 借助Tensorflow或者Pytorch等库，来最优化得到投影张量$\\mathbf{A}$ 在Matlab中使用投影张量来进行验证与仿真 5.1. 基本原理 假设雷达站$i$的采样后的回波矢量如下所示\n$$ \\begin{equation} \\mathbf{r}_i= \\begin{pmatrix} r_i(1) \\ r_i(2) \\ … \\ r_i(m) \\end{pmatrix} \\end{equation} $$\n其中$m$为雷达站$i$总采样点数。对其进行滑窗处理，假设每一段长度为$n$，则第$k$段滑窗为$\\mathbf{s}_i^{(k)}$，如下所示\n$$ \\begin{equation} \\mathbf{s}_{i}^{(k)}= \\begin{pmatrix} r_{i}((k-1)n+1) \\\\ r_{i}((k-1)n+2) \\\\ … \\\\ r_{i}((k-1)n+n) \\end{pmatrix} \\end{equation} $$\n雷达站$i$与雷达站$j$的第$k$个滑窗作互相关可表示为$y_k$，如下所示\n$$ \\begin{equation} y_k = \\mathbf{s}_{i}^{(k)} \\cdot \\mathbf{s}_{j}^{(k)} \\end{equation} $$\n当滑窗内不存在目标回波时，$y_k$取值较小；当滑窗内存在目标回波时，$y_k$取值较大，因此可通过互相关结果的幅度大小来判断是否存在雷达回波信号。事实上，如果使用滑窗来作互相关的话，会有诸多问题，如滑窗大小选取的问题、信号落入不同滑窗的问题等。\n本章从另一个角度来阐述这一过程并使用一种新的方法来进行多雷达站信号融合检测，上述过程可以使用矩阵语言来描述。记$\\mathbf{A}$为一个三维矩阵，大小为$N \\times M \\times M$。其中$N$为张量融合结果矢量的长度，$M$为接收信号的采样点数。同时记$\\mathbf{A}(i, :, :)$表示矩阵$\\mathbf{A}$第一个维度下的第$i$个分量，为一个$M \\times M$大小的二维矩阵。上述记号与Matlab中的记号是一致的。\n互相关融合方法对雷达站$i$与雷达站$j$作互相关时，可表示如下\n$$ \\begin{equation} \\mathbf{y} = \\mathbf{r}_i^H \\mathbf{A} \\mathbf{r}_j \\end{equation} $$\n其中$\\mathbf{y}$表示融合结果矢量。上述一维矩阵与三维矩阵之间的乘法如下所示\n$$ \\begin{equation} \\begin{aligned} \\mathbf{r}_i^H \\mathbf{A}= \\begin{pmatrix} \\sum_{k=1}^{m}r_{i}^*(k)a_{1, k, 1} \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{1, k, 2} \u0026 … \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{1, k, m} \\\\ \\sum_{k=1}^{m}r_{i}^*(k)a_{2, k, 1} \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{2, k, 2} \u0026 … \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{2, k, m} \\\\ … \\\\ \\sum_{k=1}^{m}r_{i}^*(k)a_{N, k, 1} \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{N, k, 2} \u0026 … \u0026 \\sum_{k=1}^{m}r_{i}^*(k)a_{N, k, m} \\end{pmatrix} \\in C^{N \\times 1 \\times m} \\\\ \u0026 \\end{aligned} \\end{equation} $$\n同理对于$\\mathbf{r}_i^H \\mathbf{A} \\mathbf{r}_j$可表示为\n$$ \\begin{equation} \\begin{aligned} \\mathbf{r}_i^H \\mathbf{A} \\mathbf{r}_j= \\begin{pmatrix} \\sum_{p=1}^{m}\\sum_{k=1}^{m}r_{i}^*(k)r_{j}(p)a_{1, k, p} \u0026 … \u0026 \\sum_{p=1}^{m}\\sum_{k=1}^{m}r_{i}^*(k)r_{j}(p)a_{N, k, p} \\end{pmatrix} \\in C^{N \\times 1 \\times 1} \\\\ \u0026 \\end{aligned} \\end{equation} $$\n取$\\mathbf{A}(i, :, :)$如下所示\n$$ \\begin{equation} \\mathbf{A}(i, :, :) = \\mathrm{diag}(\\overbrace{0, …, 0}^{(i-1)n}, \\underbrace{1, …, 1}_{n}, 0, …, 0) \\end{equation} $$\n则(3.41)式退化为基于滑窗的互相关融合方法。如果$\\mathbf{A}$的取值合理，那么最终的互相关融合结果$\\mathbf{y}$，在存在目标与不存在目标两种情况下，应当是可分离的。换言之，存在一个超平面，使得可以分割存在目标与不存在目标时对应的互相关融合结果矢量$\\mathbf{y}$。\n这意味着，存在一个矩阵$\\mathbf{P}$与一个偏置$b$，使得下式成立\n$$ \\begin{equation} \\mathrm{sgn}(\\mathbf{P}\\mathbf{y}+b) = \\left\\{ \\begin{array}{ll} 1 \u0026 \\text{target exists} \\\\ 0 \u0026 \\text{target not exists} \\end{array} \\right. \\end{equation} $$\n其中$\\mathrm{sgn}$如下所示\n$$ \\begin{equation} \\mathrm{sgn}(x)= \\left\\{ \\begin{array}{ll} 1 \u0026 x \u003e 0 \\\\ 0.5 \u0026 x = 0 \\\\ 0 \u0026 x \u003c 0 \\end{array} \\right. \\end{equation} $$\n在使用梯度下降法或其它优化方法来寻找最优矩阵$\\mathbf{P}$，偏置$b$与矩阵$\\mathbf{A}$时，由于上述函数的导数性质不够良好，因此通常不使用上述定义的$\\mathrm{sgn}$函数，而是使用下述定义的$\\mathrm{sgn}$函数\n$$ \\begin{equation} \\mathrm{sgn}(x) = \\frac{1}{1 + e^{-x}} \\end{equation} $$\n于是可通过计算机生成大量的训练数据，并通过梯度下降等方法来计算得到最优的矩阵$\\mathbf{P}$，偏置$b$与矩阵$\\mathbf{A}$。\n但是上述方法通常存在难以收敛到最优点这一问题，因此本章不采用上述方法来进行矩阵$\\mathbf{A}$的求解。当雷达回波中存在目标回波时，应当存在一种映射，使得映射后的结果具有较低的信息熵。这是因为当取一个合适的映射矩阵$\\mathbf{A}$时，可以使得雷达回波的有目标回波部分相叠加，从而具有较高的幅度；而噪声部分相消，从而只有低的幅度，此时映射结果具有较低的信息熵。\n此时，矩阵$\\mathbf{A}$的求解可化为求解一个基于张量运算的优化问题，如下所示\n$$ \\begin{equation} \\min_{\\mathbf{A}} \\sum_{i, j}I(\\mathbf{r}_i^H \\mathbf{A} \\mathbf{r}_j) \\end{equation} $$\n其中$I(\\cdot)$表示信息熵，定义如下\n$$ \\begin{equation} I(\\mathbf{x}) = -\\sum_{i}\\frac{|x(i)|^2}{G}\\ln\\frac{|x(i)|^2}{G} \\end{equation} $$\n其中$G = \\sum_{i}|x(i)|^2$。当映射结果中具有目标时，(52)式应当取值较小；当映射结果中全是噪声时，(52)式应当取值较大。首先借助Matlab来生成一系列具有目标与不具有目标的雷达回波数据，随后利用梯度下降法等最优化方法来求解得到投影张量$\\mathbf{A}$即可。\n5.2. 代码与仿真分析 本方法采用Python+Matlab混合编程实现，这是因为Python具有良好的机器学习生态，在处理最优化问题上具有较好的结果。首先通过Matlab来生成对应的训练数据，生成的训练数据默认是经过了时延对齐的数据。代码如下所示\nN = 400; % 采样点数 M = 2000; % 每次生成的数据量 x1 = zeros(11*4000, N); x2 = zeros(11*4000, N); % 生成不同信噪比下有无目标的回波数据 for i = 10 : 20 [t1, t2] = genData(i, 1, N, M); x1((i-10)*M+1 : (i-9)*M, :) = t1; x2((i-10)*M+1 : (i-9)*M, :) = t2; end for i = 10 : 20 [t1, t2] = genData(i, 0, N, M); x1((i-10)*M+1+11*M : (i-9)*M+11*M, :) = t1; x2((i-10)*M+1+11*M : (i-9)*M+11*M, :) = t2; end % 保存至.mat文件 x1_real = real(x1); x1_imag = imag(x1); x2_real = real(x2); x2_imag = imag(x2); save('radarData.mat', 'x1_real', 'x1_imag', 'x2_real', 'x2_imag'); % 生成两个雷达站的回波信号 % snr: 信噪比 % label: 1表示有目标，0表示无目标 % N: 采样点数 % M: 生成回波数据量 function [x1, x2] = genData(snr, label, N, M) x1 = zeros(M, N); x2 = zeros(M, N); for i = 1 : size(x1, 1) off1 = round(rand(1) * 10 - 5); off2_1 = rand(1) * 2*pi; off2_2 = rand(1) * 2*pi; x1(i, round(size(x1, 2)/2) + off1) = label * exp(off2_1 * 1i); x2(i, round(size(x2, 2)/2) + off1) = label * exp(off2_2 * 1i); end x1 = awgn(complex(x1), snr); x2 = awgn(complex(x2), snr); % 归一化 for i = 1 : size(x1, 1) x1(i, :) = x1(i, :) / max(abs(x1(i, :))); x2(i, :) = x2(i, :) / max(abs(x2(i, :))); end end 运行上述代码将生成一个名为radarData.mat的文件，该文件中储存了不同信噪比下的有无目标时的两雷达站接收信号。随后利用Python的Pytorch来进行最优化求解，借助GPU，这一运算将得到很大的速度提升，代码如下所示。\nimport torch import torch.nn as nn import torch.optim as optim from torch.autograd import Variable from numpy import * from scipy.io import loadmat, savemat def matmul_complex(t1,t2): return torch.view_as_complex(torch.stack((t1.real @ t2.real - t1.imag @ t2.imag,t1.real @ t2.imag + t1.imag @ t2.real),dim=2)) device = torch.device(\"cuda:0\") ########### Load Data ############### tmp = loadmat('radarData.mat') x1_real = tmp['x1_real'] x1_imag = tmp['x1_imag'] x2_real = tmp['x2_real'] x2_imag = tmp['x2_imag'] x1 = torch.complex(torch.Tensor(x1_real), torch.Tensor(x1_imag)).to(device).T x2 = torch.complex(torch.Tensor(x2_real), torch.Tensor(x2_imag)).to(device).T ##################################### N = 32 m = 400 lr = 1e-3 epochs = 100 totalNum = x1_real.shape[0] batchSize = 11000 A_re = torch.normal(mean = 0, std=0.01, size = (N, m, m)).to(device) A_im = torch.normal(mean = 0, std=0.01, size = (N, m, m)).to(device) A_var = Variable(torch.complex(A_re, A_im), requires_grad = True) try: while 1: totalLoss = 0 for i in range(2): r1 = x1[:, i*batchSize : (i+1)*batchSize].reshape([m, batchSize]) r2 = x2[:, i*batchSize : (i+1)*batchSize].reshape([m, batchSize]) A_var.retain_grad() tmp = torch.sum(torch.matmul(r1.T, A_var).mT * r2, axis=1) out = torch.abs(tmp) / torch.sqrt(torch.sum((torch.abs(tmp)**2), axis=0)) loss = -torch.sum(out * torch.log(out)) totalLoss += loss loss.backward() A_var = A_var - lr * A_var.grad print(totalLoss) except KeyboardInterrupt: pass A = A_var.detach().cpu().numpy() savemat('radarVar.mat', {'A': A, 'P': P, 'b': b}) import pdb pdb.set_trace() 上述代码首先读取radarData.mat这一文件来获得训练数据，随后利用Pytorch来求解最优的投影张量$\\mathbf{A}$，并在最后将投影张量保存在radarVar.mat中，供Matlab来读取进行后续的仿真验证。Matlab中的验证仿真代码如下所示\nload radarVar.mat; x1 = zeros(400, 1); x2 = zeros(400, 1); x1(200) = 1; x2(200) = 1; x1 = awgn(complex(x1), 10); x2 = awgn(complex(x2), 10); ret = zeros(1, 32); for i = 1 : 32 ret(i) = x1' * reshape(A(i, :, :), 400, 400) * x2; end ret = reshape(ret, 32, 1); 上述代码生成的两雷达站回波信号如下所示\n图5.1：两雷达站接收信号\r经过投影融合后，得到如下所示结果\n图5.2：融合检测结果\r经过计算可以得到，融合后的信噪比大约为24.3dB，相比于原先的信噪比提高了约15dB。进一步地，可编写程序来计算不同原始信噪比情况下的融合信噪比变化，如下图所示。\n图5.3：融合信噪比变化\r从上图可以看出，原始信噪比越高时，融合效果越好，并且基于张量的融合方法优于基于互相关方法的融合方法。这从另一方面证明了本节方法的优越性。\n",
+  "wordCount" : "13519",
   "inLanguage": "en",
   "datePublished": "2023-08-04T18:38:48+08:00",
   "dateModified": "2023-08-04T18:38:48+08:00",
@@ -291,13 +291,13 @@ var _hmt = _hmt || [];
     
     <span id="post_meta_style_3">
         <span class="fa fa-file-word-o"></span>
-        <span>7686字
+        <span>13519字
             &nbsp;&nbsp;
         </span>
     </span>
     <span id="post_meta_style_4">
         <span class="fa fa-clock-o"></span>
-        <span>16分钟
+        <span>27分钟
             &nbsp;&nbsp;
         </span>
     </span>
@@ -395,7 +395,23 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#__31-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="3.1. 基本原理"><strong>3.1. 基本原理</strong></a></li>
                 <li>
-                    <a href="#__32-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="3.2. 代码与仿真分析"><strong>3.2. 代码与仿真分析</strong></a>
+                    <a href="#__32-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="3.2. 代码与仿真分析"><strong>3.2. 代码与仿真分析</strong></a></li></ul>
+                </li>
+                <li>
+                    <a href="#__4-%e5%9f%ba%e4%ba%8e%e5%99%aa%e5%a3%b0%e5%ad%90%e7%a9%ba%e9%97%b4%e6%8a%95%e5%bd%b1%e7%9a%84%e5%b9%b2%e6%89%b0%e5%8e%bb%e9%99%a4%e6%96%b9%e6%b3%95__" aria-label="4. 基于噪声子空间投影的干扰去除方法"><strong>4. 基于噪声子空间投影的干扰去除方法</strong></a><ul>
+                        
+                <li>
+                    <a href="#__41-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="4.1. 基本原理"><strong>4.1. 基本原理</strong></a></li>
+                <li>
+                    <a href="#__42-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="4.2 代码与仿真分析"><strong>4.2 代码与仿真分析</strong></a></li></ul>
+                </li>
+                <li>
+                    <a href="#__5-%e5%9f%ba%e4%ba%8e%e5%bc%a0%e9%87%8f%e7%9a%84%e8%9e%8d%e5%90%88%e6%96%b9%e6%b3%95__" aria-label="5. 基于张量的融合方法"><strong>5. 基于张量的融合方法</strong></a><ul>
+                        
+                <li>
+                    <a href="#__51-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="5.1. 基本原理"><strong>5.1. 基本原理</strong></a></li>
+                <li>
+                    <a href="#__52-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="5.2. 代码与仿真分析"><strong>5.2. 代码与仿真分析</strong></a>
                 </li>
             </ul>
             </li>
@@ -464,7 +480,7 @@ var _hmt = _hmt || [];
         return rect.top + win.pageYOffset;
     }
 </script>
-        <div class="post-content"><p>  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。</p>
+        <div class="post-content"><p>  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互相关方法的时延对齐方法，基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。</p>
 <h3 id="__1-互相关时延对齐补偿方法__"><strong>1. 互相关时延对齐补偿方法</strong><a hidden class="anchor" aria-hidden="true" href="#__1-互相关时延对齐补偿方法__">#</a></h3>
 <h4 id="__11-基本原理__"><strong>1.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__11-基本原理__">#</a></h4>
 <p>  对于独立同分布的噪声，其互相关量可近似为0，而对于待对齐的量（如雷达接收信号或强干扰信号），在对齐时互相关量取值较大，不对齐时互相关量取值较小。基于这一基本原理，互相关时延对齐补偿方法通过寻找两个信号的最大互相关所在位置来确定对齐时延。需要注意的是，对于雷达接收信号，互相关时延对齐补偿法通常不能取得较好的效果，这是因为虽然独立同分布噪声的互相关量可近似为0，但并不为0，因此当噪声功率过大时，噪声的互相关量便会淹没信号。而这对于一整段接收信号来说是非常常见的，因为目标回波信号通常只占据整个接收时间段的一小部分。</p>
@@ -1037,6 +1053,466 @@ $$</p>
     </center>
 </div>
 <p>  从图3.3与3.4观察可得，增加雷达站个数本质上是让不同的概率密度函数之间有了更好的区分度。如果从这一思路出发，显然可以通过其它的优化函数方法来获得更佳的融合统计量，因此笔者认为接下来可以从最优化函数的角度出发，来得到最优的统计量，以使得到最佳的概率密度区分度。这个便是深度学习方法在组网雷达融合检测中的一个切入点。</p>
+<h3 id="__4-基于噪声子空间投影的干扰去除方法__"><strong>4. 基于噪声子空间投影的干扰去除方法</strong><a hidden class="anchor" aria-hidden="true" href="#__4-基于噪声子空间投影的干扰去除方法__">#</a></h3>
+<h4 id="__41-基本原理__"><strong>4.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__41-基本原理__">#</a></h4>
+<p>  基于噪声子空间投影来去除干扰的方法基于一个基本假设，即多雷达站所接收到的干扰具有强相关性，而目标回波不具有相关性（或具有弱相关性）。与第一章所基于的假设不同的是，本章假设各个雷达站所接收到的雷达回波不具有相关性。如果目标回波具有相关性，那么在去除干扰的同时，也会将目标回波同时去除。</p>
+<p>  基于噪声子空间投影的干扰去除方法的基本原理是，由于各个雷达站所接收到的干扰信号具有相关性并且具有大能量特征，因此对各个雷达站所接收到的信号作特征值分解时，干扰信号将会构成一个具有大特征值的干扰子空间，而噪声信号由于能量较小，仅会构成特征值较小的噪声子空间。当将雷达回波投影至噪声子空间时，便会将干扰去除。同时由于目标回波能量在整段雷达回波信号中占据较小能量，且不具有相关性，因此在投影至噪声子空间过程中，并不会去除目标回波信号。</p>
+<p>  记雷达站$i$所接收到的回波信号为$r_i(t)$，如下所示</p>
+<p>$$
+\begin{equation}
+r_i(t) = s_i(t)+c_i(t)+n_i(t)
+\end{equation}
+$$</p>
+<p>  其中$s_i(t)$为目标回波信号，$c_i(t)$为干扰信号，$n_i(t)$为噪声。对上述接收信号进行采样，得到雷达站$i$的接收向量，如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{r}_i=
+\begin{pmatrix}
+r_i(T_s) \\
+r_i(2T_s) \\
+&hellip; \\
+r_i(nT_s)
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  其中$n$为雷达站接收信号采样点数，$T_s$为采样间隔。多个雷达站所接收到的信号构成一个矩阵，如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{r}=
+\begin{pmatrix}
+\mathbf{r}_1 &amp; \mathbf{r}_2 &amp; &hellip; &amp; \mathbf{r}_N
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  其中$N$为雷达站个数。通过接收回波矩阵可得到各雷达站接收信号的自相关与互相关为</p>
+<p>$$
+\begin{equation}
+\mathbf{R}_{r}=\mathbf{r}^{H}\mathbf{r}
+\end{equation}
+$$</p>
+<p>  由于不同雷达站之间的噪声、噪声与信号、噪声与干扰之间没有相关性，因此在计算上述自相关矩阵时，可以直接将这几项忽略，只需要考虑信号自相关与干扰自相关与互相关即可。此时自相关矩阵可写为</p>
+<p>$$
+\begin{equation}
+\mathbf{R}_{r} = \mathbf{R}_{s} + \mathbf{R}_{j} + \mathbf{R}_{n}
+\end{equation}
+$$</p>
+<p>  其中$\mathbf{R}_{s}$为信号的自相关矩阵，$\mathbf{R}_{j}$为干扰的自相关矩阵，$\mathbf{R}_{n}$为噪声的自相关矩阵。</p>
+<p>  记雷达站$i$的目标回波信号为$\alpha_i s_i(t)$，其中$s_i(t)$为发射机发射信号在空间中经过双程延时后的信号，$\alpha_i$为由于目标RCS起伏特性导致的复幅度。上式仅考虑了雷达信号自发自收的情况，事实上对于雷达站多发多收的情况下的分析是一致的。此时信号回波的自相关矩阵为</p>
+<p>$$
+\begin{equation}
+\mathbf{R}_{s}=
+\begin{pmatrix}
+\alpha_1^2 C_1 &amp; 0 &amp; &hellip; &amp; 0 \\
+0 &amp; \alpha_2^2 C_2 &amp; &hellip; &amp; 0 \\
+&hellip; \\
+0 &amp; 0 &amp; &hellip; &amp; \alpha_N^2 C_N
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  其中$C_i=\int_{-\infty}^{+\infty}s_i(t)^2\mathrm{d}t$（假设各雷达信号已完成对齐）。可以发现信号回波的自相关矩阵是满秩的，这意味着信号回波将分布在整个接收回波空间中。</p>
+<p>  由于各雷达站接收到的干扰信号通常由一个干扰机发出，因此干扰信号之间存在强相关性。假设雷达站$i$接收到的干扰信号为$\beta_i j(t)$（假设干扰与目标回波信号同时对齐，这意味着干扰机需要与真实目标相差较小距离），其中$\beta_i$表示由于路程导致的信号幅度差异，$j(t)$表示干扰机发射的干扰信号。此时干扰信号的自相关矩阵可表示为</p>
+<p>$$
+\begin{equation}
+\mathbf{R}_{j}=
+\begin{pmatrix}
+\beta_1^2 D_{11} &amp; \beta_1 \beta_2 D_{12} &amp; &hellip; &amp; \beta_1 \beta_N D_{1N} \\
+\beta_2 \beta_1 D_{12} &amp; \beta_2^2 D_{22} &amp; &hellip; &amp; \beta_2 \beta_N D_{2N} \\
+&hellip; \\
+\beta_N \beta_1 D_{1N} &amp; \beta_N \beta_2 D_{2N} &amp; &hellip; &amp; \beta_N^2 D_{NN}
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  其中$D_{ij}=\int_{-\infty}^{+\infty}j_i(t)j_j^*(t)\mathrm{d}t$。由于每个雷达站接收到同一干扰机的干扰信号，因此上式中的所有$D_{ij}$均相等仅相差某一幅角，不妨记为$D$。观察干扰信号的自相关矩阵可以发现每一列均为如下所示向量的某个倍数，因此干扰信号的自相关矩阵的秩为1。</p>
+<p>$$
+\begin{equation}
+\begin{pmatrix}
+\beta_1 D \\
+\beta_2 D \\
+&hellip; \\
+\beta_N D
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  借助干扰信号与目标回波信号在空间分布上的差异，即可去除干扰信号。噪声自相关矩阵与信号自相关矩阵同理分析，可得到为一个对角阵，同样满足满秩条件。</p>
+<p>  对接收信号的自相关矩阵作特征值分解，可得到如下结果</p>
+<p>$$
+\begin{equation}
+\mathbf{R}_r = \sum_{i=1}^{N}\lambda_i \mathbf{v}_i\mathbf{v}_i^T
+\end{equation}
+$$</p>
+<p>  其中由于干扰信号占据较大能量，因此具有大的特征值，而噪声与目标回波信号的能量相对较小，因此在分析时可忽略不计。记$\lambda_1, \lambda_2, &hellip;, \lambda_N$降序排列，由于干扰信号对应大的特征值，因此可去除前几个特征值与特征向量，而保留后面的特征值与特征向量，得到如下矩阵</p>
+<p>$$
+\begin{equation}
+\mathbf{P} = \sum_{i=q}^{N}\mathbf{v}_i\mathbf{v}_i^T
+\end{equation}
+$$</p>
+<p>  记$\mathbf{z}$为$\mathbf{r}$经过矩阵$\mathbf{P}$投影后的结果，如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{z} = \mathbf{r}\mathbf{P}
+\end{equation}
+$$</p>
+<p>  此时投影后的向量$\mathbf{z}$的自相关矩阵如下所示</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+\mathbf{R}_z =&amp; \mathbf{P}^H\mathbf{R}_r\mathbf{P} \\
+=&amp; \mathbf{P}^H(\sum_{i=1}^{N}\lambda_i \mathbf{v}_i\mathbf{v}_i^T) \mathbf{P} \\
+=&amp; \sum_{i=q}^{N}\lambda_i \mathbf{P}^H\mathbf{v}_i\mathbf{v}_i^T\mathbf{P} \\
+=&amp; \mathbf{P}^H\mathbf{R}_s\mathbf{P} + \mathbf{P}^H\mathbf{R}_n\mathbf{P}
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  可以看到此时投影后的向量$\mathbf{z}$的自相关矩阵中已经没有了干扰信号的自相关分量，这意味着下式成立</p>
+<p>$$
+\begin{equation}
+\mathbf{P}^H\mathbf{j}^H\mathbf{j}\mathbf{P}=0
+\end{equation}
+$$</p>
+<p>  即下式成立</p>
+<p>$$
+\begin{equation}
+\mathbf{j}\mathbf{P}=0
+\end{equation}
+$$</p>
+<p>  可以看到此时干扰分量已经成功被去除。事实上根据前文的推导可知，当干扰机数量小于组网雷达数量时，便可成功将干扰去除，这是因为此时的干扰信号构成的空间仍然不是满秩的，通过空间分布之间的差异，便可成功去除。</p>
+<p>  还可证明经过上述干扰抑制操作后，信噪比是不变的。从形式上看，将回波信号投影到噪声子空间后，由于回波信号是满秩的，因此回波信号强度只减小为了之前的常数倍；而噪声信号同样是满秩的，经过投影后，减小到了同样常数倍。因此两者相除后，信噪比是不变的。</p>
+<h4 id="__42-代码与仿真分析__"><strong>4.2 代码与仿真分析</strong><a hidden class="anchor" aria-hidden="true" href="#__42-代码与仿真分析__">#</a></h4>
+<p>  在使用噪声子空间投影法去除干扰信号之前，需要先将干扰信号进行对齐，随后才可使用该方法去除干扰信号。对齐方法在第二章已经详细叙述过了，此处就不再演示，因此本节的仿真程序默认回波信号的干扰已经经过了对齐。Matlab代码如下所示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>J = wgn(<span style="color:#ae81ff">1000</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>, <span style="color:#e6db74">&#39;complex&#39;</span>); <span style="color:#75715e">% 干扰信号</span>
+</span></span><span style="display:flex;"><span>s = zeros(<span style="color:#ae81ff">1000</span>, <span style="color:#ae81ff">2</span>); <span style="color:#75715e">% 目标回波信号</span>
+</span></span><span style="display:flex;"><span>s(<span style="color:#ae81ff">500</span>, <span style="color:#ae81ff">1</span>) = <span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> exp(<span style="color:#ae81ff">1</span>i <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>s(<span style="color:#ae81ff">500</span>, <span style="color:#ae81ff">2</span>) = <span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> exp(<span style="color:#ae81ff">1</span>i <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x = awgn(complex(s), <span style="color:#ae81ff">20</span>);    <span style="color:#75715e">% 加入噪声</span>
+</span></span><span style="display:flex;"><span>x = x <span style="color:#f92672">+</span> [J <span style="color:#f92672">.*</span> exp(<span style="color:#ae81ff">1</span>i <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> : length(J))<span style="color:#f92672">&#39;</span>), J <span style="color:#f92672">.*</span> exp(<span style="color:#ae81ff">1</span>i <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> : length(J))<span style="color:#f92672">&#39;</span>)];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>figure;
+</span></span><span style="display:flex;"><span>plot(abs(x(:, <span style="color:#ae81ff">1</span>))); <span style="color:#75715e">% 绘制出接收信号</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>R = x<span style="color:#f92672">&#39;</span> <span style="color:#f92672">*</span> x;
+</span></span><span style="display:flex;"><span>[E, V] = eig(R);
+</span></span><span style="display:flex;"><span>[B, I] = sort(diag(abs(V)), <span style="color:#e6db74">&#39;descend&#39;</span>);
+</span></span><span style="display:flex;"><span>P = E(:, I(<span style="color:#ae81ff">2</span>:<span style="color:#66d9ef">end</span>));     <span style="color:#75715e">% 去除大特征值后的投影矩阵</span>
+</span></span><span style="display:flex;"><span>P = P <span style="color:#f92672">*</span> P<span style="color:#f92672">&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>y = (P <span style="color:#f92672">*</span> x<span style="color:#f92672">&#39;</span>)<span style="color:#f92672">&#39;</span>; <span style="color:#75715e">% 进行投影</span>
+</span></span><span style="display:flex;"><span>figure;
+</span></span><span style="display:flex;"><span>plot(abs(y(:, <span style="color:#ae81ff">1</span>))); <span style="color:#75715e">% 绘制出去除干扰后的信号</span>
+</span></span></code></pre></div><p>  首先生成干扰信号与目标回波信号，随后给目标回波信号加入独立噪声与相关干扰，最后计算投影矩阵来将具有相关性的干扰信号去除。仿真的接收信号如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap33.4.png' width=70%>
+    <br>图4.1：雷达接收信号
+    </center>
+</div>
+<p>  可以看到此时干扰信号已经完全将回波信号淹没了，接下来利用投影矩阵对齐进行投影可以得到如下结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap33.5.png' width=70%>
+    <br>图4.2：投影后的信号
+    </center>
+</div>
+<p>  可以发现已经成功去除了干扰信号。该方法的原理是，借助两雷达站接收到的干扰信号的相关性来去除，换言之，如果接收回波信号具有相关性，那么回波信号将会随干扰信号一同被去除。这个方法在运用时需要注意两个要点，一个是干扰信号之间需要存在相关性才能去除，另一个是回波信号之间不能存在相关性，否则会随干扰一同被去除。</p>
+<h3 id="__5-基于张量的融合方法__"><strong>5. 基于张量的融合方法</strong><a hidden class="anchor" aria-hidden="true" href="#__5-基于张量的融合方法__">#</a></h3>
+<p>  多雷达站信号级融合可通过互相关方法进行融合，其基本思想为，首先对接收信号作滑窗处理，随后对各个雷达站对应序号的滑窗作互相关处理，并将互相关结果作为最终结果输出。当进行目标检测时，只需要从互相关结果分析便可。</p>
+<p>  事实上互相关方法可以看作接收信号被一个张量投影后的结果（这在下文会具体描述），基于张量融合方法的基本思想是，如果能够在某一优化目标函数下，最优化该投影张量，那么最终便能够得到相较于互相关方法更好的结果。这一优化目标函数有许多种取法，在本节中，目标函数选取为投影结果的信息熵，这是因为当目标存在时，投影结果的幅度应当是层次可分明的，而不存在目标时，投影结果应当是平坦全是噪声的。基于这种思路，该方法的步骤如下所示</p>
+<ul>
+<li>
+<ol>
+<li>选取一个合理的最优化函数，如信号投影结果的信息熵</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>借助Matlab生成一系列训练数据</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>借助Tensorflow或者Pytorch等库，来最优化得到投影张量$\mathbf{A}$</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>在Matlab中使用投影张量来进行验证与仿真</li>
+</ol>
+</li>
+</ul>
+<h4 id="__51-基本原理__"><strong>5.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__51-基本原理__">#</a></h4>
+<p>  假设雷达站$i$的采样后的回波矢量如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{r}_i=
+\begin{pmatrix}
+r_i(1) \
+r_i(2) \
+&hellip; \
+r_i(m)
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  其中$m$为雷达站$i$总采样点数。对其进行滑窗处理，假设每一段长度为$n$，则第$k$段滑窗为$\mathbf{s}_i^{(k)}$，如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{s}_{i}^{(k)}=
+\begin{pmatrix}
+r_{i}((k-1)n+1) \\
+r_{i}((k-1)n+2) \\
+&hellip; \\
+r_{i}((k-1)n+n)
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  雷达站$i$与雷达站$j$的第$k$个滑窗作互相关可表示为$y_k$，如下所示</p>
+<p>$$
+\begin{equation}
+y_k = \mathbf{s}_{i}^{(k)} \cdot \mathbf{s}_{j}^{(k)}
+\end{equation}
+$$</p>
+<p>  当滑窗内不存在目标回波时，$y_k$取值较小；当滑窗内存在目标回波时，$y_k$取值较大，因此可通过互相关结果的幅度大小来判断是否存在雷达回波信号。事实上，如果使用滑窗来作互相关的话，会有诸多问题，如滑窗大小选取的问题、信号落入不同滑窗的问题等。</p>
+<p>  本章从另一个角度来阐述这一过程并使用一种新的方法来进行多雷达站信号融合检测，上述过程可以使用矩阵语言来描述。记$\mathbf{A}$为一个三维矩阵，大小为$N \times M \times M$。其中$N$为张量融合结果矢量的长度，$M$为接收信号的采样点数。同时记$\mathbf{A}(i, :, :)$表示矩阵$\mathbf{A}$第一个维度下的第$i$个分量，为一个$M \times M$大小的二维矩阵。上述记号与Matlab中的记号是一致的。</p>
+<p>  互相关融合方法对雷达站$i$与雷达站$j$作互相关时，可表示如下</p>
+<p>$$
+\begin{equation}
+\mathbf{y} = \mathbf{r}_i^H \mathbf{A} \mathbf{r}_j
+\end{equation}
+$$</p>
+<p>  其中$\mathbf{y}$表示融合结果矢量。上述一维矩阵与三维矩阵之间的乘法如下所示</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+\mathbf{r}_i^H \mathbf{A}=
+\begin{pmatrix}
+\sum_{k=1}^{m}r_{i}^*(k)a_{1, k, 1} &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{1, k, 2} &amp; &hellip; &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{1, k, m} \\
+\sum_{k=1}^{m}r_{i}^*(k)a_{2, k, 1} &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{2, k, 2} &amp; &hellip; &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{2, k, m} \\
+&hellip; \\
+\sum_{k=1}^{m}r_{i}^*(k)a_{N, k, 1} &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{N, k, 2} &amp; &hellip; &amp; \sum_{k=1}^{m}r_{i}^*(k)a_{N, k, m}
+\end{pmatrix}
+\in C^{N \times 1 \times m} \\ &amp;
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  同理对于$\mathbf{r}_i^H \mathbf{A} \mathbf{r}_j$可表示为</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+\mathbf{r}_i^H \mathbf{A} \mathbf{r}_j=
+\begin{pmatrix}
+\sum_{p=1}^{m}\sum_{k=1}^{m}r_{i}^*(k)r_{j}(p)a_{1, k, p} &amp; &hellip; &amp; \sum_{p=1}^{m}\sum_{k=1}^{m}r_{i}^*(k)r_{j}(p)a_{N, k, p}
+\end{pmatrix}
+\in C^{N \times 1 \times 1} \\ &amp;
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  取$\mathbf{A}(i, :, :)$如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{A}(i, :, :) = \mathrm{diag}(\overbrace{0, &hellip;, 0}^{(i-1)n}, \underbrace{1, &hellip;, 1}_{n}, 0, &hellip;, 0)
+\end{equation}
+$$</p>
+<p>  则(3.41)式退化为基于滑窗的互相关融合方法。如果$\mathbf{A}$的取值合理，那么最终的互相关融合结果$\mathbf{y}$，在存在目标与不存在目标两种情况下，应当是可分离的。换言之，存在一个超平面，使得可以分割存在目标与不存在目标时对应的互相关融合结果矢量$\mathbf{y}$。</p>
+<p>  这意味着，存在一个矩阵$\mathbf{P}$与一个偏置$b$，使得下式成立</p>
+<p>$$
+\begin{equation}
+\mathrm{sgn}(\mathbf{P}\mathbf{y}+b) =
+\left\{
+\begin{array}{ll}
+1 &amp; \text{target exists} \\
+0 &amp; \text{target not exists}
+\end{array}
+\right.
+\end{equation}
+$$</p>
+<p>  其中$\mathrm{sgn}$如下所示</p>
+<p>$$
+\begin{equation}
+\mathrm{sgn}(x)=
+\left\{
+\begin{array}{ll}
+1 &amp; x &gt; 0 \\
+0.5 &amp; x = 0 \\
+0 &amp; x &lt; 0
+\end{array}
+\right.
+\end{equation}
+$$</p>
+<p>  在使用梯度下降法或其它优化方法来寻找最优矩阵$\mathbf{P}$，偏置$b$与矩阵$\mathbf{A}$时，由于上述函数的导数性质不够良好，因此通常不使用上述定义的$\mathrm{sgn}$函数，而是使用下述定义的$\mathrm{sgn}$函数</p>
+<p>$$
+\begin{equation}
+\mathrm{sgn}(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+$$</p>
+<p>  于是可通过计算机生成大量的训练数据，并通过梯度下降等方法来计算得到最优的矩阵$\mathbf{P}$，偏置$b$与矩阵$\mathbf{A}$。</p>
+<p>  但是上述方法通常存在难以收敛到最优点这一问题，因此本章不采用上述方法来进行矩阵$\mathbf{A}$的求解。当雷达回波中存在目标回波时，应当存在一种映射，使得映射后的结果具有较低的信息熵。这是因为当取一个合适的映射矩阵$\mathbf{A}$时，可以使得雷达回波的有目标回波部分相叠加，从而具有较高的幅度；而噪声部分相消，从而只有低的幅度，此时映射结果具有较低的信息熵。</p>
+<p>  此时，矩阵$\mathbf{A}$的求解可化为求解一个基于张量运算的优化问题，如下所示</p>
+<p>$$
+\begin{equation}
+\min_{\mathbf{A}} \sum_{i, j}I(\mathbf{r}_i^H \mathbf{A} \mathbf{r}_j)
+\end{equation}
+$$</p>
+<p>  其中$I(\cdot)$表示信息熵，定义如下</p>
+<p>$$
+\begin{equation}
+I(\mathbf{x}) = -\sum_{i}\frac{|x(i)|^2}{G}\ln\frac{|x(i)|^2}{G}
+\end{equation}
+$$</p>
+<p>  其中$G = \sum_{i}|x(i)|^2$。当映射结果中具有目标时，(52)式应当取值较小；当映射结果中全是噪声时，(52)式应当取值较大。首先借助Matlab来生成一系列具有目标与不具有目标的雷达回波数据，随后利用梯度下降法等最优化方法来求解得到投影张量$\mathbf{A}$即可。</p>
+<h4 id="__52-代码与仿真分析__"><strong>5.2. 代码与仿真分析</strong><a hidden class="anchor" aria-hidden="true" href="#__52-代码与仿真分析__">#</a></h4>
+<p>  本方法采用Python+Matlab混合编程实现，这是因为Python具有良好的机器学习生态，在处理最优化问题上具有较好的结果。首先通过Matlab来生成对应的训练数据，生成的训练数据默认是经过了时延对齐的数据。代码如下所示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>N = <span style="color:#ae81ff">400</span>;   <span style="color:#75715e">% 采样点数</span>
+</span></span><span style="display:flex;"><span>M = <span style="color:#ae81ff">2000</span>;   <span style="color:#75715e">% 每次生成的数据量</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x1 = zeros(<span style="color:#ae81ff">11</span><span style="color:#f92672">*</span><span style="color:#ae81ff">4000</span>, N);
+</span></span><span style="display:flex;"><span>x2 = zeros(<span style="color:#ae81ff">11</span><span style="color:#f92672">*</span><span style="color:#ae81ff">4000</span>, N);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% 生成不同信噪比下有无目标的回波数据</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i = <span style="color:#ae81ff">10</span> : <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>    [t1, t2] = genData(i, <span style="color:#ae81ff">1</span>, N, M);
+</span></span><span style="display:flex;"><span>    x1((i<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> : (i<span style="color:#f92672">-</span><span style="color:#ae81ff">9</span>)<span style="color:#f92672">*</span>M, :) = t1;
+</span></span><span style="display:flex;"><span>    x2((i<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> : (i<span style="color:#f92672">-</span><span style="color:#ae81ff">9</span>)<span style="color:#f92672">*</span>M, :) = t2;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i = <span style="color:#ae81ff">10</span> : <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>    [t1, t2] = genData(i, <span style="color:#ae81ff">0</span>, N, M);
+</span></span><span style="display:flex;"><span>    x1((i<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">11</span><span style="color:#f92672">*</span>M : (i<span style="color:#f92672">-</span><span style="color:#ae81ff">9</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">11</span><span style="color:#f92672">*</span>M, :) = t1;
+</span></span><span style="display:flex;"><span>    x2((i<span style="color:#f92672">-</span><span style="color:#ae81ff">10</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span><span style="color:#ae81ff">11</span><span style="color:#f92672">*</span>M : (i<span style="color:#f92672">-</span><span style="color:#ae81ff">9</span>)<span style="color:#f92672">*</span>M<span style="color:#f92672">+</span><span style="color:#ae81ff">11</span><span style="color:#f92672">*</span>M, :) = t2;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% 保存至.mat文件</span>
+</span></span><span style="display:flex;"><span>x1_real = real(x1);
+</span></span><span style="display:flex;"><span>x1_imag = imag(x1);
+</span></span><span style="display:flex;"><span>x2_real = real(x2);
+</span></span><span style="display:flex;"><span>x2_imag = imag(x2);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>save(<span style="color:#e6db74">&#39;radarData.mat&#39;</span>, <span style="color:#e6db74">&#39;x1_real&#39;</span>, <span style="color:#e6db74">&#39;x1_imag&#39;</span>, <span style="color:#e6db74">&#39;x2_real&#39;</span>, <span style="color:#e6db74">&#39;x2_imag&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% 生成两个雷达站的回波信号</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% snr: 信噪比</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% label: 1表示有目标，0表示无目标</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% N: 采样点数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">% M: 生成回波数据量</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> [x1, x2] = <span style="color:#a6e22e">genData</span>(snr, label, N, M)
+</span></span><span style="display:flex;"><span>    x1 = zeros(M, N);
+</span></span><span style="display:flex;"><span>    x2 = zeros(M, N);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i = <span style="color:#ae81ff">1</span> : size(x1, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        off1 = round(rand(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">5</span>);
+</span></span><span style="display:flex;"><span>        off2_1 = rand(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>pi;
+</span></span><span style="display:flex;"><span>        off2_2 = rand(<span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>pi;
+</span></span><span style="display:flex;"><span>        x1(i, round(size(x1, <span style="color:#ae81ff">2</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> off1) = label <span style="color:#f92672">*</span> exp(off2_1 <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>i);
+</span></span><span style="display:flex;"><span>        x2(i, round(size(x2, <span style="color:#ae81ff">2</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> off1) = label <span style="color:#f92672">*</span> exp(off2_2 <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>i);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>    x1 = awgn(complex(x1), snr);
+</span></span><span style="display:flex;"><span>    x2 = awgn(complex(x2), snr);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">% 归一化</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i = <span style="color:#ae81ff">1</span> : size(x1, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        x1(i, :) = x1(i, :) <span style="color:#f92672">/</span> max(abs(x1(i, :)));
+</span></span><span style="display:flex;"><span>        x2(i, :) = x2(i, :) <span style="color:#f92672">/</span> max(abs(x2(i, :)));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>  运行上述代码将生成一个名为radarData.mat的文件，该文件中储存了不同信噪比下的有无目标时的两雷达站接收信号。随后利用Python的Pytorch来进行最优化求解，借助GPU，这一运算将得到很大的速度提升，代码如下所示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.optim <span style="color:#66d9ef">as</span> optim
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> torch.autograd <span style="color:#f92672">import</span> Variable
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> scipy.io <span style="color:#f92672">import</span> loadmat, savemat
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">matmul_complex</span>(t1,t2):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> torch<span style="color:#f92672">.</span>view_as_complex(torch<span style="color:#f92672">.</span>stack((t1<span style="color:#f92672">.</span>real <span style="color:#f92672">@</span> t2<span style="color:#f92672">.</span>real <span style="color:#f92672">-</span> t1<span style="color:#f92672">.</span>imag <span style="color:#f92672">@</span> t2<span style="color:#f92672">.</span>imag,t1<span style="color:#f92672">.</span>real <span style="color:#f92672">@</span> t2<span style="color:#f92672">.</span>imag <span style="color:#f92672">+</span> t1<span style="color:#f92672">.</span>imag <span style="color:#f92672">@</span> t2<span style="color:#f92672">.</span>real),dim<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>device <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>device(<span style="color:#e6db74">&#34;cuda:0&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">########### Load Data ###############</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tmp <span style="color:#f92672">=</span> loadmat(<span style="color:#e6db74">&#39;radarData.mat&#39;</span>)
+</span></span><span style="display:flex;"><span>x1_real <span style="color:#f92672">=</span> tmp[<span style="color:#e6db74">&#39;x1_real&#39;</span>]
+</span></span><span style="display:flex;"><span>x1_imag <span style="color:#f92672">=</span> tmp[<span style="color:#e6db74">&#39;x1_imag&#39;</span>]
+</span></span><span style="display:flex;"><span>x2_real <span style="color:#f92672">=</span> tmp[<span style="color:#e6db74">&#39;x2_real&#39;</span>]
+</span></span><span style="display:flex;"><span>x2_imag <span style="color:#f92672">=</span> tmp[<span style="color:#e6db74">&#39;x2_imag&#39;</span>]
+</span></span><span style="display:flex;"><span>x1 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>complex(torch<span style="color:#f92672">.</span>Tensor(x1_real), torch<span style="color:#f92672">.</span>Tensor(x1_imag))<span style="color:#f92672">.</span>to(device)<span style="color:#f92672">.</span>T
+</span></span><span style="display:flex;"><span>x2 <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>complex(torch<span style="color:#f92672">.</span>Tensor(x2_real), torch<span style="color:#f92672">.</span>Tensor(x2_imag))<span style="color:#f92672">.</span>to(device)<span style="color:#f92672">.</span>T
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#####################################</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>N <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> <span style="color:#ae81ff">400</span>
+</span></span><span style="display:flex;"><span>lr <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e-3</span>
+</span></span><span style="display:flex;"><span>epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>totalNum <span style="color:#f92672">=</span> x1_real<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>batchSize <span style="color:#f92672">=</span> <span style="color:#ae81ff">11000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A_re <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>normal(mean <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, std<span style="color:#f92672">=</span><span style="color:#ae81ff">0.01</span>, size <span style="color:#f92672">=</span> (N, m, m))<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>A_im <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>normal(mean <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, std<span style="color:#f92672">=</span><span style="color:#ae81ff">0.01</span>, size <span style="color:#f92672">=</span> (N, m, m))<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A_var <span style="color:#f92672">=</span> Variable(torch<span style="color:#f92672">.</span>complex(A_re, A_im), requires_grad <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        totalLoss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>):
+</span></span><span style="display:flex;"><span>            r1 <span style="color:#f92672">=</span> x1[:, i<span style="color:#f92672">*</span>batchSize : (i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>batchSize]<span style="color:#f92672">.</span>reshape([m, batchSize])
+</span></span><span style="display:flex;"><span>            r2 <span style="color:#f92672">=</span> x2[:, i<span style="color:#f92672">*</span>batchSize : (i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span>batchSize]<span style="color:#f92672">.</span>reshape([m, batchSize])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            A_var<span style="color:#f92672">.</span>retain_grad()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            tmp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sum(torch<span style="color:#f92672">.</span>matmul(r1<span style="color:#f92672">.</span>T, A_var)<span style="color:#f92672">.</span>mT <span style="color:#f92672">*</span> r2, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            out <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>abs(tmp) <span style="color:#f92672">/</span> torch<span style="color:#f92672">.</span>sqrt(torch<span style="color:#f92672">.</span>sum((torch<span style="color:#f92672">.</span>abs(tmp)<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>), axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>))
+</span></span><span style="display:flex;"><span>            loss <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>torch<span style="color:#f92672">.</span>sum(out <span style="color:#f92672">*</span> torch<span style="color:#f92672">.</span>log(out))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            totalLoss <span style="color:#f92672">+=</span> loss
+</span></span><span style="display:flex;"><span>            loss<span style="color:#f92672">.</span>backward()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            A_var <span style="color:#f92672">=</span> A_var <span style="color:#f92672">-</span> lr <span style="color:#f92672">*</span> A_var<span style="color:#f92672">.</span>grad
+</span></span><span style="display:flex;"><span>        print(totalLoss)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">except</span> <span style="color:#a6e22e">KeyboardInterrupt</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>A <span style="color:#f92672">=</span> A_var<span style="color:#f92672">.</span>detach()<span style="color:#f92672">.</span>cpu()<span style="color:#f92672">.</span>numpy()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>savemat(<span style="color:#e6db74">&#39;radarVar.mat&#39;</span>, {<span style="color:#e6db74">&#39;A&#39;</span>: A, <span style="color:#e6db74">&#39;P&#39;</span>: P, <span style="color:#e6db74">&#39;b&#39;</span>: b})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pdb
+</span></span><span style="display:flex;"><span>pdb<span style="color:#f92672">.</span>set_trace()
+</span></span></code></pre></div><p>  上述代码首先读取radarData.mat这一文件来获得训练数据，随后利用Pytorch来求解最优的投影张量$\mathbf{A}$，并在最后将投影张量保存在radarVar.mat中，供Matlab来读取进行后续的仿真验证。Matlab中的验证仿真代码如下所示</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>load radarVar.mat;
+</span></span><span style="display:flex;"><span>x1 = zeros(<span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>x2 = zeros(<span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>x1(<span style="color:#ae81ff">200</span>) = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>x2(<span style="color:#ae81ff">200</span>) = <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>x1 = awgn(complex(x1), <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>x2 = awgn(complex(x2), <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ret = zeros(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">32</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i = <span style="color:#ae81ff">1</span> : <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>    ret(i) = x1<span style="color:#f92672">&#39;</span> <span style="color:#f92672">*</span> reshape(A(i, :, :), <span style="color:#ae81ff">400</span>, <span style="color:#ae81ff">400</span>) <span style="color:#f92672">*</span> x2;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>ret = reshape(ret, <span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">1</span>);
+</span></span></code></pre></div><p>  上述代码生成的两雷达站回波信号如下所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap33.1.png' width=70%>
+    <br>图5.1：两雷达站接收信号
+    </center>
+</div>
+<p>  经过投影融合后，得到如下所示结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap33.2.png' width=70%>
+    <br>图5.2：融合检测结果
+    </center>
+</div>
+<p>  经过计算可以得到，融合后的信噪比大约为24.3dB，相比于原先的信噪比提高了约15dB。进一步地，可编写程序来计算不同原始信噪比情况下的融合信噪比变化，如下图所示。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap33.3.png' width=70%>
+    <br>图5.3：融合信噪比变化
+    </center>
+</div>
+<p>  从上图可以看出，原始信噪比越高时，融合效果越好，并且基于张量的融合方法优于基于互相关方法的融合方法。这从另一方面证明了本节方法的优越性。</p>
 
         </div>
 
