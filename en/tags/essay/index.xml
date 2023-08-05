@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Essay on Song&#39;s Blog</title>
-    <link>https://bingsz.github.io/en/tags/essay/</link>
+    <link>https://github.com/bingsz/bingsz.github.io/en/tags/essay/</link>
     <description>Recent content in Essay on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Feb 2023 15:01:55 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/tags/essay/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Feb 2023 15:01:55 +0800</lastBuildDate><atom:link href="https://github.com/bingsz/bingsz.github.io/en/tags/essay/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>漫谈：数字波束形成</title>
-      <link>https://bingsz.github.io/en/posts/dbf/</link>
+      <link>https://github.com/bingsz/bingsz.github.io/en/posts/dbf/</link>
       <pubDate>Thu, 09 Feb 2023 15:01:55 +0800</pubDate>
       
-      <guid>https://bingsz.github.io/en/posts/dbf/</guid>
+      <guid>https://github.com/bingsz/bingsz.github.io/en/posts/dbf/</guid>
       <description>&lt;p&gt;  漫谈系列是我在平时突然想到的一些东西的随笔，所以文中可能有不严谨的表达。这篇文章是我突然想到多普勒滤波器组和数字波束形成方面的联系，所以就记录下来。&lt;/p&gt;</description>
     </item>
     
