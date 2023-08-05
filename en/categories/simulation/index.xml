@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Simulation on Song&#39;s Blog</title>
+    <link>https://bingsz.github.io/en/categories/simulation/</link>
+    <description>Recent content in Simulation on Song&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 09 Mar 2023 18:42:05 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/categories/simulation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用Matlab来作雷达的信号级仿真</title>
+      <link>https://bingsz.github.io/en/posts/matlabsimulateradar/</link>
+      <pubDate>Thu, 09 Mar 2023 18:42:05 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/matlabsimulateradar/</guid>
+      <description>&lt;p&gt;  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,1367 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>使用Matlab来作雷达的信号级仿真 - sZhebin Blog</title>
-  <meta name="renderer" content="webkit" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-<meta name="theme-color" content="#f8f5ec" />
-<meta name="msapplication-navbutton-color" content="#f8f5ec">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
-
-
-<meta name="author" content="s Zhebin" /><meta name="description" content=" Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真
-" /><meta name="keywords" content="Hugo, theme, even" />
-
-
-
-
-
-
-<meta name="generator" content="Hugo 0.63.2 with theme even" />
-
-
-<link rel="canonical" href="https://bingsz.github.io/post/matlabsimulateradar/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-
-
-
-<link href="/sass/main.min.b5a744db6de49a86cadafb3b70f555ab443f83c307a483402259e94726b045ff.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
-
-
-<meta property="og:title" content="使用Matlab来作雷达的信号级仿真" />
-<meta property="og:description" content="  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://bingsz.github.io/post/matlabsimulateradar/" />
-<meta property="article:published_time" content="2023-03-09T18:42:05+08:00" />
-<meta property="article:modified_time" content="2023-03-09T18:42:05+08:00" />
-<meta itemprop="name" content="使用Matlab来作雷达的信号级仿真">
-<meta itemprop="description" content="  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真">
-<meta itemprop="datePublished" content="2023-03-09T18:42:05&#43;08:00" />
-<meta itemprop="dateModified" content="2023-03-09T18:42:05&#43;08:00" />
-<meta itemprop="wordCount" content="4970">
-
-
-
-<meta itemprop="keywords" content="matlab,radar," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="使用Matlab来作雷达的信号级仿真"/>
-<meta name="twitter:description" content="  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真"/>
-
-<!--[if lte IE 9]>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
-<![endif]-->
-
-<!--[if lt IE 9]>
-  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-<![endif]-->
-
-</head>
-<body>
-  <div id="mobile-navbar" class="mobile-navbar">
-  <div class="mobile-header-logo">
-    <a href="/" class="logo">Bing</a>
-  </div>
-  <div class="mobile-navbar-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
-<nav id="mobile-menu" class="mobile-menu slideout-menu">
-  <ul class="mobile-menu-list">
-    <a href="/">
-        <li class="mobile-menu-item">Home</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">Tags</li>
-      </a><a href="/categories/">
-        <li class="mobile-menu-item">Categories</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
-      </a>
-  </ul>
-
-  
-
-
-</nav>
-
-  <div class="container" id="mobile-panel">
-    <header id="header" class="header">
-        <div class="logo-wrapper">
-  <a href="/" class="logo">Bing</a>
-</div>
-
-
-
-
-
-<nav class="site-navbar">
-  <ul id="menu" class="menu">
-    <li class="menu-item">
-        <a class="menu-item-link" href="/">Home</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">Tags</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/categories/">Categories</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
-      </li>
-  </ul>
-</nav>
-
-    </header>
-
-    <main id="main" class="main">
-      <div class="content-wrapper">
-        <div id="content" class="content">
-          <article class="post">
-    
-    <header class="post-header">
-      <h1 class="post-title">使用Matlab来作雷达的信号级仿真</h1>
-
-      <div class="post-meta">
-        <span class="post-time"> 2023-03-09 </span>
-        <div class="post-category">
-            <a href="/categories/matlab/"> matlab </a>
-            <a href="/categories/radar/"> radar </a>
-            </div>
-        
-      </div>
-    </header>
-
-    <div class="post-toc" id="post-toc">
-  <h2 class="post-toc-title">Contents</h2>
-  <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#__1-雷达相关参数计算__">1. 雷达相关参数计算</a>
-          <ul>
-            <li><a href="#__11-计算信噪比__">1.1. 计算信噪比</a></li>
-            <li><a href="#__12-发射机峰值功率__">1.2. 发射机峰值功率</a></li>
-          </ul>
-        </li>
-        <li><a href="#__2-相关设备定义__">2. 相关设备定义</a>
-          <ul>
-            <li><a href="#__21-定义波形__">2.1. 定义波形</a></li>
-            <li><a href="#__22-定义接收机与发射机__">2.2. 定义接收机与发射机</a></li>
-            <li><a href="#__23-定义天线与发射平台__">2.3. 定义天线与发射平台</a></li>
-            <li><a href="#__24-定义目标__">2.4. 定义目标</a></li>
-            <li><a href="#__25-定义传输信道__">2.5. 定义传输信道</a></li>
-          </ul>
-        </li>
-        <li><a href="#__3-开始仿真__">3. 开始仿真</a></li>
-        <li><a href="#__4-完整代码__">4. 完整代码</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
-  </div>
-</div>
-    <div class="post-content">
-      <p>  Matlab的Radar Toolbox与Phased工具箱具有很强的功能，但是这方面的资料比较少，所以稍作整理之后便写了这篇文章。这篇文章主要介绍如何使用Matlab来作雷达的信号级仿真</p>
-<p>  官方手册上给出了许多种仿真方法，但有些仿真方法只能实现模型级仿真，并不能实现信号级仿真。这里介绍的方法是主要使用Phased工具箱来进行信号级仿真。</p>
-<p>  这个例子是来自官方手册的《Simulating Test Signals for a Radar Receiver》一节中，本文将主要围绕这个例子展开。为了不计算繁杂的雷达方程，在Matlab的雷达工具箱中，通常是通过指定一个目标的距离、雷达截面积以及检测概率与虚警概率来确定所需雷达环路增益（关于雷达的环路增益定义可参见Radar toolbox的Get started中的Simulate a Scanning Radar），不过在此处由于我们并不主要使用雷达工具箱中的工具，因此此处不使用雷达环路增益这个概念。</p>
-<h2 id="__1-雷达相关参数计算__"><strong>1. 雷达相关参数计算</strong></h2>
-<h3 id="__11-计算信噪比__"><strong>1.1. 计算信噪比</strong></h3>
-<p>  为了计算所需的信噪比，当进行非相干检测时，可以使用下述代码来计算所需的信噪比</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">num_pulse_int</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>
-<span class="n">pfa</span> <span class="p">=</span> <span class="mf">1e-6</span><span class="p">;</span>
-<span class="n">pd</span> <span class="p">=</span> <span class="mf">0.9</span><span class="p">;</span>
-<span class="n">snr_min</span> <span class="p">=</span> <span class="n">detectability</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">pfa</span><span class="p">,</span> <span class="n">num_pulse_int</span><span class="p">,</span> <span class="s">&#39;</span><span class="s">Swerling0&#39;</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  当然，在官方手册中也给出了可以通过使用Albersheim经验公式来求得近似的最小信噪比</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">num_pulse_int</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>
-<span class="n">pfa</span> <span class="p">=</span> <span class="mf">1e-6</span><span class="p">;</span>
-<span class="n">pd</span> <span class="p">=</span> <span class="mf">0.9</span><span class="p">;</span>
-<span class="n">snr_min</span> <span class="p">=</span> <span class="n">albersheim</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">pfa</span><span class="p">,</span> <span class="n">num_pulse_int</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  当进行相干检测时，可以通过如下方法来计算得到所需的信噪比</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">num_pulse_int</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>
-<span class="n">pfa</span> <span class="p">=</span> <span class="mf">1e-6</span><span class="p">;</span>
-<span class="n">pd</span> <span class="p">=</span> <span class="mf">0.9</span><span class="p">;</span>
-<span class="n">snr_min</span> <span class="p">=</span> <span class="n">detectability</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">pfa</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;</span><span class="s">Swerling0&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="nb">log10</span><span class="p">(</span><span class="n">num_pulse_int</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><h3 id="__12-发射机峰值功率__"><strong>1.2. 发射机峰值功率</strong></h3>
-<p>  接下来便需要计算发射机的峰值功率，计算峰值功率时，可以假设检测在某距离下的一个物体的检测与虚警概率，然后通过雷达方程来计算所需的峰值功率。雷达方程可以手动写，也可以使用radareqpow函数来计算。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">c</span> <span class="p">=</span> <span class="mf">3e8</span><span class="p">;</span>
-<span class="n">fc</span> <span class="p">=</span> <span class="mf">1e9</span><span class="p">;</span>
-<span class="n">lambda</span> <span class="p">=</span> <span class="n">c</span> <span class="o">/</span> <span class="n">fc</span><span class="p">;</span>
-<span class="n">max_range</span> <span class="p">=</span> <span class="mf">5e3</span><span class="p">;</span>
-<span class="n">pulse_width</span> <span class="p">=</span> <span class="mf">1e-6</span><span class="p">;</span>
-<span class="n">tx_gain</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>
-<span class="n">tgt_rcs</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="n">peak_power</span> <span class="p">=</span> <span class="n">radareqpow</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="n">max_range</span><span class="p">,</span> <span class="n">snr_min</span><span class="p">,</span> <span class="n">pulse_width</span><span class="p">,</span> <span class="s">&#39;</span><span class="s">Gain&#39;</span><span class="p">,</span> <span class="n">tx_gain</span><span class="p">,</span> <span class="s">&#39;</span><span class="s">RCS&#39;</span><span class="p">,</span> <span class="n">tgt_rcs</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  或者</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">peak_power</span> <span class="p">=</span> <span class="p">(</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="nb">pi</span><span class="p">)</span>^<span class="mi">3</span><span class="o">*</span><span class="n">noisepow</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">pulse_width</span><span class="p">)</span><span class="o">*</span><span class="n">max_range</span>^<span class="mi">4</span><span class="o">*</span><span class="c">...</span>
-    <span class="n">db2pow</span><span class="p">(</span><span class="n">snr_min</span><span class="p">)</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">db2pow</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">tx_gain</span><span class="p">)</span><span class="o">*</span><span class="n">tgt_rcs</span><span class="o">*</span><span class="n">lambda</span>^<span class="mi">2</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><h2 id="__2-相关设备定义__"><strong>2. 相关设备定义</strong></h2>
-<p>  然后我们来定义一些相关的设备与参数。</p>
-<h3 id="__21-定义波形__"><strong>2.1. 定义波形</strong></h3>
-<p>  定义波形</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">prf</span> <span class="p">=</span> <span class="n">prop_speed</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">max_range</span><span class="p">)</span><span class="p">;</span>
-<span class="n">waveform</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">RectangularWaveform</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PulseWidth&#39;</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">pulse_bw</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PRF&#39;</span><span class="p">,</span><span class="n">prf</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码生成了一段矩形调幅脉冲信号。当然，Phased工具箱中也提供了包括线性调频信号等的脉冲波形。不过事实上，waveform这个变量并不一定需要通过Phased工具箱来获得，waveform在代码中的作用是提供脉冲波形与匹配滤波参数。因此换言之，我们也可以通过自己编写脉冲波形，并计算匹配滤波参数来自定义脉冲波形。</p>
-<h3 id="__22-定义接收机与发射机__"><strong>2.2. 定义接收机与发射机</strong></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">noise_bw</span> <span class="p">=</span> <span class="n">pulse_bw</span><span class="p">;</span>
-<span class="n">receiver</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">ReceiverPreamp</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Gain&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">NoiseFigure&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">EnableInputPort&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">)</span><span class="p">;</span>
-<span class="n">transmitter</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Transmitter</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Gain&#39;</span><span class="p">,</span><span class="n">tx_gain</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PeakPower&#39;</span><span class="p">,</span><span class="n">peak_power</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">InUseOutputPort&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码定义了一个发射机与接收机，相关参数设置可以参考官方手册。</p>
-<h3 id="__23-定义天线与发射平台__"><strong>2.3. 定义天线与发射平台</strong></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">antenna</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">IsotropicAntennaElement</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">FrequencyRange&#39;</span><span class="p">,</span><span class="p">[</span><span class="mf">5e9</span> <span class="mf">15e9</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
-<span class="n">sensormotion</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Platform</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">InitialPosition&#39;</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Velocity&#39;</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
-<span class="n">radiator</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Radiator</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Sensor&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-<span class="n">collector</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Collector</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Sensor&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码定义了一个全方向性天线，如果要定义一个有方向性天线，可以使用诸如phased.GaussianAntennaElement来定义天线。phased.Platform定义了一个雷达运动平台，通过设置初始位置与运动速度可以求解得到各个时刻的位置与指向。phased.Radiator与phased.Collector定义了一个散射平台与接收平台，用于将电磁波散射到空间，并将空间中的电磁波接收回来。</p>
-<h3 id="__24-定义目标__"><strong>2.4. 定义目标</strong></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">tgtpos</span> <span class="p">=</span> <span class="p">[</span><span class="p">[</span><span class="mf">2024.66</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mf">3518.63</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mf">3845.04</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span><span class="p">;</span>
-<span class="n">tgtvel</span> <span class="p">=</span> <span class="p">[</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span><span class="p">;</span>
-<span class="n">tgtmotion</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Platform</span><span class="p">(</span><span class="s">&#39;</span><span class="s">InitialPosition&#39;</span><span class="p">,</span><span class="n">tgtpos</span><span class="p">,</span><span class="s">&#39;</span><span class="s">Velocity&#39;</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">tgtrcs</span> <span class="p">=</span> <span class="p">[</span><span class="mf">1.6</span> <span class="mf">2.2</span> <span class="mf">1.05</span><span class="p">]</span><span class="p">;</span>
-<span class="n">target</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">RadarTarget</span><span class="p">(</span><span class="s">&#39;</span><span class="s">MeanRCS&#39;</span><span class="p">,</span><span class="n">tgtrcs</span><span class="p">,</span><span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码定义了目标的运动平台与雷达目标散射特性。其中tgtrcs为雷达截面积，但是上述代码只能定义一个点目标，当需要仿真扩展目标或具有一定体积的目标时，便不能使用这种方法。</p>
-<h3 id="__25-定义传输信道__"><strong>2.5. 定义传输信道</strong></h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">channel</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">FreeSpace</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">TwoWayPropagation&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码定义了一个传输信道，TwoWayPropagation定义了一个双程信道，指的是计算过程中算及雷达的发射与接收路径，当TwoWayPropagation设定为False时，将只计算一个路程。因此当计算多基地雷达时，需要将此参数设定为False。</p>
-<h2 id="__3-开始仿真__"><strong>3. 开始仿真</strong></h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="n">fast_time_grid</span> <span class="p">=</span> <span class="n">unigrid</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">fs</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">,</span><span class="s">&#39;</span><span class="s">[)&#39;</span><span class="p">)</span><span class="p">;</span>
-<span class="n">rxpulses</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="nb">numel</span><span class="p">(</span><span class="n">fast_time_grid</span><span class="p">)</span><span class="p">,</span><span class="n">num_pulse_int</span><span class="p">)</span><span class="p">;</span>
-
-<span class="k">for</span> <span class="n">m</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">num_pulse_int</span>
-    <span class="p">[</span><span class="n">sensorpos</span><span class="p">,</span><span class="n">sensorvel</span><span class="p">]</span> <span class="p">=</span> <span class="n">sensormotion</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">)</span><span class="p">;</span>
-    <span class="p">[</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">]</span> <span class="p">=</span> <span class="n">tgtmotion</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">)</span><span class="p">;</span>
-
-    <span class="p">[</span><span class="n">tgtrng</span><span class="p">,</span><span class="n">tgtang</span><span class="p">]</span> <span class="p">=</span> <span class="n">rangeangle</span><span class="p">(</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">sensorpos</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="n">pulse</span> <span class="p">=</span> <span class="n">waveform</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
-    <span class="p">[</span><span class="n">txsig</span><span class="p">,</span><span class="n">txstatus</span><span class="p">]</span> <span class="p">=</span> <span class="n">transmitter</span><span class="p">(</span><span class="n">pulse</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">txsig</span> <span class="p">=</span> <span class="n">radiator</span><span class="p">(</span><span class="n">txsig</span><span class="p">,</span><span class="n">tgtang</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">txsig</span> <span class="p">=</span> <span class="n">channel</span><span class="p">(</span><span class="n">txsig</span><span class="p">,</span><span class="n">sensorpos</span><span class="p">,</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">sensorvel</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="n">tgtsig</span> <span class="p">=</span> <span class="n">target</span><span class="p">(</span><span class="n">txsig</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="n">rxsig</span> <span class="p">=</span> <span class="n">collector</span><span class="p">(</span><span class="n">tgtsig</span><span class="p">,</span><span class="n">tgtang</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">rxpulses</span><span class="p">(</span><span class="p">:</span><span class="p">,</span><span class="n">m</span><span class="p">)</span> <span class="p">=</span> <span class="n">receiver</span><span class="p">(</span><span class="n">rxsig</span><span class="p">,</span><span class="o">~</span><span class="p">(</span><span class="n">txstatus</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-<span class="k">end</span>
-</code></pre></td></tr></table>
-</div>
-</div><p>  上述代码就开始了仿真，sensormotion便是前文中所定义的雷达运动平台，其中的参数表示脉冲重复时间，用于表示所经过的时间。tgtmotion与sensormotion同理。rangeangle用于计算雷达天线与目标的夹角。waveform()便生成了一段发射波形，这个发射波形也可以通过自定义来实现。transmitter，radiator，channel，target，collector，receiver定义了一整套发射接收链路。首先通过发射机将信号传递至天线，随后使用天线将其发射出去，然后在空中传输，照射到目标上并反射回来，被天线所接收，最后使用接收机来接收。</p>
-<p>  上述所得到的rxpulses便是接收得到的回波信号，后续的信号级仿真均可以通过对该矩阵进行操作来进行。</p>
-<h2 id="__4-完整代码__"><strong>4. 完整代码</strong></h2>
-<p>  上述只是给出了一个雷达仿真的大致代码，官方手册中的完整代码如下所示，可以对其中的参数进行修改来得到仿真目的。</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span><span class="lnt">108
-</span><span class="lnt">109
-</span><span class="lnt">110
-</span><span class="lnt">111
-</span><span class="lnt">112
-</span><span class="lnt">113
-</span><span class="lnt">114
-</span><span class="lnt">115
-</span><span class="lnt">116
-</span><span class="lnt">117
-</span><span class="lnt">118
-</span><span class="lnt">119
-</span><span class="lnt">120
-</span><span class="lnt">121
-</span><span class="lnt">122
-</span><span class="lnt">123
-</span><span class="lnt">124
-</span><span class="lnt">125
-</span><span class="lnt">126
-</span><span class="lnt">127
-</span><span class="lnt">128
-</span><span class="lnt">129
-</span><span class="lnt">130
-</span><span class="lnt">131
-</span><span class="lnt">132
-</span><span class="lnt">133
-</span><span class="lnt">134
-</span><span class="lnt">135
-</span><span class="lnt">136
-</span><span class="lnt">137
-</span><span class="lnt">138
-</span><span class="lnt">139
-</span><span class="lnt">140
-</span><span class="lnt">141
-</span><span class="lnt">142
-</span><span class="lnt">143
-</span><span class="lnt">144
-</span><span class="lnt">145
-</span><span class="lnt">146
-</span><span class="lnt">147
-</span><span class="lnt">148
-</span><span class="lnt">149
-</span><span class="lnt">150
-</span><span class="lnt">151
-</span><span class="lnt">152
-</span><span class="lnt">153
-</span><span class="lnt">154
-</span><span class="lnt">155
-</span><span class="lnt">156
-</span><span class="lnt">157
-</span><span class="lnt">158
-</span><span class="lnt">159
-</span><span class="lnt">160
-</span><span class="lnt">161
-</span><span class="lnt">162
-</span><span class="lnt">163
-</span><span class="lnt">164
-</span><span class="lnt">165
-</span><span class="lnt">166
-</span><span class="lnt">167
-</span><span class="lnt">168
-</span><span class="lnt">169
-</span><span class="lnt">170
-</span><span class="lnt">171
-</span><span class="lnt">172
-</span><span class="lnt">173
-</span><span class="lnt">174
-</span><span class="lnt">175
-</span><span class="lnt">176
-</span><span class="lnt">177
-</span><span class="lnt">178
-</span><span class="lnt">179
-</span><span class="lnt">180
-</span><span class="lnt">181
-</span><span class="lnt">182
-</span><span class="lnt">183
-</span><span class="lnt">184
-</span><span class="lnt">185
-</span><span class="lnt">186
-</span><span class="lnt">187
-</span><span class="lnt">188
-</span><span class="lnt">189
-</span><span class="lnt">190
-</span><span class="lnt">191
-</span><span class="lnt">192
-</span><span class="lnt">193
-</span><span class="lnt">194
-</span><span class="lnt">195
-</span><span class="lnt">196
-</span><span class="lnt">197
-</span><span class="lnt">198
-</span><span class="lnt">199
-</span><span class="lnt">200
-</span><span class="lnt">201
-</span><span class="lnt">202
-</span><span class="lnt">203
-</span><span class="lnt">204
-</span><span class="lnt">205
-</span><span class="lnt">206
-</span><span class="lnt">207
-</span><span class="lnt">208
-</span><span class="lnt">209
-</span><span class="lnt">210
-</span><span class="lnt">211
-</span><span class="lnt">212
-</span><span class="lnt">213
-</span><span class="lnt">214
-</span><span class="lnt">215
-</span><span class="lnt">216
-</span><span class="lnt">217
-</span><span class="lnt">218
-</span><span class="lnt">219
-</span><span class="lnt">220
-</span><span class="lnt">221
-</span><span class="lnt">222
-</span><span class="lnt">223
-</span><span class="lnt">224
-</span><span class="lnt">225
-</span><span class="lnt">226
-</span><span class="lnt">227
-</span><span class="lnt">228
-</span><span class="lnt">229
-</span><span class="lnt">230
-</span><span class="lnt">231
-</span><span class="lnt">232
-</span><span class="lnt">233
-</span><span class="lnt">234
-</span><span class="lnt">235
-</span><span class="lnt">236
-</span><span class="lnt">237
-</span><span class="lnt">238
-</span><span class="lnt">239
-</span><span class="lnt">240
-</span><span class="lnt">241
-</span><span class="lnt">242
-</span><span class="lnt">243
-</span><span class="lnt">244
-</span><span class="lnt">245
-</span><span class="lnt">246
-</span><span class="lnt">247
-</span><span class="lnt">248
-</span><span class="lnt">249
-</span><span class="lnt">250
-</span><span class="lnt">251
-</span><span class="lnt">252
-</span><span class="lnt">253
-</span><span class="lnt">254
-</span><span class="lnt">255
-</span><span class="lnt">256
-</span><span class="lnt">257
-</span><span class="lnt">258
-</span><span class="lnt">259
-</span><span class="lnt">260
-</span><span class="lnt">261
-</span><span class="lnt">262
-</span><span class="lnt">263
-</span><span class="lnt">264
-</span><span class="lnt">265
-</span><span class="lnt">266
-</span><span class="lnt">267
-</span><span class="lnt">268
-</span><span class="lnt">269
-</span><span class="lnt">270
-</span><span class="lnt">271
-</span><span class="lnt">272
-</span><span class="lnt">273
-</span><span class="lnt">274
-</span><span class="lnt">275
-</span><span class="lnt">276
-</span><span class="lnt">277
-</span><span class="lnt">278
-</span><span class="lnt">279
-</span><span class="lnt">280
-</span><span class="lnt">281
-</span><span class="lnt">282
-</span><span class="lnt">283
-</span><span class="lnt">284
-</span><span class="lnt">285
-</span><span class="lnt">286
-</span><span class="lnt">287
-</span><span class="lnt">288
-</span><span class="lnt">289
-</span><span class="lnt">290
-</span><span class="lnt">291
-</span><span class="lnt">292
-</span><span class="lnt">293
-</span><span class="lnt">294
-</span><span class="lnt">295
-</span><span class="lnt">296
-</span><span class="lnt">297
-</span><span class="lnt">298
-</span><span class="lnt">299
-</span><span class="lnt">300
-</span><span class="lnt">301
-</span><span class="lnt">302
-</span><span class="lnt">303
-</span><span class="lnt">304
-</span><span class="lnt">305
-</span><span class="lnt">306
-</span><span class="lnt">307
-</span><span class="lnt">308
-</span><span class="lnt">309
-</span><span class="lnt">310
-</span><span class="lnt">311
-</span><span class="lnt">312
-</span><span class="lnt">313
-</span><span class="lnt">314
-</span><span class="lnt">315
-</span><span class="lnt">316
-</span><span class="lnt">317
-</span><span class="lnt">318
-</span><span class="lnt">319
-</span><span class="lnt">320
-</span><span class="lnt">321
-</span><span class="lnt">322
-</span><span class="lnt">323
-</span><span class="lnt">324
-</span><span class="lnt">325
-</span><span class="lnt">326
-</span><span class="lnt">327
-</span><span class="lnt">328
-</span><span class="lnt">329
-</span><span class="lnt">330
-</span><span class="lnt">331
-</span><span class="lnt">332
-</span><span class="lnt">333
-</span><span class="lnt">334
-</span><span class="lnt">335
-</span><span class="lnt">336
-</span><span class="lnt">337
-</span><span class="lnt">338
-</span><span class="lnt">339
-</span><span class="lnt">340
-</span><span class="lnt">341
-</span><span class="lnt">342
-</span><span class="lnt">343
-</span><span class="lnt">344
-</span><span class="lnt">345
-</span><span class="lnt">346
-</span><span class="lnt">347
-</span><span class="lnt">348
-</span><span class="lnt">349
-</span><span class="lnt">350
-</span><span class="lnt">351
-</span><span class="lnt">352
-</span><span class="lnt">353
-</span><span class="lnt">354
-</span><span class="lnt">355
-</span><span class="lnt">356
-</span><span class="lnt">357
-</span><span class="lnt">358
-</span><span class="lnt">359
-</span><span class="lnt">360
-</span><span class="lnt">361
-</span><span class="lnt">362
-</span><span class="lnt">363
-</span><span class="lnt">364
-</span><span class="lnt">365
-</span><span class="lnt">366
-</span><span class="lnt">367
-</span><span class="lnt">368
-</span><span class="lnt">369
-</span><span class="lnt">370
-</span><span class="lnt">371
-</span><span class="lnt">372
-</span><span class="lnt">373
-</span><span class="lnt">374
-</span><span class="lnt">375
-</span><span class="lnt">376
-</span><span class="lnt">377
-</span><span class="lnt">378
-</span><span class="lnt">379
-</span><span class="lnt">380
-</span><span class="lnt">381
-</span><span class="lnt">382
-</span><span class="lnt">383
-</span><span class="lnt">384
-</span><span class="lnt">385
-</span><span class="lnt">386
-</span><span class="lnt">387
-</span><span class="lnt">388
-</span><span class="lnt">389
-</span><span class="lnt">390
-</span><span class="lnt">391
-</span><span class="lnt">392
-</span><span class="lnt">393
-</span><span class="lnt">394
-</span><span class="lnt">395
-</span><span class="lnt">396
-</span><span class="lnt">397
-</span><span class="lnt">398
-</span><span class="lnt">399
-</span><span class="lnt">400
-</span><span class="lnt">401
-</span><span class="lnt">402
-</span><span class="lnt">403
-</span><span class="lnt">404
-</span><span class="lnt">405
-</span><span class="lnt">406
-</span><span class="lnt">407
-</span><span class="lnt">408
-</span><span class="lnt">409
-</span><span class="lnt">410
-</span><span class="lnt">411
-</span><span class="lnt">412
-</span><span class="lnt">413
-</span><span class="lnt">414
-</span><span class="lnt">415
-</span><span class="lnt">416
-</span><span class="lnt">417
-</span><span class="lnt">418
-</span><span class="lnt">419
-</span><span class="lnt">420
-</span><span class="lnt">421
-</span><span class="lnt">422
-</span><span class="lnt">423
-</span><span class="lnt">424
-</span><span class="lnt">425
-</span><span class="lnt">426
-</span><span class="lnt">427
-</span><span class="lnt">428
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-matlab" data-lang="matlab"><span class="c">%% Simulating Test Signals for a Radar Receiver</span>
-<span class="c">% This example shows how to simulate received signal of a monostatic pulse</span>
-<span class="c">% radar to estimate the target range. A monostatic radar has the</span>
-<span class="c">% transmitter collocated with the receiver. The transmitter generates a</span>
-<span class="c">% pulse which hits the target and produces an echo received by the</span>
-<span class="c">% receiver. By measuring the location of the echoes in time, we can</span>
-<span class="c">% estimate the range of a target.</span>
-<span class="c">%</span>
-<span class="c">% This example focuses on a pulse</span>
-<span class="c">% &lt;https://www.mathworks.com/discovery/radar-system-design.html radar</span>
-<span class="c">% system design&gt; which can achieve a set of design specifications. It</span>
-<span class="c">% outlines the steps to translate design specifications, such as the</span>
-<span class="c">% probability of detection and the range resolution, into radar system</span>
-<span class="c">% parameters, such as the transmit power and the pulse width. It also</span>
-<span class="c">% models the environment and targets to synthesize the received signal.</span>
-<span class="c">% Finally, signal processing techniques are applied to the received signal</span>
-<span class="c">% to detect the ranges of the targets.</span>
-
-<span class="c">%   Copyright 2007-2021 The MathWorks, Inc.</span>
-
-<span class="c">%% Design Specifications</span>
-<span class="c">%</span>
-<span class="c">% The design goal of this pulse radar system is to detect non-fluctuating</span>
-<span class="c">% targets with at least one square meter radar cross section (RCS) at a</span>
-<span class="c">% distance up to 5000 meters from the radar with a range resolution of 50</span>
-<span class="c">% meters. The desired performance index is a probability of detection (Pd)</span>
-<span class="c">% of 0.9 and probability of false alarm (Pfa) below 1e-6. Since coherent</span>
-<span class="c">% detection requires phase information and, therefore is more</span>
-<span class="c">% computationally expensive, we adopt a noncoherent detection scheme. In</span>
-<span class="c">% addition, this example assumes a free space environment.</span>
-
-<span class="n">pd</span> <span class="p">=</span> <span class="mf">0.9</span><span class="p">;</span>            <span class="c">% Probability of detection</span>
-<span class="n">pfa</span> <span class="p">=</span> <span class="mf">1e-6</span><span class="p">;</span>          <span class="c">% Probability of false alarm</span>
-<span class="n">max_range</span> <span class="p">=</span> <span class="mi">5000</span><span class="p">;</span>    <span class="c">% Maximum unambiguous range</span>
-<span class="n">range_res</span> <span class="p">=</span> <span class="mi">50</span><span class="p">;</span>      <span class="c">% Required range resolution</span>
-<span class="n">tgt_rcs</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>         <span class="c">% Required target radar cross section</span>
-
-<span class="c">%% Monostatic Radar System Design</span>
-<span class="c">% We need to define several characteristics of the radar system such as the</span>
-<span class="c">% waveform, the receiver, the transmitter, and the antenna used to radiate</span>
-<span class="c">% and collect the signal.</span>
-<span class="c">%</span>
-<span class="c">% *Waveform*</span>
-<span class="c">%</span>
-<span class="c">% We choose a rectangular waveform in this example. The desired range</span>
-<span class="c">% resolution determines the bandwidth of the waveform, which, in the case</span>
-<span class="c">% of a rectangular waveform, determines the pulse width. </span>
-<span class="c">%</span>
-<span class="c">% Another important parameter of a pulse waveform is the pulse repetition</span>
-<span class="c">% frequency (PRF). The PRF is determined by the maximum unambiguous range.</span>
-
-
-<span class="n">prop_speed</span> <span class="p">=</span> <span class="n">physconst</span><span class="p">(</span><span class="s">&#39;</span><span class="s">LightSpeed&#39;</span><span class="p">)</span><span class="p">;</span>   <span class="c">% Propagation speed</span>
-<span class="n">pulse_bw</span> <span class="p">=</span> <span class="n">prop_speed</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">range_res</span><span class="p">)</span><span class="p">;</span>    <span class="c">% Pulse bandwidth</span>
-<span class="n">pulse_width</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">pulse_bw</span><span class="p">;</span>               <span class="c">% Pulse width</span>
-<span class="n">prf</span> <span class="p">=</span> <span class="n">prop_speed</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">max_range</span><span class="p">)</span><span class="p">;</span>         <span class="c">% Pulse repetition frequency</span>
-<span class="n">fs</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">pulse_bw</span><span class="p">;</span>                        <span class="c">% Sampling rate</span>
-<span class="n">waveform</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">RectangularWaveform</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PulseWidth&#39;</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">pulse_bw</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PRF&#39;</span><span class="p">,</span><span class="n">prf</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% Note that we set the sampling rate as twice the bandwidth.</span>
-<span class="c">%</span>
-<span class="c">% *Receiver Noise Characteristics*</span>
-<span class="c">%</span>
-<span class="c">% We assume that the only noise present at the receiver is the thermal</span>
-<span class="c">% noise, so there is no clutter involved in this simulation. The power of</span>
-<span class="c">% the thermal noise is related to the receiver bandwidth. The receiver&#39;s</span>
-<span class="c">% noise bandwidth is set to be the same as the bandwidth of the waveform.</span>
-<span class="c">% This is often the case in real systems. We also assume that the receiver</span>
-<span class="c">% has a 20 dB gain and a 0 dB noise figure.</span>
-
-<span class="n">noise_bw</span> <span class="p">=</span> <span class="n">pulse_bw</span><span class="p">;</span>
-
-<span class="n">receiver</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">ReceiverPreamp</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Gain&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">NoiseFigure&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">EnableInputPort&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% Note that because we are modeling a monostatic radar, the</span>
-<span class="c">% receiver cannot be turned on until the transmitter is off. Therefore, we</span>
-<span class="c">% set the EnableInputPort property to true so that a synchronization signal</span>
-<span class="c">% can be passed from the transmitter to the receiver.</span>
-<span class="c">%</span>
-<span class="c">% *Transmitter*</span>
-<span class="c">%</span>
-<span class="c">% The most critical parameter of a transmitter is the peak transmit power.</span>
-<span class="c">% The required peak power is related to many factors including the maximum</span>
-<span class="c">% unambiguous range, the required SNR at the receiver, and the pulse width</span>
-<span class="c">% of the waveform. Among these factors, the required SNR at the receiver is</span>
-<span class="c">% determined by the design goal of Pd and Pfa, as well as the detection</span>
-<span class="c">% scheme implemented at the receiver.</span>
-<span class="c">%</span>
-<span class="c">% The relation between Pd, Pfa and SNR can be best represented by a</span>
-<span class="c">% receiver operating characteristics (ROC) curve. We can generate the curve</span>
-<span class="c">% where Pd is a function of Pfa for varying SNRs using the following</span>
-<span class="c">% command:</span>
-
-<span class="n">snr_db</span> <span class="p">=</span> <span class="p">[</span><span class="o">-</span><span class="nb">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span><span class="p">;</span>
-<span class="n">rocsnr</span><span class="p">(</span><span class="n">snr_db</span><span class="p">,</span><span class="s">&#39;</span><span class="s">SignalType&#39;</span><span class="p">,</span><span class="s">&#39;</span><span class="s">NonfluctuatingNoncoherent&#39;</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% The ROC curves show that to satisfy the design goals of Pfa = 1e-6 and Pd</span>
-<span class="c">% = 0.9, the received signal&#39;s SNR must exceed 13 dB. This is a fairly high</span>
-<span class="c">% requirement and is not very practical. To make the radar system more</span>
-<span class="c">% feasible, we can use a pulse integration technique to reduce the required</span>
-<span class="c">% SNR. If we choose to integrate 10 pulses, the curve can be generated as</span>
-
-<span class="n">num_pulse_int</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>
-<span class="n">rocsnr</span><span class="p">(</span><span class="p">[</span><span class="mi">0</span> <span class="mi">3</span> <span class="mi">5</span><span class="p">]</span><span class="p">,</span><span class="s">&#39;</span><span class="s">SignalType&#39;</span><span class="p">,</span><span class="s">&#39;</span><span class="s">NonfluctuatingNoncoherent&#39;</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">NumPulses&#39;</span><span class="p">,</span><span class="n">num_pulse_int</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% We can see that the required power has dropped to around 5 dB. Further</span>
-<span class="c">% reduction of SNR can be achieved by integrating more pulses, but the</span>
-<span class="c">% number of pulses available for integration is normally limited due to the</span>
-<span class="c">% motion of the target or the heterogeneity of the environment.</span>
-<span class="c">%</span>
-<span class="c">% The approach above reads out the SNR value from the curve, but it is </span>
-<span class="c">% often desirable to calculate only the required value. For the noncoherent</span>
-<span class="c">% detection scheme, the calculation of the required SNR is, in theory,</span>
-<span class="c">% quite complex. Fortunately, there are good approximations available, such</span>
-<span class="c">% as Albersheim&#39;s equation. Using Albersheim&#39;s equation, the required SNR</span>
-<span class="c">% can be derived as</span>
-
-<span class="n">snr_min</span> <span class="p">=</span> <span class="n">albersheim</span><span class="p">(</span><span class="n">pd</span><span class="p">,</span> <span class="n">pfa</span><span class="p">,</span> <span class="n">num_pulse_int</span><span class="p">)</span>
-
-<span class="c">%%</span>
-<span class="c">% Once we obtain the required SNR at the receiver, the peak power at the</span>
-<span class="c">% transmitter can be calculated using the radar equation. Here we assume</span>
-<span class="c">% that the transmitter has a gain of 20 dB.</span>
-<span class="c">% </span>
-<span class="c">% To calculate the peak power using the radar equation, we also need to</span>
-<span class="c">% know the wavelength of the propagating signal, which is related to the</span>
-<span class="c">% operating frequency of the system. Here we set the operating frequency to</span>
-<span class="c">% 10 GHz.</span>
-
-<span class="n">tx_gain</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>
-
-<span class="n">fc</span> <span class="p">=</span> <span class="mf">10e9</span><span class="p">;</span>
-<span class="n">lambda</span> <span class="p">=</span> <span class="n">prop_speed</span><span class="o">/</span><span class="n">fc</span><span class="p">;</span>
-
-<span class="n">peak_power</span> <span class="p">=</span> <span class="p">(</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="nb">pi</span><span class="p">)</span>^<span class="mi">3</span><span class="o">*</span><span class="n">noisepow</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">pulse_width</span><span class="p">)</span><span class="o">*</span><span class="n">max_range</span>^<span class="mi">4</span><span class="o">*</span><span class="c">...</span>
-    <span class="n">db2pow</span><span class="p">(</span><span class="n">snr_min</span><span class="p">)</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">db2pow</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">tx_gain</span><span class="p">)</span><span class="o">*</span><span class="n">tgt_rcs</span><span class="o">*</span><span class="n">lambda</span>^<span class="mi">2</span><span class="p">)</span>
-<span class="c">%%</span>
-<span class="c">% Note that the resulting power is about 5 kW, which is very reasonable. In</span>
-<span class="c">% comparison, if we had not used the pulse integration technique, the</span>
-<span class="c">% resulting peak power would have been 33 kW, which is huge.</span>
-
-<span class="c">%%</span>
-<span class="c">% With all this information, we can configure the transmitter.</span>
-
-<span class="n">transmitter</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Transmitter</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Gain&#39;</span><span class="p">,</span><span class="n">tx_gain</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">PeakPower&#39;</span><span class="p">,</span><span class="n">peak_power</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">InUseOutputPort&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% Again, since this example models a monostatic radar system, the</span>
-<span class="c">% InUseOutputPort is set to true to output the status of the transmitter.</span>
-<span class="c">% This status signal can then be used to enable the receiver.</span>
-<span class="c">%</span>
-<span class="c">% *Radiator and Collector*</span>
-<span class="c">%</span>
-<span class="c">% In a radar system, the signal propagates in the form of an</span>
-<span class="c">% electromagnetic wave. Therefore, the signal needs to be radiated and</span>
-<span class="c">% collected by the antenna used in the radar system. This is where the</span>
-<span class="c">% radiator and the collector come into the picture.</span>
-<span class="c">%</span>
-<span class="c">% In a monostatic radar system, the radiator and the collector share the</span>
-<span class="c">% same antenna, so we will first define the antenna. To simplify the</span>
-<span class="c">% design, we choose an isotropic antenna. Note that the antenna needs to be</span>
-<span class="c">% able to work at the operating frequency of the system (10 GHz), so we set</span>
-<span class="c">% the antenna&#39;s frequency range to 5-15 GHz.</span>
-<span class="c">%</span>
-<span class="c">% We assume that the antenna is stationary.</span>
-
-<span class="n">antenna</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">IsotropicAntennaElement</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">FrequencyRange&#39;</span><span class="p">,</span><span class="p">[</span><span class="mf">5e9</span> <span class="mf">15e9</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">sensormotion</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Platform</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">InitialPosition&#39;</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Velocity&#39;</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% With the antenna and the operating frequency, we define both the radiator</span>
-<span class="c">% and the collector.</span>
-
-<span class="n">radiator</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Radiator</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Sensor&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">collector</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Collector</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Sensor&#39;</span><span class="p">,</span><span class="n">antenna</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% This completes the configuration of the radar system. In the following</span>
-<span class="c">% sections, we will define other entities, such as the target and the</span>
-<span class="c">% environment that are needed for the simulation. We will then simulate the</span>
-<span class="c">% signal return and perform range detection on the simulated signal.</span>
-
-<span class="c">%% System Simulation</span>
-<span class="c">% *Targets*</span>
-<span class="c">%</span>
-<span class="c">% To test our radar&#39;s ability to detect targets, we must define the targets</span>
-<span class="c">% first. Let us assume that there are 3 stationary, non-fluctuating targets</span>
-<span class="c">% in space. Their positions and radar cross sections are given below.</span>
-<span class="n">tgtpos</span> <span class="p">=</span> <span class="p">[</span><span class="p">[</span><span class="mf">2024.66</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mf">3518.63</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mf">3845.04</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span><span class="p">;</span>
-<span class="n">tgtvel</span> <span class="p">=</span> <span class="p">[</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">;</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span><span class="p">;</span>
-<span class="n">tgtmotion</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">Platform</span><span class="p">(</span><span class="s">&#39;</span><span class="s">InitialPosition&#39;</span><span class="p">,</span><span class="n">tgtpos</span><span class="p">,</span><span class="s">&#39;</span><span class="s">Velocity&#39;</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">tgtrcs</span> <span class="p">=</span> <span class="p">[</span><span class="mf">1.6</span> <span class="mf">2.2</span> <span class="mf">1.05</span><span class="p">]</span><span class="p">;</span>
-<span class="n">target</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">RadarTarget</span><span class="p">(</span><span class="s">&#39;</span><span class="s">MeanRCS&#39;</span><span class="p">,</span><span class="n">tgtrcs</span><span class="p">,</span><span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%% </span>
-<span class="c">% *Propagation Environment*</span>
-<span class="c">%</span>
-<span class="c">% To simulate the signal, we also need to define the propagation channel</span>
-<span class="c">% between the radar system and each target. </span>
-<span class="n">channel</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">FreeSpace</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">SampleRate&#39;</span><span class="p">,</span><span class="n">fs</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">TwoWayPropagation&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">OperatingFrequency&#39;</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% Because this example uses a monostatic radar system, the channels are set</span>
-<span class="c">% to simulate two way propagation delays.</span>
-<span class="c">%</span>
-<span class="c">% *Signal Synthesis*</span>
-<span class="c">%</span>
-<span class="c">% We are now ready to simulate the entire system. </span>
-<span class="c">%</span>
-<span class="c">% The synthesized signal is a data matrix with the fast time (time within</span>
-<span class="c">% each pulse) along each column and the slow time (time between pulses)</span>
-<span class="c">% along each row.  To visualize the signal, it is helpful to define both</span>
-<span class="c">% the fast time grid and slow time grid.</span>
-
-<span class="n">fast_time_grid</span> <span class="p">=</span> <span class="n">unigrid</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">fs</span><span class="p">,</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">,</span><span class="s">&#39;</span><span class="s">[)&#39;</span><span class="p">)</span><span class="p">;</span>
-<span class="n">slow_time_grid</span> <span class="p">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">num_pulse_int</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">prf</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% The following loop simulates 10 pulses of the receive signal.</span>
-<span class="c">%</span>
-<span class="c">% We set the seed for the noise generation in the receiver so that we can</span>
-<span class="c">% reproduce the same results.</span>
-
-<span class="n">receiver</span><span class="p">.</span><span class="n">SeedSource</span> <span class="p">=</span> <span class="s">&#39;</span><span class="s">Property&#39;</span><span class="p">;</span>
-<span class="n">receiver</span><span class="p">.</span><span class="n">Seed</span> <span class="p">=</span> <span class="mi">2007</span><span class="p">;</span>
-
-<span class="c">% Pre-allocate array for improved processing speed</span>
-<span class="n">rxpulses</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="nb">numel</span><span class="p">(</span><span class="n">fast_time_grid</span><span class="p">)</span><span class="p">,</span><span class="n">num_pulse_int</span><span class="p">)</span><span class="p">;</span>
-
-<span class="k">for</span> <span class="n">m</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">num_pulse_int</span>
-    
-    <span class="c">% Update sensor and target positions</span>
-    <span class="p">[</span><span class="n">sensorpos</span><span class="p">,</span><span class="n">sensorvel</span><span class="p">]</span> <span class="p">=</span> <span class="n">sensormotion</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">)</span><span class="p">;</span>
-    <span class="p">[</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">]</span> <span class="p">=</span> <span class="n">tgtmotion</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">prf</span><span class="p">)</span><span class="p">;</span>
-
-    <span class="c">% Calculate the target angles as seen by the sensor</span>
-    <span class="p">[</span><span class="n">tgtrng</span><span class="p">,</span><span class="n">tgtang</span><span class="p">]</span> <span class="p">=</span> <span class="n">rangeangle</span><span class="p">(</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">sensorpos</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="c">% Simulate propagation of pulse in direction of targets</span>
-    <span class="n">pulse</span> <span class="p">=</span> <span class="n">waveform</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
-    <span class="p">[</span><span class="n">txsig</span><span class="p">,</span><span class="n">txstatus</span><span class="p">]</span> <span class="p">=</span> <span class="n">transmitter</span><span class="p">(</span><span class="n">pulse</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">txsig</span> <span class="p">=</span> <span class="n">radiator</span><span class="p">(</span><span class="n">txsig</span><span class="p">,</span><span class="n">tgtang</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">txsig</span> <span class="p">=</span> <span class="n">channel</span><span class="p">(</span><span class="n">txsig</span><span class="p">,</span><span class="n">sensorpos</span><span class="p">,</span><span class="n">tgtpos</span><span class="p">,</span><span class="n">sensorvel</span><span class="p">,</span><span class="n">tgtvel</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="c">% Reflect pulse off of targets</span>
-    <span class="n">tgtsig</span> <span class="p">=</span> <span class="n">target</span><span class="p">(</span><span class="n">txsig</span><span class="p">)</span><span class="p">;</span>
-    
-    <span class="c">% Receive target returns at sensor</span>
-    <span class="n">rxsig</span> <span class="p">=</span> <span class="n">collector</span><span class="p">(</span><span class="n">tgtsig</span><span class="p">,</span><span class="n">tgtang</span><span class="p">)</span><span class="p">;</span>
-    <span class="n">rxpulses</span><span class="p">(</span><span class="p">:</span><span class="p">,</span><span class="n">m</span><span class="p">)</span> <span class="p">=</span> <span class="n">receiver</span><span class="p">(</span><span class="n">rxsig</span><span class="p">,</span><span class="o">~</span><span class="p">(</span><span class="n">txstatus</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-<span class="k">end</span>
-
-<span class="c">%% Range Detection</span>
-<span class="c">% *Detection Threshold*</span>
-<span class="c">%</span>
-<span class="c">% The detector compares the signal power to a given threshold. In radar</span>
-<span class="c">% applications, the threshold is often chosen so that the Pfa is below a</span>
-<span class="c">% certain level. In this case, we assume the noise is white Gaussian and</span>
-<span class="c">% the detection is noncoherent. Since we are also using 10 pulses to do</span>
-<span class="c">% the pulse integration, the signal power threshold is given by</span>
-
-<span class="n">npower</span> <span class="p">=</span> <span class="n">noisepow</span><span class="p">(</span><span class="n">noise_bw</span><span class="p">,</span><span class="n">receiver</span><span class="p">.</span><span class="n">NoiseFigure</span><span class="p">,</span><span class="c">...</span>
-    <span class="n">receiver</span><span class="p">.</span><span class="n">ReferenceTemperature</span><span class="p">)</span><span class="p">;</span>
-<span class="n">threshold</span> <span class="p">=</span> <span class="n">npower</span> <span class="o">*</span> <span class="n">db2pow</span><span class="p">(</span><span class="n">npwgnthresh</span><span class="p">(</span><span class="n">pfa</span><span class="p">,</span><span class="n">num_pulse_int</span><span class="p">,</span><span class="s">&#39;</span><span class="s">noncoherent&#39;</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% We plot the first two received pulses with the threshold</span>
-<span class="n">num_pulse_plot</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
-<span class="c">% helperRadarPulsePlot(rxpulses,threshold,...</span>
-<span class="c">%     fast_time_grid,slow_time_grid,num_pulse_plot);</span>
-
-<span class="c">%%</span>
-<span class="c">% The threshold in these figures is for display purpose only. Note that</span>
-<span class="c">% the second and third target returns are much weaker than the first return</span>
-<span class="c">% because they are farther away from the radar. Therefore, the received</span>
-<span class="c">% signal power is range dependent and the threshold is unfair to targets</span>
-<span class="c">% located at different ranges.</span>
-<span class="c">%</span>
-<span class="c">% *Matched Filter*</span>
-<span class="c">%</span>
-<span class="c">% The matched filter offers a processing gain which improves the detection</span>
-<span class="c">% threshold. It convolves the received signal with a local, time-reversed,</span>
-<span class="c">% and conjugated copy of transmitted waveform. Therefore, we must specify</span>
-<span class="c">% the transmitted waveform when creating our matched filter. The received</span>
-<span class="c">% pulses are first passed through a matched filter to improve the SNR</span>
-<span class="c">% before doing pulse integration, threshold detection, etc.</span>
-
-<span class="n">matchingcoeff</span> <span class="p">=</span> <span class="n">getMatchedFilter</span><span class="p">(</span><span class="n">waveform</span><span class="p">)</span><span class="p">;</span>
-<span class="n">matchedfilter</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">MatchedFilter</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">Coefficients&#39;</span><span class="p">,</span><span class="n">matchingcoeff</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">GainOutputPort&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">)</span><span class="p">;</span>
-<span class="p">[</span><span class="n">rxpulses</span><span class="p">,</span> <span class="n">mfgain</span><span class="p">]</span> <span class="p">=</span> <span class="n">matchedfilter</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% The matched filter introduces an intrinsic filter delay so that the</span>
-<span class="c">% locations of the peak (the maximum SNR output sample) are no longer</span>
-<span class="c">% aligned with the true target locations. To compensate for this delay, in</span>
-<span class="c">% this example, we will move the output of the matched filter forward and</span>
-<span class="c">% pad the zeros at the end. Note that in real systems, because the data</span>
-<span class="c">% is collected continuously, there is really no end of it.</span>
-
-<span class="n">matchingdelay</span> <span class="p">=</span> <span class="nb">size</span><span class="p">(</span><span class="n">matchingcoeff</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-<span class="n">rxpulses</span> <span class="p">=</span> <span class="n">buffer</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">(</span><span class="n">matchingdelay</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="p">)</span><span class="p">,</span><span class="nb">size</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% The threshold is then increased by the matched filter processing gain.</span>
-<span class="n">threshold</span> <span class="p">=</span> <span class="n">threshold</span> <span class="o">*</span> <span class="n">db2pow</span><span class="p">(</span><span class="n">mfgain</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%% </span>
-<span class="c">% The following plot shows the same two pulses after they pass through the</span>
-<span class="c">% matched filter.</span>
-<span class="c">% helperRadarPulsePlot(rxpulses,threshold,...</span>
-<span class="c">%     fast_time_grid,slow_time_grid,num_pulse_plot);</span>
-
-<span class="c">%%</span>
-<span class="c">% After the matched filter stage, the SNR is improved. However, because</span>
-<span class="c">% the received signal power is dependent on the range, the return of a</span>
-<span class="c">% close target is still much stronger than the return of a target farther</span>
-<span class="c">% away. Therefore, as the above figure shows, the noise from a close range</span>
-<span class="c">% bin also has a significant chance of surpassing the threshold and</span>
-<span class="c">% shadowing a target farther away. To ensure the threshold is fair to all</span>
-<span class="c">% the targets within the detectable range, we can use a time varying gain</span>
-<span class="c">% to compensate for the range dependent loss in the received echo.</span>
-<span class="c">%</span>
-<span class="c">% To compensate for the range dependent loss, we first calculate the range</span>
-<span class="c">% gates corresponding to each signal sample and then calculate the free</span>
-<span class="c">% space path loss corresponding to each range gate. Once that information</span>
-<span class="c">% is obtained, we apply a time varying gain to the received pulse so that</span>
-<span class="c">% the returns are as if from the same reference range (the maximum</span>
-<span class="c">% detectable range).</span>
-
-<span class="n">range_gates</span> <span class="p">=</span> <span class="n">prop_speed</span><span class="o">*</span><span class="n">fast_time_grid</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> 
-
-<span class="n">tvg</span> <span class="p">=</span> <span class="n">phased</span><span class="p">.</span><span class="n">TimeVaryingGain</span><span class="p">(</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">RangeLoss&#39;</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">fspl</span><span class="p">(</span><span class="n">range_gates</span><span class="p">,</span><span class="n">lambda</span><span class="p">)</span><span class="p">,</span><span class="c">...</span>
-    <span class="s">&#39;</span><span class="s">ReferenceLoss&#39;</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">fspl</span><span class="p">(</span><span class="n">max_range</span><span class="p">,</span><span class="n">lambda</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">rxpulses</span> <span class="p">=</span> <span class="n">tvg</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% Now let&#39;s plot the same two pulses after the range normalization </span>
-<span class="c">% helperRadarPulsePlot(rxpulses,threshold,...</span>
-<span class="c">%     fast_time_grid,slow_time_grid,num_pulse_plot);</span>
-
-<span class="c">%%</span>
-<span class="c">% The time varying gain operation results in a ramp in the noise floor.</span>
-<span class="c">% However, the target return is now range independent. A constant</span>
-<span class="c">% threshold can now be used for detection across the entire detectable</span>
-<span class="c">% range.</span>
-
-<span class="c">%%</span>
-<span class="c">% Notice that at this stage, the threshold is above the maximum power level</span>
-<span class="c">% contained in each pulse. Therefore, nothing can be detected at this</span>
-<span class="c">% stage yet. We need to perform pulse integration to ensure the power of</span>
-<span class="c">% returned echoes from the targets can surpass the threshold while leaving</span>
-<span class="c">% the noise floor below the bar. This is expected since it is the pulse</span>
-<span class="c">% integration which allows us to use the lower power pulse train.</span>
-<span class="c">%</span>
-<span class="c">% *Noncoherent Integration*</span>
-<span class="c">%</span>
-<span class="c">% We can further improve the SNR by noncoherently integrating (video</span>
-<span class="c">% integration) the received pulses.</span>
-
-<span class="n">rxpulses</span> <span class="p">=</span> <span class="n">pulsint</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">,</span><span class="s">&#39;</span><span class="s">noncoherent&#39;</span><span class="p">)</span><span class="p">;</span>
-
-<span class="n">helperRadarPulsePlot</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">,</span><span class="n">threshold</span><span class="p">,</span><span class="c">...</span>
-    <span class="n">fast_time_grid</span><span class="p">,</span><span class="n">slow_time_grid</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%%</span>
-<span class="c">% After the video integration stage, the data is ready for the final</span>
-<span class="c">% detection stage. It can be seen from the figure that all three echoes</span>
-<span class="c">% from the targets are above the threshold, and therefore can be detected.</span>
-<span class="c">%</span>
-<span class="c">% *Range Detection*</span>
-<span class="c">%</span>
-<span class="c">% Finally, the threshold detection is performed on the integrated pulses.</span>
-<span class="c">% The detection scheme identifies the peaks and then translates their</span>
-<span class="c">% positions into the ranges of the targets.</span>
-
-<span class="p">[</span><span class="o">~</span><span class="p">,</span><span class="n">range_detect</span><span class="p">]</span> <span class="p">=</span> <span class="n">findpeaks</span><span class="p">(</span><span class="n">rxpulses</span><span class="p">,</span><span class="s">&#39;</span><span class="s">MinPeakHeight&#39;</span><span class="p">,</span><span class="nb">sqrt</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="p">)</span><span class="p">;</span>
-
-<span class="c">%% </span>
-<span class="c">% The true ranges and the detected ranges of the targets are shown below:</span>
-
-<span class="n">true_range</span> <span class="p">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tgtrng</span><span class="p">)</span>
-<span class="n">range_estimates</span> <span class="p">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">range_gates</span><span class="p">(</span><span class="n">range_detect</span><span class="p">)</span><span class="p">)</span>
-
-
-<span class="c">%%</span>
-<span class="c">% Note that these range estimates are only accurate up to the range</span>
-<span class="c">% resolution (50 m) that can be achieved by the radar system.</span>
-
-<span class="c">%% Summary</span>
-<span class="c">% In this example, we designed a radar system based on a set of given</span>
-<span class="c">% performance goals. From these performance goals, many design parameters</span>
-<span class="c">% of the radar system were calculated. The example also showed how to use</span>
-<span class="c">% the designed radar to perform a range detection task. In this example,</span>
-<span class="c">% the radar used a rectangular waveform. Interested readers can refer to</span>
-<span class="c">% &lt;docid:phased_ug.example-ex12077916&gt; for an example using a chirp</span>
-<span class="c">% waveform.</span>
-</code></pre></td></tr></table>
-</div>
-</div>
-    </div>
-
-    
-<footer class="post-footer">
-      <div class="post-tags">
-          <a href="/tags/matlab/">matlab</a>
-          <a href="/tags/radar/">radar</a>
-          </div>
-      <nav class="post-nav">
-        <a class="prev" href="/post/coherentdepth/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">分布式全相参雷达的相参景深</span>
-            <span class="prev-text nav-mobile">Prev</span>
-          </a>
-        <a class="next" href="/post/bestapproximation/">
-            <span class="next-text nav-default">矩阵论：子空间的最佳逼近</span>
-            <span class="next-text nav-mobile">Next</span>
-            <i class="iconfont icon-right"></i>
-          </a>
-      </nav>
-    </footer>
-  </article>
-        </div>
-        
-
-  
-
-  
-
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="social-links">
-      <a href="mailto:1016574101@qq.com" class="iconfont icon-email" title="email"></a>
-  <a href="https://bingsz.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
-</div>
-
-<div class="copyright">
-  <span class="power-by">
-    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
-  </span>
-  <span class="division">|</span>
-  <span class="theme-info">
-    Theme - 
-    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
-  </span>
-
-  
-
-  <span class="copyright-year">
-    &copy; 
-    2017 - 
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>s Zhebin</span>
-  </span>
-</div>
-
-    </footer>
-
-    <div class="back-to-top" id="back-to-top">
-      <i class="iconfont icon-up"></i>
-    </div>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-
-
-
-<script type="text/javascript" src="/js/main.min.c12618f9a600c40bd024996677e951e64d3487006775aeb22e200c990006c5c7.js"></script>
-
-
-
-
-
-
-
-
-</body>
-</html>

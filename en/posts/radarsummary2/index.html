@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>分布式全相参雷达论文阅读笔记（二） | Song&#39;s Blog</title>
+<meta name="keywords" content="Radar, Summary">
+<meta name="description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/radarsummary2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bf5f9f73cf17311d52cedbcda82c922e91b2f566d88a85ad9f5b5a08b586bd5f.css" integrity="sha256-v1&#43;fc88XMR1SztvNqCySLpGy9WbYioWtn1taCLWGvV8=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.acb54fd32bbc1982428b8850317e45d076b95012730a5936667e6bc21777692a.js" integrity="sha256-rLVP0yu8GYJCi4hQMX5F0Ha5UBJzClk2Zn5rwhd3aSo="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+<meta property="og:title" content="分布式全相参雷达论文阅读笔记（二）" />
+<meta property="og:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/radarsummary2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-04T18:38:48+08:00" />
+<meta property="article:modified_time" content="2023-08-04T18:38:48+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="分布式全相参雷达论文阅读笔记（二）"/>
+<meta name="twitter:description" content="  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "文章",
+      "item": "https://bingsz.github.io/en/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "分布式全相参雷达论文阅读笔记（二）",
+      "item": "https://bingsz.github.io/en/posts/radarsummary2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "分布式全相参雷达论文阅读笔记（二）",
+  "name": "分布式全相参雷达论文阅读笔记（二）",
+  "description": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n",
+  "keywords": [
+    "Radar", "Summary"
+  ],
+  "articleBody": " 分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。\n1. 互相关时延对齐补偿方法 1.1. 基本原理 对于独立同分布的噪声，其互相关量可近似为0，而对于待对齐的量（如雷达接收信号或强干扰信号），在对齐时互相关量取值较大，不对齐时互相关量取值较小。基于这一基本原理，互相关时延对齐补偿方法通过寻找两个信号的最大互相关所在位置来确定对齐时延。需要注意的是，对于雷达接收信号，互相关时延对齐补偿法通常不能取得较好的效果，这是因为虽然独立同分布噪声的互相关量可近似为0，但并不为0，因此当噪声功率过大时，噪声的互相关量便会淹没信号。而这对于一整段接收信号来说是非常常见的，因为目标回波信号通常只占据整个接收时间段的一小部分。\n更详细地说，记两个雷达站接收到的信号如下所示\n$$ \\begin{equation} \\begin{aligned} s_0(t) = u(t)\\exp(2\\pi f_0 t) + n_0(t) \\\\ s_1(t) = u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t) \\end{aligned} \\end{equation} $$\n其中$n_0(t)$，$n_1(t)$为两个雷达站接收到的不同噪声，$u(t)$为雷达信号包络，$f_0$为雷达发射的载频。当对两者作互相关运算时\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t) + n_0(t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) + n_1(t)) \\\\ =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\\\ \u0026+ u(t)\\exp(2\\pi f_0 t) * n_1(t) \\\\ \u0026+ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) \\\\ \u0026+ n_0(t)*n_1(t) \\end{aligned} \\end{equation} $$\n其中$*$表示互相关运算。易知有如下关系成立\n$$ \\begin{equation} \\begin{cases} u(t)\\exp(2\\pi f_0 t) * n_1(t) = 0 \\\\ n_0(t) * u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau)) = 0 \\ n_0(t) * n_1(t)=0 \\end{cases} \\end{equation} $$\n将上述关系式代入(2)式中，可以得到\n$$ \\begin{equation} \\begin{aligned} s_0(t) * s_1(t) =\u0026 (u(t)\\exp(2\\pi f_0 t)) * (u(t - \\tau)\\exp(2\\pi f_0 (t - \\tau))) \\ \\approx \u0026 \\delta(t - \\tau) \\end{aligned} \\end{equation} $$\n其中$\\delta(t)$表示冲激函数。上式意味着，将两段雷达回波接收信号作互相关，随后将最大值所在处作为时延补偿量是可行的。但是实际上，利用互相关量来直接对齐回波信号是非常困难的，因为(2.3)式只是一个近似值，实际上(2.3)式的三个式子并不完全等于0，当噪声互相关的功率充分大时，便会淹没信号。\n例如令接收信号的向量为$\\mathbf{x}$，其中仅在某几个距离门内有信号，而在其余距离门中均被噪声充斥。那么作互相关时，便会有大量的噪声进入到互相关运算中，从而导致真实回波信号被淹没。假设两个雷达接收到的回波信号信噪比为20dB，如图2-1所示\n图1.1：两部雷达接收回波信号\r对这两个雷达回波信号作互相关时，得到如图2-2所示结果，可以发现回波信号的互相关结果已经被淹没在了噪声中。这是因为在现实世界中，只能有限采样信号点数，这导致两个噪声作互相关时，并不严格为0。当这部分功率高于信号作互相关后的功率时，便会将信号部分淹没。\n图1.2：互相关结果\r如果待对齐的信号在整段接收信号中均存在，并且功率充分大（此处的功率充分大指的是作互相关后，不被噪声淹没即可），那么就可以使用互相关方法来进行时延对齐补偿。典型的一个应用场景是压制式干扰信号的对齐。由于压制式干扰信号通常具有较高的功率，并且在整段接收信号上均存在，因此可以使用上述互相关方法来进行对齐。\n那么有没有方法对接收信号作互相关对齐呢？答案是肯定的。既然对整段信号作互相关时，会导致大量的噪声泄漏出来，那么不妨将整段信号进行分段处理。通过将整段雷达接收信号划分为若干段，随后对对应段作互相关处理，可以有效的抑制噪声。但随之便会导致另一个问题，那就是划分为若干段时，接收信号需要恰好在某一段中，这样才能通过互相关方法来进行对齐。这个问题的一个解决方法便是可以使用不同方法来进行分段，从而降低信号落入不同段的概率。\n记雷达站$i$的接收信号为$\\mathbf{x}_i$，如下所示\n$$ \\begin{equation} \\mathbf{x}_i= \\begin{pmatrix} x_{i,1} \\\\ x_{i,2} \\\\ … \\\\ x_{i,N} \\end{pmatrix} \\end{equation} $$\n将各个雷达接收信号$\\mathbf{x}_i$划分为若干段$\\mathbf{x}_{i,1}, \\mathbf{x}_{i,2}, …, \\mathbf{x}_{i,M}$，其中$M=\\lfloor \\frac{N}{K} \\rfloor$，$K$为每一段信号的长度。$\\mathbf{x}_{i,j}$如下所示\n$$ \\begin{equation} \\mathbf{x}_{i,j} = \\begin{pmatrix} x_{i,(j-1)K+1} \\\\ x_{i,(j-1)K+2} \\\\ … \\\\ x_{i,(j-1)K+K} \\end{pmatrix} \\end{equation} $$\n随后将两个分段后的雷达站接收信号$\\mathbf{x}_{i,j}$对应作互相关运算，得到$\\mathbf{y}_{i, k}^{(j)}$如下所示。\n$$ \\begin{equation} \\mathbf{y}_{i, k}^{(j)} = \\mathbf{x}_{i, j} * \\mathbf{x}_{k, j} \\end{equation} $$\n最后将$\\mathbf{y}_{i, k}^{(k)}$合并为一整段$\\mathbf{y}$，并通过分析$\\mathbf{y}_{i, k}$（如下所示）的最大值所在处便可将雷达站$i$与雷达站$k$进行时延对齐。\n$$ \\begin{equation} \\mathbf{y}_{i, k} = \\begin{pmatrix} \\mathbf{y}_{i, k}^{(1)} \\\\ \\mathbf{y}_{i, k}^{(2)} \\\\ … \\\\ \\mathbf{y}_{i, k}^{(M)} \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{y}_{i, k}$的最大值所在距离门号为$m$，那么所需的时延补偿量$\\Delta$如下所示\n$$ \\begin{equation} \\Delta = m \\mod K - \\frac{K}{2} \\end{equation} $$\n1.2. 代码与仿真分析 互相关时延对齐方法对于压制式的干扰信号具有较好的对齐效果，接下来首先对压制式干扰信号进行对齐仿真分析。仿真代码如下所示\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 numADC = 500; % 采样点数 Delta = 100; % 干扰信号到达两雷达站的时延差 JNR = 10; % 干噪比 j = wgn(1, numADC, JNR); % 生成干扰信号 x1 = wgn(1, numADC, 0) + [zeros(1, 100), j(1:end - 100)]; % 叠加干扰信号 x2 = wgn(1, numADC, 0) + j; figure; % 绘制出两段接收信号 subplot(2, 1, 1); plot(x1, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); subplot(2, 1, 2); plot(x2, 'linewidth', 2); xlabel('距离门', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); y = ifft(fft(x1) .* conj(fft(x2))); % 作互相关操作 figure; % 绘制出互相关结果 plot(y, 'linewidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); 相关的仿真参数如下所示\n描述 参数 采样点数 500 干噪比（单位：dB） 0, 10, 20, 30 干扰信号时延差（单位：采样点数） 100 通过改变代码部分的JNR变量可得到不同干噪比下的仿真结果，不同干噪比下的仿真结果如下所示（已作了归一化）\n图1.3：仿真结果\r从上图可以发现，干噪比越大，时延对齐的仿真效果越好，并且这几种情况均得到了正确的时延参数。这是因为干噪比越大，干扰在整个接收信号中的分量便越大，当作互相关运算时，相当于作了一次匹配滤波，从而在干扰信号时延差的地方取到最大值，因此可以得到两个雷达站的干扰信号时延差。\n对于回波信号对齐的代码如下所示，下述代码首先对接收信号进行分段处理，随后对相应段作互相关处理，并把互相关处理保存在变量y中，最后通过(9)式便可计算出所需补偿的时延数。\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 N = 500; % 采样点数 K = 20; % 分段长度 SNR = 20; % 信噪比 x1 = zeros(1, N); x2 = zeros(1, N); x1(257) = 1; % 添加回波信号 x2(245) = 1; x1 = awgn(complex(x1), SNR); % 添加噪声 x2 = awgn(complex(x2), SNR); y = zeros(1, N); for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 y(ind) = fftshift(ifft(fft(x1(ind)) .* conj(fft(x2(ind))))); % 作互相关 end [~, maxind] = max(abs(y)); delta = mod(maxind, K) - 1 - K/2; % 减一是因为Matlab中从1开始计数 disp(delta); figure; plot(abs(y), 'lineWidth', 2); xlabel('互相关平移', 'fontsize', 12.6); ylabel('幅度', 'fontsize', 12.6); xlim([0, 500]); 通过改变代码中的SNR变量，便可得到不同信噪比条件下的仿真结果，不同信噪比下的仿真结果如图1.4所示（已作了归一化）\n相关仿真参数如下所示\n描述 参数 采样点数 500 分段长度 20 信噪比（单位：dB） 5, 10, 15, 20 回波信号时延差（单位：采样点数） 8 图1.4：仿真结果（信噪比分别为5dB, 10dB, 15dB, 20dB）\r从图1.4可以发现，当分段长度为20，信噪比为15dB左右时，互相关时延对齐方法才能得到较好的效果。这意味着互相关时延对齐方法只有在高信噪比条件下才能良好地工作。\n从上述对于互相关方法的分析中可以看到，互相关方法需要事先确定分段长度，如果分段长度选取不当，导致目标回波信号在两个雷达站中落入不同分段内，那么就无法获得对应的时延差了。基于这个问题，互累积量方法能够对此进行一定的改善。互累积量方法不需要事先对回波信号进行分段处理，而只需要知道最大时延差即可。这部分内容将在下一小节详细讲解。\n2. 互累积量对齐方法 2.1. 基本原理 互累积量对齐方法更多应用在雷达的回波信号对齐上，相较于互相关方法，互累积量方法不需要考虑分段大小。但是缺点便是在低信噪比时对齐结果不够稳定，并且相较于互相关方法，对信噪比要求更高。\n对于两个向量$\\mathbf{a}$，$\\mathbf{b}$，他们的三阶互累积量如下定义\n$$ \\begin{equation} \\begin{aligned} C_{111}(\\alpha, \\beta) = \\sum_i a_{i}^{*}a_{i+\\alpha}a_{i+\\beta} \\\\ C_{121}(\\alpha, \\beta) = \\sum_i a_{i}^{*}b_{i+\\alpha}a_{i+\\beta} \\end{aligned} \\end{equation} $$\n独立噪声的三阶互累积量为0，而回波信号的三阶互累积量通常取一个较大的值，通过这种差别可以对接收信号进行时延对齐。假设有两个雷达站，并且雷达站$i$的接收信号经过采样后得到的序列为$r_i(n)$，从理想化角度考虑，雷达站2的信号可如下表示\n$$ \\begin{equation} r_2(n) = Ar_1(n - n_0) \\end{equation} $$\n其中$n_0$表示两雷达站的时延差，$A$表示两雷达站回波信号之间的振幅之比。事实上，$n_0$取值通常可以被限定在某个范围内，因为两雷达站之间的时延差可以通过一些粗略的估计手段来估计而得。不妨假设$n_0$的取值范围为$[-D_0, D_0]$。那么雷达站2的回波信号可表示为（不考虑噪声，这是因为不同雷达站之间的噪声不相关，因此可不考虑）\n$$ \\begin{equation} r_{2}(n) = \\sum_{k=-D_{0}}^{D_{0}}\\alpha(k)r_{1}(n-k) \\end{equation} $$\n其中$\\alpha(k)$如下定义\n$$ \\begin{equation} \\alpha(k) = \\begin{cases} 0 \u0026 k \\neq n_0 \\\\ A \u0026 k = n_0 \\end{cases} \\end{equation} $$\n将(8)式代入$C_{121}(\\alpha,\\beta)$表达式中，可得到\n$$ \\begin{equation} \\begin{aligned} C_{121}(\\alpha, \\beta) =\u0026 \\sum_i r_{1}(i)^*r_{2}(i+\\alpha)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\sum_i \\alpha(k) r_{1}(i)^*r_{1}(i+\\alpha-k)r_{1}(i+\\beta) \\\\ =\u0026 \\sum_{k=-D_{0}}^{D_{0}} \\alpha(k) C_{111}(\\alpha-k, \\beta) \\end{aligned} \\end{equation} $$\n如果可以得到$\\alpha(k)$的值，那么便可以得到雷达站2接收到的回波与雷达站1接收到的回波之间的时延差，因为$\\alpha(k)$最大值所在序号便是两者的时延差。记$\\mathbf{V}$如下所示\n$$ \\begin{equation} \\mathbf{V}= \\begin{pmatrix} C_{121}(-D_{0}, -D_{0}) \\\\ C_{121}(-D_{0}, -D_{0}+1) \\\\ … \\\\ C_{121}(-D_{0}, D_{0}) \\\\ C_{121}(-D_{0}+1, -D_{0}) \\\\ … \\\\ C_{121}(D_{0}, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{L}(k)$如下所示\n$$ \\begin{equation} \\mathbf{L}(k)= \\begin{pmatrix} C_{111}(-D_{0}-k, -D_{0}) \\\\ C_{111}(-D_{0}-k, -D_{0}+1) \\\\ … \\\\ C_{111}(-D_{0}-k, D_{0}) \\\\ C_{111}(-D_{0}+1-k, -D_{0}) \\\\ … \\\\ C_{111}(D_{0}-k, D_{0}) \\end{pmatrix} \\end{equation} $$\n记$\\mathbf{A}$为由$\\alpha(k)$构成的列向量，记$\\mathbf{L}$为\n$$ \\begin{equation} \\mathbf{L}= \\begin{pmatrix} \\mathbf{L}(-D_{0}) \u0026 \\mathbf{L}(-D_{0}+1) \u0026 … \u0026 \\mathbf{L}(D_{0}) \\end{pmatrix} \\end{equation} $$\n根据(10)式可知，有下式成立\n$$ \\begin{equation} \\mathbf{V} = \\mathbf{L}\\mathbf{A} \\end{equation} $$\n则$\\mathbf{A}$的计算可由下式给出\n$$ \\begin{equation} \\mathbf{A} = \\mathbf{L}^{-1}\\mathbf{V} \\end{equation} $$\n其中$\\mathbf{L}^{-1}$表示$\\mathbf{L}$的广义逆。$\\mathbf{A}$的最大值所对应的下标，即为雷达站2相对于雷达站1需要补偿的时延数。\n互累积量的另一种理解方式是，通过构造一个特殊的矩阵方程，使得该方程的解便是时延差需要的补偿数，那么通过求解该方程便能得到所需要的时延补偿数。至于为什么互累积量不需要进行分段处理，这是因为事实上在一开始的时候已经引入最大时延差这一先验信息，基于这一先验信息，可以将运算次数大大减小。\n2.2. 代码与仿真分析 首先来比较一下互相关方法与互累积量方法之间的噪声抑制性能差别。以下代码给出了互相关与互累积量的噪声抑制性能之间的比较\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 N = 1000; % 采样点数 K = 10; % 互相关方法分段长度 sig = zeros(2, N); % 生成两段测试信号 sig = awgn(complex(sig), 0); % 添加噪声 ret1 = zeros(1, N); % 计算分段互相关 for i = 1 : N/K ind = (i-1)*K+1 : i*K; % 获得分段 ret1(ind) = fftshift(ifft(fft(sig(1, ind)) .* conj(fft(sig(2, ind))))); % 作互相关 end ret2 = conj(sig(1, :)) .* sig(2, :) .* sig(1, :); % 计算互累积量 disp(mean(abs(ret1).^2)); % 显示互相关方法的平均功率 disp(mean(abs(ret2).^2)); % 显示互累积量方法的平均功率 figure; % 作图 subplot(2, 1, 1); plot(abs(ret1)); xlabel('距离门'); ylabel('幅度'); subplot(2, 1, 2); plot(abs(ret2)); xlabel('距离门'); ylabel('幅度'); 以下是上述程序的运行结果\n图2.1：两种方法比较\r并且程序输出两种处理方法的噪声功率在分段长度为10时，可以相差五倍左右。上述结果意味着互累积量具有比互相关方法更佳的噪声抑制效果。\n接下来进行仿真互累积量的对齐方法，为了仿真方便，本文将互累积量方法计算时延补偿数这一过程封装在了一个名为calcX的函数中\n1 2 3 function x = calcX(sig1, sig2, Dmax) ... end 其中sig1，sig2分别表示第一个雷达站的接收信号与第二个雷达站的接收信号，Dmax表示两个雷达站时延差的最大值，这表示两个雷达站时延差的取值范围是$[-\\mathrm{Dmax}, \\mathrm{Dmax}]$。在该函数中，首先计算$\\mathbf{V}$矩阵，$\\mathbf{V}$矩阵的计算代码如下所示\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 % 计算T121矩阵 T121 = zeros(2 * Dmax + 1, 2 * Dmax + 1); for i = 1 : 2*Dmax+1 for j = 1 : 2*Dmax+1 ti = i - Dmax; % 开始计算C121(i-Dmax, j-Dmax) tj = j - Dmax; tsig1 = circshift(sig1, tj); % 对信号取循环时延操作 tsig2 = circshift(sig2, ti); % 计算时延后的临时信号的互累积量，即C121(ti, tj) T121(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end % 对矩阵作一个拉伸操作即可得到最终结果 T121 = reshape(T121, (2*Dmax+1)^2, 1); 上述代码中T121变量即对应着前文所述的$\\mathbf{V}$矩阵，对于$\\mathbf{L}$矩阵的计算方法同理可得\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 T111 = zeros((2*Dmax+1)^2, 2*Dmax+1); for i = 1 : 2*Dmax+1 tmp = zeros(2*Dmax+1, 2*Dmax+1); for j = 1 : 2*Dmax+1 for k = 1 : 2*Dmax+1 ti = i - Dmax + j - Dmax; tj = k - Dmax; tsig1 = circshift(sig1, tj); tsig2 = circshift(sig1, ti); tmp(i, j) = sum(conj(sig1) .* tsig2 .* tsig1); end end T111(:, i) = reshape(tmp, (2*Dmax+1)^2, 1); end 上述代码中T111变量即对应着$\\mathbf{L}$矩阵。当计算得到$\\mathbf{V}$与$\\mathbf{L}$矩阵后，通过广义逆，便可将最终的结果求解出来，如下所示\n1 x = pinv(T111) * T121; 借助上述calcX函数，可以轻易地对互累积量方法进行仿真。假设雷达站1与雷达站2时延相差5个采样点，令最大时延数$D_0$为10个采样点，当信噪比为20dB时，互累积量方法得到的变量x如下所示（注意，为求得时延差，需要将最大值所对应序号减去$D_0$）\n图2.2：互累积量方法结果\r从上图可以看到，互累积量方法已经能够正确得到相应的时延结果。但是随之而来的一个问题是，互累积量方法在不同信噪比条件下的工作性能是如何的。经过测试可以得到如下所示结果\n图2.3：互累积量方法不同信噪比下正确率\r从上图观察可得，为了使时延校正正确率达到70%，雷达回波信号的信噪比需要达到16dB。下图为互相关方法在不同信噪比条件下的正确率（分段长度为20），从下图可以看到，当正确率为70%时，要求回波信噪比大于12.3dB。这意味着虽然互累积量方法不需要确定分段大小，但是互累积量所需要的信噪比相较于互相关方法更高。\n图2.4：互相关方法不同信噪比下正确率\r总结来说，对于互相关方法，如果能够通过多种方式使得目标回波落入同一分段内，那么可以使用互相关方法来进行时延对齐；而倘若不能保证目标回波落入同一分段内，但是接收信号信噪比较大，那么互累积量方法便是更好的选择，因为互累积量只需要知道最大的时延差便可。\n上述两种方法均是单一的基于接收信号进行对齐的，事实上可以通过事先发射正交波形来获得时延差。这种方法被称为基于MIMO模式的相参参数估计方法，这种方法对目标回波信噪比没有要求，只需要发射的正交波形能够被探测到即可。因此该方法能够在多种条件下进行对齐补偿。\n3. CFAR统计量融合方法 3.1. 基本原理 CFAR的全称是Constant False-Alarm Rate，即恒虚警率。CFAR的基本思想是通过设立一系列的参考单元，来估计背景噪声功率，随后通过估计而得的背景噪声功率来决定门限值。这种方法并不通过预先设定的门限值来进行比较，因此具有自适应的特点。同时由于是通过估计而得的背景噪声功率来决定门限值，因此也具有恒虚警的性质。有关CFAR的具体内容可参考网上的一系列资料。\n对于一个单雷达而言，若记被检测单元的幅值为$r_0$，参考单元幅值的均值为$\\bar{r}$，那么判决域可表示为\n$$ \\begin{equation} r_0 \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\bar{r} \\end{equation} $$\n其中$K$为一个常数，用于调整虚警率。作一个变形，上式可表示为似然比检验的形式，如下所示\n$$ \\begin{equation} \\frac{r_0}{\\bar{r}} \\underset{H_0}{\\overset{H_1}{\\gtrless}} K \\end{equation} $$\n对于组网雷达而言，每个雷达可向融合中心传输统计量$\\frac{r_0}{\\bar{r}}$，随后融合中心将这些接收到的统计量简单相加，便可得到融合后的结果。这种方法方便快捷，但缺点是没有考虑到各个雷达站之间的差异性，如信噪比差异等等。因此这种方法被称为次优的CFAR统计量融合检测算法。融合中心的统计量如下所示\n$$ \\begin{equation} z = \\sum_i \\frac{r_i}{\\bar{r}} \\end{equation} $$\n由于该统计量难以求解得到概率密度函数，因此可通过蒙特卡洛模拟的方式来确定门限值。\n接下来讨论考虑了各雷达站之间差异的融合方法，这种方法从奈曼皮尔逊准则的似然比检验出发进行推导。当目标RCS满足SwerlingI或II型时，接收回波中，有无目标时的幅度概率密度函数如下所示\n$$ \\begin{equation} \\begin{cases} f(x | H_0) = \\frac{1}{\\sigma_n}\\exp(-\\frac{x}{\\sigma_n}) \\\\ f(x | H_1) = \\frac{1}{\\sigma_n (\\mu + 1)}\\exp(-\\frac{x}{\\sigma_n (\\mu + 1)}) \\end{cases} \\end{equation} $$\n其中$\\sigma_n$为噪声功率，$\\mu$为信噪比。而统计量$t_i = \\frac{r_i}{\\bar{r}}$的分布函数推导如下所示\n$$ \\begin{equation} \\begin{aligned} 1 - F(T | H_0) =\u0026 P(r_i \u003e \\bar{r}T | H_0) \\\\ =\u0026 \\displaystyle\\int_{0}^{+\\infty}f(\\bar{r} | H_0)\\exp(-\\frac{\\bar{r}T}{\\sigma_n}) \\mathrm{d}\\bar{r} \\\\ =\u0026 1 - (1 + \\frac{T}{n})^{-n} \\end{aligned} \\end{equation} $$\n其中$f(\\bar{r} | H_0)$为$\\bar{r}$所满足的概率密度分布，即$n$变量指数分布叠加所形成的概率密度函数；$n$为参考单元个数。\n同理可得$F(T|H_1)$如下所示\n$$ \\begin{equation} F(T | H_1) = 1 - (1 + \\frac{T}{n(1+\\mu)})^{-n} \\end{equation} $$\n对(24)式与(25)式分别求导可得到概率密度函数为\n$$ \\begin{equation} \\begin{cases} f(t | H_0) = (\\frac{n}{n+t})^{n+1} \\\\ f(t | H_1) = \\frac{n^{n+1}(1+\\mu)^{n}}{(n(1+\\mu) + t)^{n+1}} \\end{cases} \\end{equation} $$\n于是可进一步得到统计中心似然比检验的统计量为\n$$ \\begin{equation} \\begin{aligned} z =\u0026 \\ln \\prod_i \\frac{f(t_i | H_1)}{f(t_i | H_0)} \\\\ =\u0026 \\sum_i (\\ln (f(t_i | H_1)) - \\ln (f(t_i | H_0))) \\\\ =\u0026 \\sum_i (n_i \\ln (1 + \\mu_i) + (n_i + 1)\\ln(\\frac{n_i + t_i}{n_i(1+\\mu_i)+t_i})) \\end{aligned} \\end{equation} $$\n上述的统计量需要知道每个雷达站的参考单元个数与信噪比，由于实际情况下一般很难知道雷达站所接收信号的信噪比，因此一般使用(22)式的统计量来进行融合。\n3.2. 代码与仿真分析 本节主要来进行CFAR统计量融合的仿真。\n仿真参数如下所示\n描述 参数 采样点数 1000 雷达站个数 5, 10, 15, 20 载频 1GHz 脉冲重复周期 1ms 参考单元个数 50 保护单元个数 40 首先定义一些基本常数，如下所示\n1 2 3 4 5 c = 3e9; % 光速 N = 5; % 雷达站个数 f0 = 1e9; % 载频1GHz T = 1e-3; % 脉冲重复周期 lambda = c / f0; % 载频波长 随后进行接收矩阵的生成并计算CFAR统计量，如下所示\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 % 构造接收矩阵 x = zeros(1000, N); x(600, :) = 1; x = awgn(x, k/10); % 第二个参数为信噪比 % 计算各雷达站的CA-CFAR统计量 x = x.^2; % 平方律检波 refNum = 50; % 参考单元个数 protectNum = 20; % 一边的保护单元个数 t = zeros(size(x, 1) - refNum - 2*protectNum, size(x, 2)); for i = 1 : size(t, 1) tmp = sum(x(i:(i+refNum/2-1))) + sum(x((i+refNum/2+protectNum*2+1) : (i+refNum+protectNum*2))); tmp = tmp / refNum; t(i, :) = x(i + refNum/2 + protectNum, :) / tmp; end % 非相干CA-CFAR统计量融合 y = sum(t, 2); 当然，在进行检测时，通常需要知道一定虚警概率下的门限阈值，从表达式上来说，阈值并不是一个简单计算的量。因此此处使用蒙特卡洛模拟来进行阈值的计算。在上述程序中，通过蒙特卡洛模拟计算，如果将y的阈值定为17，那么10dB信噪比下的虚警概率便是1%左右。在该门限下，对检测概率作蒙特卡洛模拟计算，可得到如下结果\n图3.1：五雷达站下的检测概率\r改变雷达站个数，并重复上述步骤，可得到如下结果\n图3.2：不同雷达站个数下的检测概率\r图3.1与3.2结果说明了增加雷达站个数来提高组网雷达的性能是可行的。事实上，从另一个角度来说，增加组网雷达站的个数，本质上是使得有无目标情况下的两个概率密度函数具有更高的区分度。如下所示图3-3，通过蒙特卡罗模拟了信噪比10dB下的，二十个雷达站的有无目标时的概率密度函数。而3.4则是展示了单雷达站下的有无目标的概率密度函数对比。\n图3.3：有无目标时的概率密度函数对比\r图3.4：有无目标时的概率密度函数对比\r从图3.3与3.4观察可得，增加雷达站个数本质上是让不同的概率密度函数之间有了更好的区分度。如果从这一思路出发，显然可以通过其它的优化函数方法来获得更佳的融合统计量，因此笔者认为接下来可以从最优化函数的角度出发，来得到最优的统计量，以使得到最佳的概率密度区分度。这个便是深度学习方法在组网雷达融合检测中的一个切入点。\n",
+  "wordCount" : "7820",
+  "inLanguage": "en",
+  "datePublished": "2023-08-04T18:38:48+08:00",
+  "dateModified": "2023-08-04T18:38:48+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/radarsummary2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                    <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                    <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                    <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                    <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                    <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">Home</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">文章</a></div>
+    <h1 class="post-title">
+      分布式全相参雷达论文阅读笔记（二）
+    </h1>
+    <div class="post-meta"><span title='2023-08-04 18:38:48 +0800 CST'>2023-08-04</span>&nbsp;·&nbsp;16 min&nbsp;·&nbsp;Song
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#__1-%e4%ba%92%e7%9b%b8%e5%85%b3%e6%97%b6%e5%bb%b6%e5%af%b9%e9%bd%90%e8%a1%a5%e5%81%bf%e6%96%b9%e6%b3%95__" aria-label="1. 互相关时延对齐补偿方法"><strong>1. 互相关时延对齐补偿方法</strong></a><ul>
+                        
+                <li>
+                    <a href="#__11-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="1.1. 基本原理"><strong>1.1. 基本原理</strong></a></li>
+                <li>
+                    <a href="#__12-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="1.2. 代码与仿真分析"><strong>1.2. 代码与仿真分析</strong></a></li></ul>
+                </li>
+                <li>
+                    <a href="#__2-%e4%ba%92%e7%b4%af%e7%a7%af%e9%87%8f%e5%af%b9%e9%bd%90%e6%96%b9%e6%b3%95__" aria-label="2. 互累积量对齐方法"><strong>2. 互累积量对齐方法</strong></a><ul>
+                        
+                <li>
+                    <a href="#__21-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="2.1. 基本原理"><strong>2.1. 基本原理</strong></a></li>
+                <li>
+                    <a href="#__22-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="2.2. 代码与仿真分析"><strong>2.2. 代码与仿真分析</strong></a></li></ul>
+                </li>
+                <li>
+                    <a href="#__3-cfar%e7%bb%9f%e8%ae%a1%e9%87%8f%e8%9e%8d%e5%90%88%e6%96%b9%e6%b3%95__" aria-label="3. CFAR统计量融合方法"><strong>3. CFAR统计量融合方法</strong></a><ul>
+                        
+                <li>
+                    <a href="#__31-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86__" aria-label="3.1. 基本原理"><strong>3.1. 基本原理</strong></a></li>
+                <li>
+                    <a href="#__32-%e4%bb%a3%e7%a0%81%e4%b8%8e%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90__" aria-label="3.2. 代码与仿真分析"><strong>3.2. 代码与仿真分析</strong></a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>  分布式全相参雷达论文阅读笔记（二）。主要内容有：基于互累积量方法的时延对齐方法，基于CFAR统计量的融合方法，基于互相关方法的时延对齐方法，基于噪声子空间投影的杂波抑制方法与基于张量的融合检测方法。</p>
+<h3 id="__1-互相关时延对齐补偿方法__"><strong>1. 互相关时延对齐补偿方法</strong><a hidden class="anchor" aria-hidden="true" href="#__1-互相关时延对齐补偿方法__">#</a></h3>
+<h4 id="__11-基本原理__"><strong>1.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__11-基本原理__">#</a></h4>
+<p>  对于独立同分布的噪声，其互相关量可近似为0，而对于待对齐的量（如雷达接收信号或强干扰信号），在对齐时互相关量取值较大，不对齐时互相关量取值较小。基于这一基本原理，互相关时延对齐补偿方法通过寻找两个信号的最大互相关所在位置来确定对齐时延。需要注意的是，对于雷达接收信号，互相关时延对齐补偿法通常不能取得较好的效果，这是因为虽然独立同分布噪声的互相关量可近似为0，但并不为0，因此当噪声功率过大时，噪声的互相关量便会淹没信号。而这对于一整段接收信号来说是非常常见的，因为目标回波信号通常只占据整个接收时间段的一小部分。</p>
+<p>  更详细地说，记两个雷达站接收到的信号如下所示</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+s_0(t) = u(t)\exp(2\pi f_0 t) + n_0(t) \\ s_1(t) = u(t - \tau)\exp(2\pi f_0 (t - \tau)) + n_1(t)
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  其中$n_0(t)$，$n_1(t)$为两个雷达站接收到的不同噪声，$u(t)$为雷达信号包络，$f_0$为雷达发射的载频。当对两者作互相关运算时</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+s_0(t) * s_1(t) =&amp; (u(t)\exp(2\pi f_0 t) + n_0(t)) * (u(t - \tau)\exp(2\pi f_0 (t - \tau)) + n_1(t)) \\ =&amp; (u(t)\exp(2\pi f_0 t)) * (u(t - \tau)\exp(2\pi f_0 (t - \tau))) \\ &amp;+ u(t)\exp(2\pi f_0 t) * n_1(t) \\ &amp;+ n_0(t) * u(t - \tau)\exp(2\pi f_0 (t - \tau)) \\ &amp;+ n_0(t)*n_1(t)
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  其中$*$表示互相关运算。易知有如下关系成立</p>
+<p>$$
+\begin{equation}
+\begin{cases}
+u(t)\exp(2\pi f_0 t) * n_1(t) = 0 \\ n_0(t) * u(t - \tau)\exp(2\pi f_0 (t - \tau)) = 0 \
+n_0(t) * n_1(t)=0
+\end{cases}
+\end{equation}
+$$</p>
+<p>  将上述关系式代入(2)式中，可以得到</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+s_0(t) * s_1(t) =&amp; (u(t)\exp(2\pi f_0 t)) * (u(t - \tau)\exp(2\pi f_0 (t - \tau))) \
+\approx &amp; \delta(t - \tau)
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  其中$\delta(t)$表示冲激函数。上式意味着，将两段雷达回波接收信号作互相关，随后将最大值所在处作为时延补偿量是可行的。但是实际上，利用互相关量来直接对齐回波信号是非常困难的，因为(2.3)式只是一个近似值，实际上(2.3)式的三个式子并不完全等于0，当噪声互相关的功率充分大时，便会淹没信号。</p>
+<p>  例如令接收信号的向量为$\mathbf{x}$，其中仅在某几个距离门内有信号，而在其余距离门中均被噪声充斥。那么作互相关时，便会有大量的噪声进入到互相关运算中，从而导致真实回波信号被淹没。假设两个雷达接收到的回波信号信噪比为20dB，如图2-1所示</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap211.1.png' width=70%>
+    <br>图1.1：两部雷达接收回波信号
+    </center>
+</div>
+<p>  对这两个雷达回波信号作互相关时，得到如图2-2所示结果，可以发现回波信号的互相关结果已经被淹没在了噪声中。这是因为在现实世界中，只能有限采样信号点数，这导致两个噪声作互相关时，并不严格为0。当这部分功率高于信号作互相关后的功率时，便会将信号部分淹没。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap211.2.png' width=70%>
+    <br>图1.2：互相关结果
+    </center>
+</div>
+<p>  如果待对齐的信号在整段接收信号中均存在，并且功率充分大（此处的功率充分大指的是作互相关后，不被噪声淹没即可），那么就可以使用互相关方法来进行时延对齐补偿。典型的一个应用场景是压制式干扰信号的对齐。由于压制式干扰信号通常具有较高的功率，并且在整段接收信号上均存在，因此可以使用上述互相关方法来进行对齐。</p>
+<p>  那么有没有方法对接收信号作互相关对齐呢？答案是肯定的。既然对整段信号作互相关时，会导致大量的噪声泄漏出来，那么不妨将整段信号进行分段处理。通过将整段雷达接收信号划分为若干段，随后对对应段作互相关处理，可以有效的抑制噪声。但随之便会导致另一个问题，那就是划分为若干段时，接收信号需要恰好在某一段中，这样才能通过互相关方法来进行对齐。这个问题的一个解决方法便是可以使用不同方法来进行分段，从而降低信号落入不同段的概率。</p>
+<p>  记雷达站$i$的接收信号为$\mathbf{x}_i$，如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{x}_i=
+\begin{pmatrix}
+x_{i,1} \\ x_{i,2} \\ &hellip; \\ x_{i,N}
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  将各个雷达接收信号$\mathbf{x}_i$划分为若干段$\mathbf{x}_{i,1}, \mathbf{x}_{i,2}, &hellip;, \mathbf{x}_{i,M}$，其中$M=\lfloor \frac{N}{K} \rfloor$，$K$为每一段信号的长度。$\mathbf{x}_{i,j}$如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{x}_{i,j} =
+\begin{pmatrix}
+x_{i,(j-1)K+1} \\ x_{i,(j-1)K+2} \\ &hellip; \\ x_{i,(j-1)K+K}
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  随后将两个分段后的雷达站接收信号$\mathbf{x}_{i,j}$对应作互相关运算，得到$\mathbf{y}_{i, k}^{(j)}$如下所示。</p>
+<p>$$
+\begin{equation}
+\mathbf{y}_{i, k}^{(j)} = \mathbf{x}_{i, j} * \mathbf{x}_{k, j}
+\end{equation}
+$$</p>
+<p>  最后将$\mathbf{y}_{i, k}^{(k)}$合并为一整段$\mathbf{y}$，并通过分析$\mathbf{y}_{i, k}$（如下所示）的最大值所在处便可将雷达站$i$与雷达站$k$进行时延对齐。</p>
+<p>$$
+\begin{equation}
+\mathbf{y}_{i, k} =
+\begin{pmatrix}
+\mathbf{y}_{i, k}^{(1)} \\ \mathbf{y}_{i, k}^{(2)} \\ &hellip; \\ \mathbf{y}_{i, k}^{(M)}
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  记$\mathbf{y}_{i, k}$的最大值所在距离门号为$m$，那么所需的时延补偿量$\Delta$如下所示</p>
+<p>$$
+\begin{equation}
+\Delta = m \mod K - \frac{K}{2}
+\end{equation}
+$$</p>
+<h4 id="__12-代码与仿真分析__"><strong>1.2. 代码与仿真分析</strong><a hidden class="anchor" aria-hidden="true" href="#__12-代码与仿真分析__">#</a></h4>
+<p>  互相关时延对齐方法对于压制式的干扰信号具有较好的对齐效果，接下来首先对压制式干扰信号进行对齐仿真分析。仿真代码如下所示</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>numADC = <span style="color:#ff0;font-weight:bold">500</span>;   <span style="color:#007f7f">% 采样点数</span>
+</span></span><span style="display:flex;"><span>Delta = <span style="color:#ff0;font-weight:bold">100</span>;    <span style="color:#007f7f">% 干扰信号到达两雷达站的时延差</span>
+</span></span><span style="display:flex;"><span>JNR = <span style="color:#ff0;font-weight:bold">10</span>;       <span style="color:#007f7f">% 干噪比</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">j</span> = wgn(<span style="color:#ff0;font-weight:bold">1</span>, numADC, JNR); <span style="color:#007f7f">% 生成干扰信号</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x1 = wgn(<span style="color:#ff0;font-weight:bold">1</span>, numADC, <span style="color:#ff0;font-weight:bold">0</span>) + [<span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">100</span>), <span style="color:#fff;font-weight:bold">j</span>(<span style="color:#ff0;font-weight:bold">1</span>:<span style="color:#fff;font-weight:bold">end</span> - <span style="color:#ff0;font-weight:bold">100</span>)]; <span style="color:#007f7f">% 叠加干扰信号</span>
+</span></span><span style="display:flex;"><span>x2 = wgn(<span style="color:#ff0;font-weight:bold">1</span>, numADC, <span style="color:#ff0;font-weight:bold">0</span>) + <span style="color:#fff;font-weight:bold">j</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>figure; <span style="color:#007f7f">% 绘制出两段接收信号</span>
+</span></span><span style="display:flex;"><span>subplot(<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span>plot(x1, <span style="color:#0ff;font-weight:bold">&#39;linewidth&#39;</span>, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;距离门&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>subplot(<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span><span style="display:flex;"><span>plot(x2, <span style="color:#0ff;font-weight:bold">&#39;linewidth&#39;</span>, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;距离门&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>y = ifft(fft(x1) .* <span style="color:#fff;font-weight:bold">conj</span>(fft(x2))); <span style="color:#007f7f">% 作互相关操作</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>figure; <span style="color:#007f7f">% 绘制出互相关结果</span>
+</span></span><span style="display:flex;"><span>plot(y, <span style="color:#0ff;font-weight:bold">&#39;linewidth&#39;</span>, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;互相关平移&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  相关的仿真参数如下所示</p>
+<style>
+.center 
+{
+  width: auto;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">采样点数</td>
+<td style="text-align:center">500</td>
+</tr>
+<tr>
+<td style="text-align:center">干噪比（单位：dB）</td>
+<td style="text-align:center">0, 10, 20, 30</td>
+</tr>
+<tr>
+<td style="text-align:center">干扰信号时延差（单位：采样点数）</td>
+<td style="text-align:center">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>  通过改变代码部分的JNR变量可得到不同干噪比下的仿真结果，不同干噪比下的仿真结果如下所示（已作了归一化）</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap211.3.png' width=30% style="display:inline-block">
+    <img src='/images/RadarSummary2/chap211.4.png' width=30% style="display:inline-block">
+    <br>
+    <img src='/images/RadarSummary2/chap211.5.png' width=30% style="display:inline-block">
+    <img src='/images/RadarSummary2/chap211.6.png' width=30% style="display:inline-block">
+    <br>图1.3：仿真结果
+    </center>
+</div>
+<p>  从上图可以发现，干噪比越大，时延对齐的仿真效果越好，并且这几种情况均得到了正确的时延参数。这是因为干噪比越大，干扰在整个接收信号中的分量便越大，当作互相关运算时，相当于作了一次匹配滤波，从而在干扰信号时延差的地方取到最大值，因此可以得到两个雷达站的干扰信号时延差。</p>
+<p>  对于回波信号对齐的代码如下所示，下述代码首先对接收信号进行分段处理，随后对相应段作互相关处理，并把互相关处理保存在变量y中，最后通过(9)式便可计算出所需补偿的时延数。</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>N = <span style="color:#ff0;font-weight:bold">500</span>; <span style="color:#007f7f">% 采样点数</span>
+</span></span><span style="display:flex;"><span>K = <span style="color:#ff0;font-weight:bold">20</span>;  <span style="color:#007f7f">% 分段长度</span>
+</span></span><span style="display:flex;"><span>SNR = <span style="color:#ff0;font-weight:bold">20</span>; <span style="color:#007f7f">% 信噪比</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x1 = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1</span>, N);
+</span></span><span style="display:flex;"><span>x2 = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1</span>, N);
+</span></span><span style="display:flex;"><span>x1(<span style="color:#ff0;font-weight:bold">257</span>) = <span style="color:#ff0;font-weight:bold">1</span>; <span style="color:#007f7f">% 添加回波信号</span>
+</span></span><span style="display:flex;"><span>x2(<span style="color:#ff0;font-weight:bold">245</span>) = <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span>x1 = awgn(<span style="color:#fff;font-weight:bold">complex</span>(x1), SNR); <span style="color:#007f7f">% 添加噪声</span>
+</span></span><span style="display:flex;"><span>x2 = awgn(<span style="color:#fff;font-weight:bold">complex</span>(x2), SNR);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>y = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1</span>, N);
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">i</span> = <span style="color:#ff0;font-weight:bold">1</span> : N/K
+</span></span><span style="display:flex;"><span>    ind = (<span style="color:#fff;font-weight:bold">i</span>-<span style="color:#ff0;font-weight:bold">1</span>)*K+<span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#fff;font-weight:bold">i</span>*K; <span style="color:#007f7f">% 获得分段</span>
+</span></span><span style="display:flex;"><span>    y(ind) = fftshift(ifft(fft(x1(ind)) .* <span style="color:#fff;font-weight:bold">conj</span>(fft(x2(ind))))); <span style="color:#007f7f">% 作互相关</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[~, maxind] = max(<span style="color:#fff;font-weight:bold">abs</span>(y));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>delta = <span style="color:#fff;font-weight:bold">mod</span>(maxind, K) - <span style="color:#ff0;font-weight:bold">1</span> - K/<span style="color:#ff0;font-weight:bold">2</span>; <span style="color:#007f7f">% 减一是因为Matlab中从1开始计数</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">disp</span>(delta);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>figure;
+</span></span><span style="display:flex;"><span>plot(<span style="color:#fff;font-weight:bold">abs</span>(y), <span style="color:#0ff;font-weight:bold">&#39;lineWidth&#39;</span>, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;互相关平移&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>, <span style="color:#0ff;font-weight:bold">&#39;fontsize&#39;</span>, <span style="color:#ff0;font-weight:bold">12.6</span>);
+</span></span><span style="display:flex;"><span>xlim([<span style="color:#ff0;font-weight:bold">0</span>, <span style="color:#ff0;font-weight:bold">500</span>]);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  通过改变代码中的SNR变量，便可得到不同信噪比条件下的仿真结果，不同信噪比下的仿真结果如图1.4所示（已作了归一化）</p>
+<p>  相关仿真参数如下所示</p>
+<div class="center">
+<center>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">采样点数</td>
+<td style="text-align:center">500</td>
+</tr>
+<tr>
+<td style="text-align:center">分段长度</td>
+<td style="text-align:center">20</td>
+</tr>
+<tr>
+<td style="text-align:center">信噪比（单位：dB）</td>
+<td style="text-align:center">5, 10, 15, 20</td>
+</tr>
+<tr>
+<td style="text-align:center">回波信号时延差（单位：采样点数）</td>
+<td style="text-align:center">8</td>
+</tr>
+</tbody>
+</table>
+</center>
+</div>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap211.7.png' width=30% style="display:inline-block">
+    <img src='/images/RadarSummary2/chap211.8.png' width=30% style="display:inline-block">
+    <br>
+    <img src='/images/RadarSummary2/chap211.9.png' width=30% style="display:inline-block">
+    <img src='/images/RadarSummary2/chap211.10.png' width=30% style="display:inline-block">
+    <br>图1.4：仿真结果（信噪比分别为5dB, 10dB, 15dB, 20dB）
+    </center>
+</div>
+<p>  从图1.4可以发现，当分段长度为20，信噪比为15dB左右时，互相关时延对齐方法才能得到较好的效果。这意味着互相关时延对齐方法只有在高信噪比条件下才能良好地工作。</p>
+<p>  从上述对于互相关方法的分析中可以看到，互相关方法需要事先确定分段长度，如果分段长度选取不当，导致目标回波信号在两个雷达站中落入不同分段内，那么就无法获得对应的时延差了。基于这个问题，互累积量方法能够对此进行一定的改善。互累积量方法不需要事先对回波信号进行分段处理，而只需要知道最大时延差即可。这部分内容将在下一小节详细讲解。</p>
+<h3 id="__2-互累积量对齐方法__"><strong>2. 互累积量对齐方法</strong><a hidden class="anchor" aria-hidden="true" href="#__2-互累积量对齐方法__">#</a></h3>
+<h4 id="__21-基本原理__"><strong>2.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__21-基本原理__">#</a></h4>
+<p>  互累积量对齐方法更多应用在雷达的回波信号对齐上，相较于互相关方法，互累积量方法不需要考虑分段大小。但是缺点便是在低信噪比时对齐结果不够稳定，并且相较于互相关方法，对信噪比要求更高。</p>
+<p>  对于两个向量$\mathbf{a}$，$\mathbf{b}$，他们的三阶互累积量如下定义</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+C_{111}(\alpha, \beta) = \sum_i a_{i}^{*}a_{i+\alpha}a_{i+\beta} \\
+C_{121}(\alpha, \beta) = \sum_i a_{i}^{*}b_{i+\alpha}a_{i+\beta}
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  独立噪声的三阶互累积量为0，而回波信号的三阶互累积量通常取一个较大的值，通过这种差别可以对接收信号进行时延对齐。假设有两个雷达站，并且雷达站$i$的接收信号经过采样后得到的序列为$r_i(n)$，从理想化角度考虑，雷达站2的信号可如下表示</p>
+<p>$$
+\begin{equation}
+r_2(n) = Ar_1(n - n_0)
+\end{equation}
+$$</p>
+<p>  其中$n_0$表示两雷达站的时延差，$A$表示两雷达站回波信号之间的振幅之比。事实上，$n_0$取值通常可以被限定在某个范围内，因为两雷达站之间的时延差可以通过一些粗略的估计手段来估计而得。不妨假设$n_0$的取值范围为$[-D_0, D_0]$。那么雷达站2的回波信号可表示为（不考虑噪声，这是因为不同雷达站之间的噪声不相关，因此可不考虑）</p>
+<p>$$
+\begin{equation}
+r_{2}(n) = \sum_{k=-D_{0}}^{D_{0}}\alpha(k)r_{1}(n-k)
+\end{equation}
+$$</p>
+<p>  其中$\alpha(k)$如下定义</p>
+<p>$$
+\begin{equation}
+\alpha(k) =
+\begin{cases}
+0 &amp; k \neq n_0 \\ A &amp; k = n_0
+\end{cases}
+\end{equation}
+$$</p>
+<p>  将(8)式代入$C_{121}(\alpha,\beta)$表达式中，可得到</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+C_{121}(\alpha, \beta) =&amp; \sum_i r_{1}(i)^*r_{2}(i+\alpha)r_{1}(i+\beta) \\ =&amp; \sum_{k=-D_{0}}^{D_{0}} \sum_i \alpha(k) r_{1}(i)^*r_{1}(i+\alpha-k)r_{1}(i+\beta) \\ =&amp; \sum_{k=-D_{0}}^{D_{0}} \alpha(k) C_{111}(\alpha-k, \beta)
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  如果可以得到$\alpha(k)$的值，那么便可以得到雷达站2接收到的回波与雷达站1接收到的回波之间的时延差，因为$\alpha(k)$最大值所在序号便是两者的时延差。记$\mathbf{V}$如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{V}=
+\begin{pmatrix}
+C_{121}(-D_{0}, -D_{0}) \\ C_{121}(-D_{0}, -D_{0}+1) \\ &hellip; \\ C_{121}(-D_{0}, D_{0}) \\ C_{121}(-D_{0}+1, -D_{0}) \\ &hellip; \\ C_{121}(D_{0}, D_{0})
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  记$\mathbf{L}(k)$如下所示</p>
+<p>$$
+\begin{equation}
+\mathbf{L}(k)=
+\begin{pmatrix}
+C_{111}(-D_{0}-k, -D_{0}) \\ C_{111}(-D_{0}-k, -D_{0}+1) \\ &hellip; \\ C_{111}(-D_{0}-k, D_{0}) \\ C_{111}(-D_{0}+1-k, -D_{0}) \\ &hellip; \\ C_{111}(D_{0}-k, D_{0})
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  记$\mathbf{A}$为由$\alpha(k)$构成的列向量，记$\mathbf{L}$为</p>
+<p>$$
+\begin{equation}
+\mathbf{L}=
+\begin{pmatrix}
+\mathbf{L}(-D_{0}) &amp; \mathbf{L}(-D_{0}+1) &amp; &hellip; &amp; \mathbf{L}(D_{0})
+\end{pmatrix}
+\end{equation}
+$$</p>
+<p>  根据(10)式可知，有下式成立</p>
+<p>$$
+\begin{equation}
+\mathbf{V} = \mathbf{L}\mathbf{A}
+\end{equation}
+$$</p>
+<p>  则$\mathbf{A}$的计算可由下式给出</p>
+<p>$$
+\begin{equation}
+\mathbf{A} = \mathbf{L}^{-1}\mathbf{V}
+\end{equation}
+$$</p>
+<p>  其中$\mathbf{L}^{-1}$表示$\mathbf{L}$的广义逆。$\mathbf{A}$的最大值所对应的下标，即为雷达站2相对于雷达站1需要补偿的时延数。</p>
+<p>  互累积量的另一种理解方式是，通过构造一个特殊的矩阵方程，使得该方程的解便是时延差需要的补偿数，那么通过求解该方程便能得到所需要的时延补偿数。至于为什么互累积量不需要进行分段处理，这是因为事实上在一开始的时候已经引入最大时延差这一先验信息，基于这一先验信息，可以将运算次数大大减小。</p>
+<h4 id="__22-代码与仿真分析__"><strong>2.2. 代码与仿真分析</strong><a hidden class="anchor" aria-hidden="true" href="#__22-代码与仿真分析__">#</a></h4>
+<p>  首先来比较一下互相关方法与互累积量方法之间的噪声抑制性能差别。以下代码给出了互相关与互累积量的噪声抑制性能之间的比较</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>N = <span style="color:#ff0;font-weight:bold">1000</span>;   <span style="color:#007f7f">% 采样点数</span>
+</span></span><span style="display:flex;"><span>K = <span style="color:#ff0;font-weight:bold">10</span>;     <span style="color:#007f7f">% 互相关方法分段长度</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sig = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">2</span>, N);  <span style="color:#007f7f">% 生成两段测试信号</span>
+</span></span><span style="display:flex;"><span>sig = awgn(<span style="color:#fff;font-weight:bold">complex</span>(sig), <span style="color:#ff0;font-weight:bold">0</span>);    <span style="color:#007f7f">% 添加噪声</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ret1 = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1</span>, N); <span style="color:#007f7f">% 计算分段互相关</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">i</span> = <span style="color:#ff0;font-weight:bold">1</span> : N/K
+</span></span><span style="display:flex;"><span>    ind = (<span style="color:#fff;font-weight:bold">i</span>-<span style="color:#ff0;font-weight:bold">1</span>)*K+<span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#fff;font-weight:bold">i</span>*K; <span style="color:#007f7f">% 获得分段</span>
+</span></span><span style="display:flex;"><span>    ret1(ind) = fftshift(ifft(fft(sig(<span style="color:#ff0;font-weight:bold">1</span>, ind)) .* <span style="color:#fff;font-weight:bold">conj</span>(fft(sig(<span style="color:#ff0;font-weight:bold">2</span>, ind))))); <span style="color:#007f7f">% 作互相关</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>ret2 = <span style="color:#fff;font-weight:bold">conj</span>(sig(<span style="color:#ff0;font-weight:bold">1</span>, :)) .* sig(<span style="color:#ff0;font-weight:bold">2</span>, :) .* sig(<span style="color:#ff0;font-weight:bold">1</span>, :);   <span style="color:#007f7f">% 计算互累积量</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">disp</span>(mean(<span style="color:#fff;font-weight:bold">abs</span>(ret1).^<span style="color:#ff0;font-weight:bold">2</span>)); <span style="color:#007f7f">% 显示互相关方法的平均功率</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">disp</span>(mean(<span style="color:#fff;font-weight:bold">abs</span>(ret2).^<span style="color:#ff0;font-weight:bold">2</span>)); <span style="color:#007f7f">% 显示互累积量方法的平均功率</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>figure; <span style="color:#007f7f">% 作图</span>
+</span></span><span style="display:flex;"><span>subplot(<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">1</span>); plot(<span style="color:#fff;font-weight:bold">abs</span>(ret1));
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;距离门&#39;</span>); ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>);
+</span></span><span style="display:flex;"><span>subplot(<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">2</span>); plot(<span style="color:#fff;font-weight:bold">abs</span>(ret2));
+</span></span><span style="display:flex;"><span>xlabel(<span style="color:#0ff;font-weight:bold">&#39;距离门&#39;</span>); ylabel(<span style="color:#0ff;font-weight:bold">&#39;幅度&#39;</span>);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  以下是上述程序的运行结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap22.1.png' width=70%>
+    <br>图2.1：两种方法比较
+    </center>
+</div>
+<p>  并且程序输出两种处理方法的噪声功率在分段长度为10时，可以相差五倍左右。上述结果意味着互累积量具有比互相关方法更佳的噪声抑制效果。</p>
+<p>  接下来进行仿真互累积量的对齐方法，为了仿真方便，本文将互累积量方法计算时延补偿数这一过程封装在了一个名为calcX的函数中</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">function</span> x = calcX(sig1, sig2, Dmax)
+</span></span><span style="display:flex;"><span><span style="color:#007f7f">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  其中sig1，sig2分别表示第一个雷达站的接收信号与第二个雷达站的接收信号，Dmax表示两个雷达站时延差的最大值，这表示两个雷达站时延差的取值范围是$[-\mathrm{Dmax}, \mathrm{Dmax}]$。在该函数中，首先计算$\mathbf{V}$矩阵，$\mathbf{V}$矩阵的计算代码如下所示</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span><span style="color:#007f7f">% 计算T121矩阵</span>
+</span></span><span style="display:flex;"><span>T121 = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">2</span> * Dmax + <span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">2</span> * Dmax + <span style="color:#ff0;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">i</span> = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">j</span> = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>        ti = <span style="color:#fff;font-weight:bold">i</span> - Dmax; <span style="color:#007f7f">% 开始计算C121(i-Dmax, j-Dmax)</span>
+</span></span><span style="display:flex;"><span>        tj = <span style="color:#fff;font-weight:bold">j</span> - Dmax;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        tsig1 = <span style="color:#fff;font-weight:bold">circshift</span>(sig1, tj); <span style="color:#007f7f">% 对信号取循环时延操作</span>
+</span></span><span style="display:flex;"><span>        tsig2 = <span style="color:#fff;font-weight:bold">circshift</span>(sig2, ti);
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>        <span style="color:#007f7f">% 计算时延后的临时信号的互累积量，即C121(ti, tj)</span>
+</span></span><span style="display:flex;"><span>        T121(<span style="color:#fff;font-weight:bold">i</span>, <span style="color:#fff;font-weight:bold">j</span>) = sum(<span style="color:#fff;font-weight:bold">conj</span>(sig1) .* tsig2 .* tsig1);
+</span></span><span style="display:flex;"><span>    <span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#007f7f">% 对矩阵作一个拉伸操作即可得到最终结果</span>
+</span></span><span style="display:flex;"><span>T121 = <span style="color:#fff;font-weight:bold">reshape</span>(T121, (<span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>)^<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  上述代码中T121变量即对应着前文所述的$\mathbf{V}$矩阵，对于$\mathbf{L}$矩阵的计算方法同理可得</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>T111 = <span style="color:#fff;font-weight:bold">zeros</span>((<span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>)^<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">i</span> = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>    tmp = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>, <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">j</span> = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#fff;font-weight:bold">for</span> k = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>            ti = <span style="color:#fff;font-weight:bold">i</span> - Dmax + <span style="color:#fff;font-weight:bold">j</span> - Dmax;
+</span></span><span style="display:flex;"><span>            tj = k - Dmax;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>            tsig1 = <span style="color:#fff;font-weight:bold">circshift</span>(sig1, tj);
+</span></span><span style="display:flex;"><span>            tsig2 = <span style="color:#fff;font-weight:bold">circshift</span>(sig1, ti);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            tmp(<span style="color:#fff;font-weight:bold">i</span>, <span style="color:#fff;font-weight:bold">j</span>) = sum(<span style="color:#fff;font-weight:bold">conj</span>(sig1) .* tsig2 .* tsig1);
+</span></span><span style="display:flex;"><span>        <span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>    T111(:, <span style="color:#fff;font-weight:bold">i</span>) = <span style="color:#fff;font-weight:bold">reshape</span>(tmp, (<span style="color:#ff0;font-weight:bold">2</span>*Dmax+<span style="color:#ff0;font-weight:bold">1</span>)^<span style="color:#ff0;font-weight:bold">2</span>, <span style="color:#ff0;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  上述代码中T111变量即对应着$\mathbf{L}$矩阵。当计算得到$\mathbf{V}$与$\mathbf{L}$矩阵后，通过广义逆，便可将最终的结果求解出来，如下所示</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>x = pinv(T111) * T121;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  借助上述calcX函数，可以轻易地对互累积量方法进行仿真。假设雷达站1与雷达站2时延相差5个采样点，令最大时延数$D_0$为10个采样点，当信噪比为20dB时，互累积量方法得到的变量x如下所示（注意，为求得时延差，需要将最大值所对应序号减去$D_0$）</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap22.2.png' width=70%>
+    <br>图2.2：互累积量方法结果
+    </center>
+</div>
+<p>  从上图可以看到，互累积量方法已经能够正确得到相应的时延结果。但是随之而来的一个问题是，互累积量方法在不同信噪比条件下的工作性能是如何的。经过测试可以得到如下所示结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap22.3.png' width=70%>
+    <br>图2.3：互累积量方法不同信噪比下正确率
+    </center>
+</div>
+<p>  从上图观察可得，为了使时延校正正确率达到70%，雷达回波信号的信噪比需要达到16dB。下图为互相关方法在不同信噪比条件下的正确率（分段长度为20），从下图可以看到，当正确率为70%时，要求回波信噪比大于12.3dB。这意味着虽然互累积量方法不需要确定分段大小，但是互累积量所需要的信噪比相较于互相关方法更高。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap22.4.png' width=70%>
+    <br>图2.4：互相关方法不同信噪比下正确率
+    </center>
+</div>
+<p>  总结来说，对于互相关方法，如果能够通过多种方式使得目标回波落入同一分段内，那么可以使用互相关方法来进行时延对齐；而倘若不能保证目标回波落入同一分段内，但是接收信号信噪比较大，那么互累积量方法便是更好的选择，因为互累积量只需要知道最大的时延差便可。</p>
+<p>  上述两种方法均是单一的基于接收信号进行对齐的，事实上可以通过事先发射正交波形来获得时延差。这种方法被称为基于MIMO模式的相参参数估计方法，这种方法对目标回波信噪比没有要求，只需要发射的正交波形能够被探测到即可。因此该方法能够在多种条件下进行对齐补偿。</p>
+<h3 id="__3-cfar统计量融合方法__"><strong>3. CFAR统计量融合方法</strong><a hidden class="anchor" aria-hidden="true" href="#__3-cfar统计量融合方法__">#</a></h3>
+<h4 id="__31-基本原理__"><strong>3.1. 基本原理</strong><a hidden class="anchor" aria-hidden="true" href="#__31-基本原理__">#</a></h4>
+<p>  CFAR的全称是Constant False-Alarm Rate，即恒虚警率。CFAR的基本思想是通过设立一系列的参考单元，来估计背景噪声功率，随后通过估计而得的背景噪声功率来决定门限值。这种方法并不通过预先设定的门限值来进行比较，因此具有自适应的特点。同时由于是通过估计而得的背景噪声功率来决定门限值，因此也具有恒虚警的性质。有关CFAR的具体内容可参考网上的一系列资料。</p>
+<p>  对于一个单雷达而言，若记被检测单元的幅值为$r_0$，参考单元幅值的均值为$\bar{r}$，那么判决域可表示为</p>
+<p>$$
+\begin{equation}
+r_0 \underset{H_0}{\overset{H_1}{\gtrless}} K \bar{r}
+\end{equation}
+$$</p>
+<p>  其中$K$为一个常数，用于调整虚警率。作一个变形，上式可表示为似然比检验的形式，如下所示</p>
+<p>$$
+\begin{equation}
+\frac{r_0}{\bar{r}} \underset{H_0}{\overset{H_1}{\gtrless}} K
+\end{equation}
+$$</p>
+<p>  对于组网雷达而言，每个雷达可向融合中心传输统计量$\frac{r_0}{\bar{r}}$，随后融合中心将这些接收到的统计量简单相加，便可得到融合后的结果。这种方法方便快捷，但缺点是没有考虑到各个雷达站之间的差异性，如信噪比差异等等。因此这种方法被称为次优的CFAR统计量融合检测算法。融合中心的统计量如下所示</p>
+<p>$$
+\begin{equation}
+z = \sum_i \frac{r_i}{\bar{r}}
+\end{equation}
+$$</p>
+<p>  由于该统计量难以求解得到概率密度函数，因此可通过蒙特卡洛模拟的方式来确定门限值。</p>
+<p>  接下来讨论考虑了各雷达站之间差异的融合方法，这种方法从奈曼皮尔逊准则的似然比检验出发进行推导。当目标RCS满足SwerlingI或II型时，接收回波中，有无目标时的幅度概率密度函数如下所示</p>
+<p>$$
+\begin{equation}
+\begin{cases}
+f(x | H_0) = \frac{1}{\sigma_n}\exp(-\frac{x}{\sigma_n}) \\ f(x | H_1) = \frac{1}{\sigma_n (\mu + 1)}\exp(-\frac{x}{\sigma_n (\mu + 1)})
+\end{cases}
+\end{equation}
+$$</p>
+<p>  其中$\sigma_n$为噪声功率，$\mu$为信噪比。而统计量$t_i = \frac{r_i}{\bar{r}}$的分布函数推导如下所示</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+1 - F(T | H_0) =&amp; P(r_i &gt; \bar{r}T | H_0) \\ =&amp; \displaystyle\int_{0}^{+\infty}f(\bar{r} | H_0)\exp(-\frac{\bar{r}T}{\sigma_n}) \mathrm{d}\bar{r} \\ =&amp; 1 - (1 + \frac{T}{n})^{-n}
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  其中$f(\bar{r} | H_0)$为$\bar{r}$所满足的概率密度分布，即$n$变量指数分布叠加所形成的概率密度函数；$n$为参考单元个数。</p>
+<p>  同理可得$F(T|H_1)$如下所示</p>
+<p>$$
+\begin{equation}
+F(T | H_1) = 1 - (1 + \frac{T}{n(1+\mu)})^{-n}
+\end{equation}
+$$</p>
+<p>  对(24)式与(25)式分别求导可得到概率密度函数为</p>
+<p>$$
+\begin{equation}
+\begin{cases}
+f(t | H_0) = (\frac{n}{n+t})^{n+1} \\ f(t | H_1) = \frac{n^{n+1}(1+\mu)^{n}}{(n(1+\mu) + t)^{n+1}}
+\end{cases}
+\end{equation}
+$$</p>
+<p>  于是可进一步得到统计中心似然比检验的统计量为</p>
+<p>$$
+\begin{equation}
+\begin{aligned}
+z =&amp; \ln \prod_i \frac{f(t_i | H_1)}{f(t_i | H_0)} \\ =&amp; \sum_i (\ln (f(t_i | H_1)) - \ln (f(t_i | H_0))) \\ =&amp; \sum_i (n_i \ln (1 + \mu_i) + (n_i + 1)\ln(\frac{n_i + t_i}{n_i(1+\mu_i)+t_i}))
+\end{aligned}
+\end{equation}
+$$</p>
+<p>  上述的统计量需要知道每个雷达站的参考单元个数与信噪比，由于实际情况下一般很难知道雷达站所接收信号的信噪比，因此一般使用(22)式的统计量来进行融合。</p>
+<h4 id="__32-代码与仿真分析__"><strong>3.2. 代码与仿真分析</strong><a hidden class="anchor" aria-hidden="true" href="#__32-代码与仿真分析__">#</a></h4>
+<p>  本节主要来进行CFAR统计量融合的仿真。</p>
+<p>  仿真参数如下所示</p>
+<div class="center">
+<center>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">采样点数</td>
+<td style="text-align:center">1000</td>
+</tr>
+<tr>
+<td style="text-align:center">雷达站个数</td>
+<td style="text-align:center">5, 10, 15, 20</td>
+</tr>
+<tr>
+<td style="text-align:center">载频</td>
+<td style="text-align:center">1GHz</td>
+</tr>
+<tr>
+<td style="text-align:center">脉冲重复周期</td>
+<td style="text-align:center">1ms</td>
+</tr>
+<tr>
+<td style="text-align:center">参考单元个数</td>
+<td style="text-align:center">50</td>
+</tr>
+<tr>
+<td style="text-align:center">保护单元个数</td>
+<td style="text-align:center">40</td>
+</tr>
+</tbody>
+</table>
+</center>
+</div>
+<p>  首先定义一些基本常数，如下所示</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span>c = <span style="color:#ff0;font-weight:bold">3e9</span>;        <span style="color:#007f7f">% 光速</span>
+</span></span><span style="display:flex;"><span>N = <span style="color:#ff0;font-weight:bold">5</span>;         <span style="color:#007f7f">% 雷达站个数</span>
+</span></span><span style="display:flex;"><span>f0 = <span style="color:#ff0;font-weight:bold">1e9</span>;       <span style="color:#007f7f">% 载频1GHz</span>
+</span></span><span style="display:flex;"><span>T = <span style="color:#ff0;font-weight:bold">1e-3</span>;       <span style="color:#007f7f">% 脉冲重复周期</span>
+</span></span><span style="display:flex;"><span>lambda = c / f0;    <span style="color:#007f7f">% 载频波长</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  随后进行接收矩阵的生成并计算CFAR统计量，如下所示</p>
+<div class="highlight"><div style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-matlab" data-lang="matlab"><span style="display:flex;"><span><span style="color:#007f7f">% 构造接收矩阵</span>
+</span></span><span style="display:flex;"><span>x = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#ff0;font-weight:bold">1000</span>, N);
+</span></span><span style="display:flex;"><span>x(<span style="color:#ff0;font-weight:bold">600</span>, :) = <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span>x = awgn(x, k/<span style="color:#ff0;font-weight:bold">10</span>);    <span style="color:#007f7f">% 第二个参数为信噪比</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span><span style="color:#007f7f">% 计算各雷达站的CA-CFAR统计量</span>
+</span></span><span style="display:flex;"><span>x = x.^<span style="color:#ff0;font-weight:bold">2</span>;   <span style="color:#007f7f">% 平方律检波</span>
+</span></span><span style="display:flex;"><span>refNum = <span style="color:#ff0;font-weight:bold">50</span>;        <span style="color:#007f7f">% 参考单元个数</span>
+</span></span><span style="display:flex;"><span>protectNum = <span style="color:#ff0;font-weight:bold">20</span>;    <span style="color:#007f7f">% 一边的保护单元个数</span>
+</span></span><span style="display:flex;"><span>t = <span style="color:#fff;font-weight:bold">zeros</span>(<span style="color:#fff;font-weight:bold">size</span>(x, <span style="color:#ff0;font-weight:bold">1</span>) - refNum - <span style="color:#ff0;font-weight:bold">2</span>*protectNum, <span style="color:#fff;font-weight:bold">size</span>(x, <span style="color:#ff0;font-weight:bold">2</span>));
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">for</span> <span style="color:#fff;font-weight:bold">i</span> = <span style="color:#ff0;font-weight:bold">1</span> : <span style="color:#fff;font-weight:bold">size</span>(t, <span style="color:#ff0;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span>	tmp = sum(x(<span style="color:#fff;font-weight:bold">i</span>:(<span style="color:#fff;font-weight:bold">i</span>+refNum/<span style="color:#ff0;font-weight:bold">2</span>-<span style="color:#ff0;font-weight:bold">1</span>))) + sum(x((<span style="color:#fff;font-weight:bold">i</span>+refNum/<span style="color:#ff0;font-weight:bold">2</span>+protectNum*<span style="color:#ff0;font-weight:bold">2</span>+<span style="color:#ff0;font-weight:bold">1</span>) : (<span style="color:#fff;font-weight:bold">i</span>+refNum+protectNum*<span style="color:#ff0;font-weight:bold">2</span>)));
+</span></span><span style="display:flex;"><span>    tmp = tmp / refNum;
+</span></span><span style="display:flex;"><span>    t(<span style="color:#fff;font-weight:bold">i</span>, :) = x(<span style="color:#fff;font-weight:bold">i</span> + refNum/<span style="color:#ff0;font-weight:bold">2</span> + protectNum, :) / tmp;
+</span></span><span style="display:flex;"><span><span style="color:#fff;font-weight:bold">end</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span><span style="color:#007f7f">% 非相干CA-CFAR统计量融合</span>
+</span></span><span style="display:flex;"><span>y = sum(t, <span style="color:#ff0;font-weight:bold">2</span>);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>  当然，在进行检测时，通常需要知道一定虚警概率下的门限阈值，从表达式上来说，阈值并不是一个简单计算的量。因此此处使用蒙特卡洛模拟来进行阈值的计算。在上述程序中，通过蒙特卡洛模拟计算，如果将y的阈值定为17，那么10dB信噪比下的虚警概率便是1%左右。在该门限下，对检测概率作蒙特卡洛模拟计算，可得到如下结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap31.1.png' width=70%>
+    <br>图3.1：五雷达站下的检测概率
+    </center>
+</div>
+<p>  改变雷达站个数，并重复上述步骤，可得到如下结果</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap31.2.png' width=70%>
+    <br>图3.2：不同雷达站个数下的检测概率
+    </center>
+</div>
+<p>  图3.1与3.2结果说明了增加雷达站个数来提高组网雷达的性能是可行的。事实上，从另一个角度来说，增加组网雷达站的个数，本质上是使得有无目标情况下的两个概率密度函数具有更高的区分度。如下所示图3-3，通过蒙特卡罗模拟了信噪比10dB下的，二十个雷达站的有无目标时的概率密度函数。而3.4则是展示了单雷达站下的有无目标的概率密度函数对比。</p>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap31.3.png' width=70%>
+    <br>图3.3：有无目标时的概率密度函数对比
+    </center>
+</div>
+<div>
+    <center>
+    <img src='/images/RadarSummary2/chap31.4.png' width=70%>
+    <br>图3.4：有无目标时的概率密度函数对比
+    </center>
+</div>
+<p>  从图3.3与3.4观察可得，增加雷达站个数本质上是让不同的概率密度函数之间有了更好的区分度。如果从这一思路出发，显然可以通过其它的优化函数方法来获得更佳的融合统计量，因此笔者认为接下来可以从最优化函数的角度出发，来得到最优的统计量，以使得到最佳的概率密度区分度。这个便是深度学习方法在组网雷达融合检测中的一个切入点。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://bingsz.github.io/en/tags/radar/">Radar</a></li>
+      <li><a href="https://bingsz.github.io/en/tags/summary/">Summary</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/radarsummary1/">
+    <span class="title">Next »</span>
+    <br>
+    <span>分布式全相参雷达论文阅读笔记（一）</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on twitter"
+        href="https://twitter.com/intent/tweet/?text=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89&amp;url=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f&amp;hashtags=Radar%2cSummary">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f&amp;title=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89&amp;summary=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89&amp;source=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f&title=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on whatsapp"
+        href="https://api.whatsapp.com/send?text=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89%20-%20https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 分布式全相参雷达论文阅读笔记（二） on telegram"
+        href="https://telegram.me/share/url?text=%e5%88%86%e5%b8%83%e5%bc%8f%e5%85%a8%e7%9b%b8%e5%8f%82%e9%9b%b7%e8%be%be%e8%ae%ba%e6%96%87%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0%ef%bc%88%e4%ba%8c%ef%bc%89&amp;url=https%3a%2f%2fbingsz.github.io%2fen%2fposts%2fradarsummary2%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://bingsz.github.io/en/">Song&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
