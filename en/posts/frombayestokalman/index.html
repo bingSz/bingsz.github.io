@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>从贝叶斯滤波框架到卡尔曼滤波 | Song&#39;s Blog</title>
+<meta name="keywords" content="Bayes Filter">
+<meta name="description" content="卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/frombayestokalman/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+
+
+<script defer src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="从贝叶斯滤波框架到卡尔曼滤波" />
+<meta property="og:description" content="卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/frombayestokalman/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-08T13:30:44+08:00" />
+<meta property="article:modified_time" content="2023-08-08T13:30:44+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="从贝叶斯滤波框架到卡尔曼滤波"/>
+<meta name="twitter:description" content="卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+
+        {
+          "@type": "ListItem",
+          "position":  1 ,
+          "name": "📚文章",
+          "item": "https://bingsz.github.io/en/posts/"
+        }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "从贝叶斯滤波框架到卡尔曼滤波",
+      "item": "https://bingsz.github.io/en/posts/frombayestokalman/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "从贝叶斯滤波框架到卡尔曼滤波",
+  "name": "从贝叶斯滤波框架到卡尔曼滤波",
+  "description": "卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主",
+  "keywords": [
+    "Bayes Filter"
+  ],
+  "articleBody": " 卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波\n1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主要包含目标状态值与观测值，并且存在如下所示的关系\n$$ \\begin{aligned} \\mathbf{x}_{k+1}=f(\\mathbf{x}_k)+\\mathbf{Q} \\\\ \\mathbf{z}_k=g(\\mathbf{x}_k)+\\mathbf{R} \\end{aligned} \\tag{1.1} $$\n其中$\\mathbf{x}_k$表示$k$时刻的目标状态向量，$f(\\cdot)$表示目标状态转移函数，描述了这一时刻与下一时刻目标状态的关系（从另一个角度来说，这一时刻的状态仅与上一时刻有关，因此贝叶斯滤波框架蕴含了一阶马尔可夫假设），$\\mathbf{Q}$为噪声向量；$\\mathbf{z}_k$表示$k$时刻的系统观测值，该值仅与当前目标状态有关（这意味着贝叶斯滤波框架蕴含了独立观测假设，即观测值仅与当前状态有关），$g(\\cdot)$表示目标状态$\\mathbf{x}_k$与观测值$\\mathbf{z}_k$之间的关系，$\\mathbf{R}$表示观测过程中引入的噪声向量。\n贝叶斯滤波的核心问题是求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$，表示已知$1$到$k$时刻的观测值$\\mathbf{z}_{1:k}$时，目标状态$\\mathbf{x}_k$的后验概率。当求解得到$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$后，在最小均方误差准则下（下文中均基于最小均方误差准则展开），当前状态$\\mathbf{x}_k$的估计可以通过求解上述概率的期望来得到，如下所示（为了方便，下文中所有的积分均指定积分，不表明积分限表示对整个区间积分）\n$$ \\hat{\\mathbf{x}}_k=\\int \\mathbf{x}_k P(\\mathbf{x}_k|\\mathbf{z}_{1:k}) \\mathrm{d}\\mathbf{x}_k $$\n为了求解得到上述概率函数，贝叶斯滤波主要包含两个步骤：预测步与更新步。预测步指的是根据当前所得的目标状态信息来预测下一时刻的目标状态信息，即求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$；更新步指的是根据观测结果来修正之前所预测的值，即求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$。通常而言，预测步的概率密度函数是通过柯莫哥洛夫公式来求解的，如下所示 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})=\\int P(\\mathbf{x}_k|\\mathbf{x}_{k-1})P(\\mathbf{x}_{k-1}|\\mathbf{z}_{1:k-1})\\mathrm{d}\\mathbf{x}_{k-1} $$ 其中$P(\\mathbf{x}_k|\\mathbf{x}_{k-1})$表示目标的状态转移概率，即在已知上一时刻的状态信息估计值基础上，当前时刻状态信息为$\\mathbf{x}_k$的概率；$P(\\mathbf{x}_{k-1}|\\mathbf{z}_{1:k-1})$表示上一个更新步的结果。更新步指的是利用观测信息来修正上述预测值，如下所示 $$ \\begin{aligned} P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\u0026P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1}, \\mathbf{z}_k) \\\\ =\u0026 \\frac{P(\\mathbf{x}_k, \\mathbf{z}_k|\\mathbf{z}_{1:k-1})}{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})} \\\\ =\u0026 \\frac{P(\\mathbf{x}_k, \\mathbf{z}_k|\\mathbf{z}_{1:k-1})}{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})} \\\\ =\u0026 \\frac{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1}, \\mathbf{x}_k)P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})}{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})} \\end{aligned} \\tag{1.2} $$ 需要注意的是，贝叶斯滤波基于独立观测假设而推导，独立观测假设指的是$k$时刻的观测值仅与$k$时刻的目标状态值有关。换言之，有下式成立 $$ P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1}, \\mathbf{x}_k) = P(\\mathbf{z}_k|\\mathbf{x}_k) $$ 将上式代入到$(1.2)$式中，可以得到 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\\frac{P(\\mathbf{z}_k|\\mathbf{x}_k)P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})}{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})} $$ 再来观察一下上式，$P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})$是一个常数，因为它仅与观测值有关，而观测值是人为无法改变的。这个常数的意义在于保持概率密度函数的正则性（即整个区间内积分为1）。$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$便是之前所求的预测步概率密度函数，预测步概率密度函数已经通过柯莫哥洛夫公式求解得到，仅与目标的状态转移概率与上一个更新步结果有关。$P(\\mathbf{z}_k|\\mathbf{x}_k)$表示的是已知当前目标状态为$\\mathbf{x}_k$时，观测到$\\mathbf{z}_k$的概率，这一概率可通过$(1.1)$式中的目标状态与观测值之间的关系得到。\n总结来说，贝叶斯滤波框架的步骤如下所示\n根据上一时刻的目标状态来得到这一时刻的预测值，即求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$。 根据当前时刻的观测值来修正当前时刻的预测值，即求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$。这一部分相当于加入了该状态的观测值这一新的信息。 一般而言，上述概率密度函数并不容易求解，当$(1.1)$式中的$f(\\cdot)$与$g(\\cdot)$均为线性函数，并且噪声符合高斯正态分布时，贝叶斯滤波的近似形式便是卡尔曼滤波。为了更好理解贝叶斯滤波框架，接下来以卡尔曼滤波为例，利用贝叶斯滤波框架来推导卡尔曼滤波的公式。\n2. 卡尔曼滤波原理 卡尔曼滤波是贝叶斯滤波的简化形式。当贝叶斯滤波中的$\\mathbf{Q}$与$\\mathbf{R}$均符合高斯正态分布，且$f(\\cdot)$与$g(\\cdot)$均为线性函数时，贝叶斯滤波便退化为了卡尔曼滤波。进一步地，$(1.1)$式化为如下形式 $$ \\begin{aligned} \\mathbf{x}_{k+1}=\\mathbf{F}\\mathbf{x}_k+\\mathbf{Q} \\\\ \\mathbf{z}_k = \\mathbf{H}\\mathbf{x}_k+\\mathbf{R} \\end{aligned} \\tag{2.1} $$ 其中$\\mathbf{F}$被称为状态转移矩阵，表示该时刻与下一时刻状态的关联，$\\mathbf{H}$被称为观测矩阵，表示观测值与状态值之间的联系。假设$\\mathbf{Q}$与$\\mathbf{R}$分别服从均值为$0$，协方差为$\\mathbf{P_Q}$与$\\mathbf{P_R}$的正态分布，$k$时刻的目标状态值$\\mathbf{x}_k$服从均值为最优估计值$\\hat{\\mathbf{x}}_k$、协方差为$\\mathbf{P}_{k-1}$的高斯正态分布。根据贝叶斯滤波框架的原理，首先需要计算预测步的概率密度函数，如下所示 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})=\\int P(\\mathbf{x}_k|\\mathbf{x}_{k-1})P(\\mathbf{x}_{k-1}|\\mathbf{z}_{1:k-1}) \\mathrm{d} \\mathbf{x}_{k-1} $$ 对于$P(\\mathbf{x}_k|\\mathbf{x}_{k-1})$，由$(2.1)$式中的状态转移方程，可以得到 $$ P(\\mathbf{x}_k|\\mathbf{x}_{k-1})=\\mathcal{N}(\\mathbf{x}_k; \\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{P_Q}) $$ 其中$N(\\mu, \\Sigma^2)$表示均值为$\\mu$，协方差为$\\Sigma^2$的高斯正态分布概率密度函数。根据假设可知$P(\\mathbf{x}_{k-1}|\\mathbf{z}_{1:k-1})$满足如下关系 $$ P(\\mathbf{x}_{k-1}|\\mathbf{z}_{1:k-1})=\\mathcal{N}(\\mathbf{x}_{k-1}; \\hat{\\mathbf{x}}_{k-1}, \\mathbf{P}_{k-1}) $$ 因此接下来需要重点求解的便是如下所示的一个积分 $$ \\begin{aligned} P(\\mathbf{x}_k | \\mathbf{z}_{1:k-1})=\u0026\\int \\mathcal{N}(\\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{P_Q})\\mathcal{N}(\\hat{\\mathbf{x}}_{k-1}, \\mathbf{P}_{k-1}) \\mathrm{d} \\mathbf{x}_{k-1} \\\\ =\u0026 \\frac{1}{(2\\pi)^{D}}\\frac{1}{|\\mathbf{P_Q}|^{\\frac{1}{2}}|\\mathbf{P}_{k-1}|^{\\frac{1}{2}}} \\int \\exp(-\\frac{1}{2}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})^T\\mathbf{P_Q^{-1}}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})) \\\\ \u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_{k-1}-\\hat{\\mathbf{x}}_{k-1})^T\\mathbf{P}_{k-1}^{-1}(\\mathbf{x}_{k-1}-\\hat{\\mathbf{x}}_{k-1}))\\mathrm{d}\\mathbf{x}_{k-1} \\\\ \u0026 \\\\ \u0026 \\end{aligned} \\tag{2.2} $$ 上述积分的求解较为复杂，事实上，上述公式可以通过高斯变量的贝叶斯定理来求解，通过高斯变量的贝叶斯定理可以直接得到 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})=\\mathcal{N}(\\mathbf{x}_k; \\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q}) $$ 根据观测方程，可以得到 $$ P(\\mathbf{z}_k|\\mathbf{x}_k)=\\mathcal{N}(\\mathbf{z}_k; \\mathbf{H}\\mathbf{x}_k, \\mathbf{P_R}) $$ 代入到贝叶斯滤波框架的更新步公式中，可以得到 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=C\\mathcal{N}(\\mathbf{x}_k; \\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q})\\mathcal{N}(\\mathbf{z}_k; \\mathbf{H}\\mathbf{x}_k, \\mathbf{P_R}) $$ 其中$C$为一个常数。根据“高斯分布的相乘原理”（这部分在第四节中），可以得到 $$ \\begin{aligned} P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\u0026\\mathcal{N}(\\mathbf{x}_k; \\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1}), \\mathbf{P}_{k-1}-\\mathbf{K}\\mathbf{H}\\mathbf{P}_{k-1}) \\\\ =\u0026 \\mathcal{N}(\\mathbf{x}_k; \\hat{\\mathbf{x}}_{k}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\hat{\\mathbf{x}}_{k}), \\mathbf{P}_{k-1}-\\mathbf{K}\\mathbf{H}\\mathbf{P}_{k-1}) \\end{aligned}\\tag{2.3} $$ 其中$\\mathbf{K}=\\mathbf{T}_{k}\\mathbf{H}^T(\\mathbf{H}\\mathbf{T}_{k}\\mathbf{H}^T+\\mathbf{P_R})^{-1}$，$\\mathbf{T}_k=\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q}$，$\\hat{\\mathbf{x}}_k=\\mathbf{F}\\mathbf{x}_{k-1}$。从$(2.3)$式中可以发现 $$ \\begin{aligned} \\mathbf{x}_{k}=\u0026\\hat{\\mathbf{x}}_{k}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\hat{\\mathbf{x}}_{k}) \\\\ \\mathbf{P}_k =\u0026 \\mathbf{T}_{k}-\\mathbf{K}\\mathbf{H}\\mathbf{T}_{k} \\end{aligned} \\tag{2.4} $$ 这就得到了$k$时刻的目标状态估计值。\n再梳理一下推导过程：\n根据贝叶斯滤波框架，首先需要求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$，在卡尔曼滤波的推导过程中，求解出来为$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})=\\mathcal{N}(\\mathbf{x}_k; \\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q})$。 随后，根据求解出来的$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$，来进一步求解$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$，在卡尔曼滤波的推导过程中，$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\\mathcal{N}(\\mathbf{x}_k; \\hat{\\mathbf{x}}_{k}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\hat{\\mathbf{x}}_{k}), \\mathbf{P}_{k-1}-\\mathbf{K}\\mathbf{H}\\mathbf{P}_{k-1})$。 最后，根据某个准则来计算估计值。在卡尔曼滤波推导过程中，根据最小均方误差准则，选取的最优估计值$\\mathbf{x}_{k}$为概率密度函数的期望。 总结来说，卡尔曼滤波的滤波过程如下所示\n首先根据上一时刻的最优估计值$\\mathbf{x}_{k-1}$，计算出该时刻的预测值$\\hat{\\mathbf{x}}_{k}=\\mathbf{F}\\mathbf{x}_{k-1}$ 随后利用观测信息得到该时刻的最优估计值为$\\mathbf{x}_k=\\hat{\\mathbf{x}}_{k}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\hat{\\mathbf{x}}_{k})$ 最后，更新该时刻最优估计值的协方差$\\mathbf{P}_k$以供下一时刻的更新使用，$\\mathbf{P}_{k}=\\mathbf{P}_{k-1}-\\mathbf{K}\\mathbf{H}\\mathbf{P}_{k-1}$ 在许多的卡尔曼滤波推导过程中还引入了控制项$\\mathbf{u}_k$，这一项存在与否并不影响推导的最终结果，只是在实际应用中需要注意的是，当给予系统一个命令时，需要对应的在预测值上加上该命令对目标状态的影响。\n3. 卡尔曼滤波的一个例子 当利用卡尔曼滤波来估计小车的运动状态时，为了方便，假设小车作一维匀速直线运动，同时小车不受外部动力影响（即控制项$\\mathbf{u}_k$为$0$），那么小车的运动状态可以建模为 $$ \\mathbf{x}_k = \\begin{pmatrix} p_k \\\\ v_k \\end{pmatrix} $$ 小车的状态转移矩阵$\\mathbf{F}$为 $$ \\mathbf{F}=\\begin{pmatrix} 1 \u0026 \\Delta T \\\\ 0 \u0026 1 \\end{pmatrix} $$ 其中$\\Delta T$表示传感器的采样周期。于是可以得到下一时刻的状态预测值为 $$ \\hat{\\mathbf{x}}_{k+1}=\\mathbf{F}\\mathbf{x}_k=\\begin{pmatrix} p_k+\\Delta T v_k \\\\ v_k \\end{pmatrix} $$ 假设传感器直接采样小车的位置与速度，那么观测矩阵$\\mathbf{H}$即是单位矩阵（可以看看$(2.1)$式，观测矩阵表示的是传感器采样的值与目标状态值之间的联系，并不是所有场景下传感器都是直接采样目标的状态值）。\n在上述公式中，$\\mathbf{P_Q}$表示的是外界不确定性，例如风力对小车状态的影响，路面不平整对小车状态的影响等等。总而言之，这个量可以根据小车的实际使用场景而被计算出来，此处视其为一个已知量。$\\mathbf{P_R}$也是同理的，这个量表示的是传感器误差，可以通过传感器本身的性能而被计算出来。$\\mathbf{P}_k$表示的是最优估计值的协方差，这个值可通过$\\mathbf{P}_{k-1}$而被计算出来，假设$0$时刻的$\\mathbf{P}_0=\\mathbf{P_Q}$。当得到$k+1$时刻的观测值时，便可以通过$(2.4)$式计算出$k+1$时刻的最优估计值与估计协方差。\n4. 推导过程中的一些细节问题 4.1. 高斯变量的贝叶斯定理 高斯变量的贝叶斯定理指的是，当 $$ \\begin{aligned} P(\\mathbf{y}|\\mathbf{x}) =\u0026 \\mathcal{N}(\\mathbf{y}; \\mathbf{A}\\mathbf{x}+\\mathbf{b}, \\Sigma_1) \\\\ P(\\mathbf{x}) =\u0026 \\mathcal{N}(\\mathbf{x}; \\mathbf{\\mu}, \\Sigma_2) \\end{aligned} $$ 有下式成立 $$ P(\\mathbf{y})=\\mathcal{N}(\\mathbf{y}; \\mathbf{A}\\mathbf{\\mu}+\\mathbf{b}, \\Sigma_1+\\mathbf{A}\\Sigma_2\\mathbf{A}^T) $$ 高斯变量的贝叶斯定理的推导略显繁琐，此处就不推导了。本节来尝试一下直接推导$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$。\n考虑$(2.2)$式的积分内的指数项，可以得到 $$ \\begin{aligned} \u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})^T\\mathbf{P_Q^{-1}}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})) \\\\ =\u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{x}_k-\\mathbf{x}_{k-1}^T\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{x}_k - \\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{x}_{k-1}^T\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1})) \\end{aligned}\\tag{4.1} $$ 注意到，由于$\\mathbf{P_Q}$为一个对称矩阵，因此$\\mathbf{P_Q^{-1}}$也是一个对称矩阵，从而有下式成立 $$ (\\mathbf{F}\\mathbf{x}_{k-1})^T\\mathbf{P_Q^{-1}}\\mathbf{x}_k=\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}(\\mathbf{F}\\mathbf{x}_{k-1}) $$ 因此$(4.1)$式可以化简为 $$ \\begin{aligned} \u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})^T\\mathbf{P_Q^{-1}}(\\mathbf{x}_k-\\mathbf{F}\\mathbf{x}_{k-1})) \\\\ =\u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{x}_k-2\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{x}_{k-1}^T\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1})) \\end{aligned} \\tag{4.2} $$ 同理可以得到 $$ \\begin{aligned} \u0026\\exp(-\\frac{1}{2}(\\mathbf{x}_{k-1}-\\hat{\\mathbf{x}}_{k-1})^T\\mathbf{P}_{k-1}^{-1}(\\mathbf{x}_{k-1}-\\hat{\\mathbf{x}}_{k-1})) \\\\ =\u0026 \\exp(-\\frac{1}{2}(\\mathbf{x}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\mathbf{x}_{k-1} - 2 \\hat{\\mathbf{x}}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\mathbf{x}_{k-1} + \\hat{\\mathbf{x}}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\hat{\\mathbf{x}}_{k-1})) \\end{aligned} \\tag{4.3} $$ 接下来的目标是求解$(2.2)$式中的积分部分，将$(4.2)$式与$(4.3)$式相乘积分并提出常数部分可以得到 $$ \\begin{aligned} LHS=\u0026\\int \\exp(-\\frac{1}{2}(\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{x}_k-2\\mathbf{x}_k^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{x}_{k-1}^T\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{F}\\mathbf{x}_{k-1} \\\\ \u0026 \\qquad \\qquad \\qquad +\\mathbf{x}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\mathbf{x}_{k-1} - 2 \\hat{\\mathbf{x}}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\mathbf{x}_{k-1} + \\hat{\\mathbf{x}}_{k-1}^T\\mathbf{P}_{k-1}^{-1}\\hat{\\mathbf{x}}_{k-1})) \\mathrm{d}\\mathbf{x}_{k-1} \\\\ =\u0026 C \\int \\exp(-\\frac{1}{2}\\begin{pmatrix} \\mathbf{x}_k - \\mathbf{\\mu} \\\\ \\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1} \\end{pmatrix}^T \\begin{pmatrix} \\mathbf{P_Q^{-1}} \u0026 -\\mathbf{P_Q^{-1}}\\mathbf{F} \\\\ -\\mathbf{F}^T\\mathbf{P_Q}^{-1} \u0026 \\mathbf{P}_{k-1}^{-1}+\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{F} \\end{pmatrix} \\\\ \u0026 \\qquad \\qquad \\qquad \\qquad \\begin{pmatrix} \\mathbf{x}_k - \\mathbf{\\mu} \\\\ \\mathbf{x}_{k-1} - \\hat{\\mathbf{x}}_{k-1} \\end{pmatrix})\\mathrm{d}\\mathbf{x}_{k-1} \\end{aligned} \\tag{4.4} $$ 其中$\\mathbf{\\mu}$表示$\\mathbf{x}_{k}$的均值，是一个待定的系数。观察注意到，上式中积分号内相当于一个高维的高斯分布，当对$\\mathbf{x}_{k-1}$作整个区间的积分时，相当于得到了关于$\\mathbf{x}_{k}$的边缘分布，并且$\\mathbf{x}_{k}$同样服从高斯分布。当知道了这一点后，便可以对上述结果进行简化计算，只需要计算$\\mathbf{x}_k$的均值与方差即可得到$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$。由上式可知$\\mathbf{x}_k$与$\\mathbf{x}_{k-1}$的协方差为 $$ \\mathrm{Cov}(\\mathbf{x}_k, \\mathbf{x}_{k-1})=\\begin{pmatrix} \\mathbf{P_Q^{-1}} \u0026 -\\mathbf{P_Q^{-1}}\\mathbf{F} \\\\ -\\mathbf{F}^T\\mathbf{P_Q}^{-1} \u0026 \\mathbf{P}_{k-1}^{-1}+\\mathbf{F}^T\\mathbf{P_Q^{-1}}\\mathbf{F} \\end{pmatrix}^{-1} $$ 当已知分块矩阵为（$\\mathbf{A}$，$\\mathbf{B}$，$\\mathbf{C}$，$\\mathbf{D}$均为$m\\times m$型） $$ \\mathbf{P}=\\begin{pmatrix} \\mathbf{A} \u0026 \\mathbf{B} \\\\ \\mathbf{C} \u0026 \\mathbf{D} \\end{pmatrix} $$ $\\mathbf{P}$的逆矩阵可表示为 $$ \\mathbf{P}^{-1}=\\begin{pmatrix} \\mathbf{I} \u0026 -\\mathbf{A}^{-1}\\mathbf{B} \\\\ 0 \u0026 \\mathbf{I} \\end{pmatrix} \\begin{pmatrix} \\mathbf{A}^{-1} \u0026 0 \\\\ 0 \u0026 (\\mathbf{D}-\\mathbf{C}\\mathbf{A}^{-1}\\mathbf{B})^{-1} \\end{pmatrix} \\begin{pmatrix} \\mathbf{I} \u0026 0 \\\\ -\\mathbf{C}\\mathbf{A}^{-1} \u0026 0 \\end{pmatrix} $$ 于是有 $$ \\begin{aligned} \\mathrm{Cov}(\\mathbf{x}_{k}, \\mathbf{x}_{k-1})=\u0026\\begin{pmatrix} \\mathbf{I} \u0026 \\mathbf{F} \\\\ \\mathbf{0} \u0026 \\mathbf{I} \\end{pmatrix} \\begin{pmatrix} \\mathbf{P_Q} \u0026 \\mathbf{0} \\\\ \\mathbf{0} \u0026 \\mathbf{P}_{k-1} \\end{pmatrix} \\begin{pmatrix} \\mathbf{I} \u0026 \\mathbf{0} \\\\ \\mathbf{F}^T \u0026 \\mathbf{I} \\end{pmatrix} \\\\ =\u0026 \\begin{pmatrix} \\mathbf{P_Q}+\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T \u0026 \\mathbf{F}\\mathbf{P}_{k-1} \\\\ \\mathbf{P}_{k-1}\\mathbf{F}^T \u0026 \\mathbf{P}_{k-1} \\end{pmatrix} \\end{aligned} $$ 因此$\\mathbf{x}_{k}$的方差为$\\mathbf{P_Q}+\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T$。$(4.4)$式中进一步比较系数可得$\\mathbf{\\mu}=\\mathbf{F}\\mathbf{x}_{k-1}$，因此可以得到 $$ P(\\mathbf{x}_k | \\mathbf{z}_{1:k-1})=\\mathcal{N}(\\mathbf{x}_{k}; \\mathbf{F}\\mathbf{x}_{k-1}, \\mathbf{P_Q}+\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T) $$\n4.2. 高斯分布的相乘原理 在$(2.3)$式的推导中用到了一个所谓“高斯分布的相乘原理”的性质，事实上这个性质并不是指两个高斯分布相乘可以得到一个新的同维高斯分布，而是指当不考虑常数项时，两个高斯分布相乘后，指数项上依然符合一个高斯分布的形式。记有如下两个高斯分布 $$ \\begin{aligned} \\mathcal{N}(\\mathbf{x}; \\mu_1, \\Sigma_1) \\\\ \\mathcal{N}(\\mathbf{x}; \\mu_2, \\Sigma_2) \\end{aligned} $$ 两者相乘后取指数项，忽略常数项可得 $$ \\begin{aligned} \\ln L =\u0026 -\\frac{1}{2}((\\mathbf{x}^T-\\mu_1)^T\\Sigma_1^{-1}(\\mathbf{x}^T-\\mu_1)+(\\mathbf{x}^T-\\mu_2)^T\\Sigma_2^{-1}(\\mathbf{x}^T-\\mu_2)) \\\\ =\u0026 -\\frac{1}{2}(\\mathbf{x}-\\mu)^T(\\Sigma_1^{-1}+\\Sigma_2^{-1})(\\mathbf{x}-\\mu) \\end{aligned} $$ 比较系数后，有下式成立 $$ \\begin{aligned} \\mu =\u0026 (\\Sigma_1^{-1}+\\Sigma_2^{-1})^{-1}(\\Sigma_1^{-1}\\mu_1 + \\Sigma_2^{-1}\\mu_2) \\\\ =\u0026 \\Sigma_1(\\Sigma_1+\\Sigma_2)^{-1}\\Sigma_2(\\Sigma_1^{-1}\\mu_1 + \\Sigma_2^{-1}\\mu_2) \\\\ =\u0026 \\Sigma_1(\\Sigma_1+\\Sigma_2)^{-1}\\Sigma_2\\Sigma_1^{-1}\\mu_1 + \\Sigma_1(\\Sigma_1+\\Sigma_2)^{-1}\\mu_2 \\end{aligned} $$ 为了方便，记$\\mathbf{K}=\\Sigma_1(\\Sigma_1+\\Sigma_2)^{-1}$，于是有 $$ \\begin{aligned} \\mu = \\mathbf{K}\\Sigma_2\\Sigma_1^{-1}\\mu_1+\\mathbf{K}\\mu_2 \\end{aligned} $$ 注意到 $$ \\begin{aligned} \\mathbf{K}\\Sigma_2\\Sigma_1^{-1}=\u0026\\Sigma_1(\\Sigma_1+\\Sigma_2)^{-1}\\Sigma_2\\Sigma_1^{-1} \\\\ =\u0026 (\\Sigma_1\\Sigma_2^{-1}(\\Sigma_1+\\Sigma_2)\\Sigma_1^{-1})^{-1} \\\\ =\u0026 (\\Sigma_1\\Sigma_2^{-1}+\\mathbf{I})^{-1} \\\\ =\u0026 \\Sigma_2(\\Sigma_1+\\Sigma_2)^{-1} \\\\ =\u0026 \\mathbf{I} - \\mathbf{K} \\end{aligned} $$ 因此 $$ \\begin{aligned} \\mu =\u0026 \\mathbf{K}\\Sigma_2\\Sigma_1^{-1}\\mu_1+\\mathbf{K}\\mu_2 \\\\ =\u0026 (\\mathbf{I}-\\mathbf{K})\\mu_1+\\mathbf{K}\\mu_2 \\\\ =\u0026 \\mu_1 + \\mathbf{K}(\\mu_2-\\mu_1) \\end{aligned} \\tag{4.5} $$ 对于相乘后方差$\\Sigma$而言，有 $$ \\begin{aligned} \\Sigma(\\mathbf{x})=\u0026(\\Sigma_1^{-1}+\\Sigma_2^{-1})^{-1}=\\Sigma_2(\\Sigma_1+\\Sigma_2)^{-1}\\Sigma_1 \\\\ =\u0026 (\\mathbf{I}-\\mathbf{K})\\Sigma_1=\\Sigma_1 - \\mathbf{K}\\Sigma_1 \\end{aligned} \\tag{4.6} $$\n为了计算$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$，需要计算 $$ P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\\frac{P(\\mathbf{z}_k|\\mathbf{x}_k)P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})}{P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})} $$ 根据前述的推导结果可知，$P(\\mathbf{z}_k|\\mathbf{x}_k)$与$P(\\mathbf{x}_k|\\mathbf{z}_{1:k-1})$均为高斯正态分布，两者相乘后指数项上仍然符合高斯分布的形式，而$P(\\mathbf{z}_k|\\mathbf{z}_{1:k-1})$作为一个常数项，只起到正则的作用。因此在计算$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$过程中，只需要计算指数项上的内容即可。于是有（忽略常数项） $$ \\begin{aligned} \\ln P(\\mathbf{x}_k|\\mathbf{z}_{1:k})=\u0026 -\\frac{1}{2}((\\mathbf{x}_{k}-\\mathbf{F}\\mathbf{x}_{k-1})^T(\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q})^{-1}(\\mathbf{x}_{k}-\\mathbf{F}\\mathbf{x}_{k-1}) \\\\ \u0026 \\qquad \\qquad +(\\mathbf{z}_{k}-\\mathbf{H}\\mathbf{x}_k)^T\\mathbf{P_R}^{-1}(\\mathbf{z}_{k}-\\mathbf{H}\\mathbf{x}_k)) \\end{aligned} $$ 为了得到与卡尔曼滤波相同的形式，作一个变量代换$\\mathbf{x}_k \\rightarrow \\mathbf{z}_{k}$，于是有（为了区分，将$\\mathbf{x}_k$所对应的观测值记为$\\hat{\\mathbf{z}}_k$，并且有$\\hat{\\mathbf{z}}_k=\\mathbf{H}\\mathbf{x}_k$） $$ \\begin{aligned} \\ln P(\\hat{\\mathbf{z}}_k|\\mathbf{z}_{1:k})=\u0026 -\\frac{1}{2}((\\hat{\\mathbf{z}}_{k}-\\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1})^T{\\mathbf{H}^T}^{-1}(\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q})^{-1}\\mathbf{H}^{-1}(\\hat{\\mathbf{z}}_{k}-\\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1}) \\\\ \u0026 \\qquad \\qquad +(\\hat{\\mathbf{z}}_{k}-\\mathbf{z}_k)^T\\mathbf{P_R}^{-1}(\\hat{\\mathbf{z}}_{k}-\\mathbf{z}_k)) \\end{aligned} $$\n将下式代入到$(4.5)$与$(4.6)$式 $$ \\begin{aligned} \\mu_1 =\u0026 \\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1} \\\\ \\mu_2 =\u0026 \\mathbf{z}_k \\\\ \\Sigma_1 =\u0026 \\mathbf{H}(\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q})\\mathbf{H}^T \\\\ \\Sigma_2 =\u0026 \\mathbf{P_R} \\end{aligned} $$ 得到（令$\\mathbf{T}_k=\\mathbf{F}\\mathbf{P}_{k-1}\\mathbf{F}^T+\\mathbf{P_Q}$） $$ \\begin{aligned} \\mathbf{K} =\u0026 \\mathbf{H}\\mathbf{T}_k\\mathbf{H}^T(\\mathbf{H}\\mathbf{T}_k\\mathbf{H}^T+\\mathbf{P_R})^{-1} \\\\ \\mu =\u0026 \\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1}) \\\\ \\Sigma =\u0026 \\mathbf{H}\\mathbf{T}_k\\mathbf{H}^T-\\mathbf{K}\\mathbf{H}\\mathbf{T}_k\\mathbf{H}^T \\end{aligned} $$ 再将$\\mathbf{z}_{k} \\rightarrow \\mathbf{x}_k$变换回来，便可得到 $$ \\begin{aligned} \\mathbf{K} =\u0026 \\mathbf{T}_k\\mathbf{H}^T(\\mathbf{H}\\mathbf{T}_k\\mathbf{H}^T+\\mathbf{P_R})^{-1} \\\\ \\mu =\u0026 \\mathbf{F}\\mathbf{x}_{k-1}+\\mathbf{K}(\\mathbf{z}_k-\\mathbf{H}\\mathbf{F}\\mathbf{x}_{k-1}) \\\\ \\Sigma =\u0026 \\mathbf{T}_k-\\mathbf{K}\\mathbf{H}\\mathbf{T}_k \\end{aligned} $$ 这就完成了$(2.3)$式的推导。\n4.3. 最小均方误差准则 在第一节中指出，基于最小均方误差准则前提下，已知$P(\\mathbf{x}_k|\\mathbf{z}_{1:k})$时，$\\mathbf{x}_k$的最优估计是其期望值。\n记$\\epsilon(\\hat{\\mathbf{x}}_k)$表示$\\mathbf{x}_k$的估计误差（$\\hat{\\mathbf{x}}_k$为估计值，$\\mathbf{x}_k$为真实值），最小均方误差准则指的是最小化如下所示的公式 $$ \\begin{aligned} \\arg \\min _{\\mathbf{x}_k} \\epsilon(\\hat{\\mathbf{x}}_k) =\u0026 \\arg \\min _{\\mathbf{x}_k} \\int (\\hat{\\mathbf{x}}_k-\\mathbf{x}_k)^T(\\hat{\\mathbf{x}}_k-\\mathbf{x}_k) P(\\mathbf{x}_k | \\mathbf{z}_{1:k}) \\mathrm{d}\\mathbf{x}_k \\\\ \\end{aligned} $$ 记$\\mathbf{F}(\\hat{\\mathbf{x}}_k)=\\int (\\hat{\\mathbf{x}}_k-\\mathbf{x}_k)^T(\\hat{\\mathbf{x}}_k-\\mathbf{x}_k) P(\\mathbf{x}_k | \\mathbf{z}_{1:k}) \\mathrm{d}\\mathbf{x}_k$，于是有 $$ \\begin{aligned} \\mathbf{F}(\\hat{\\mathbf{x}}_k)=\u0026\\int (\\hat{\\mathbf{x}}_k-\\mathbf{x}_k)^T(\\hat{\\mathbf{x}}_k-\\mathbf{x}_k) P(\\mathbf{x}_k | \\mathbf{z}_{1:k}) \\mathrm{d}\\mathbf{x}_k \\\\ =\u0026 \\int \\hat{\\mathbf{x}}_k^T \\hat{\\mathbf{x}}_k P(\\mathbf{x}_k | \\mathbf{z}_{1:k}) - 2\\mathbf{x}_k^T\\hat{\\mathbf{x}}_kP(\\mathbf{x}_k | \\mathbf{z}_{1:k}) + \\mathbf{x}_k^T \\mathbf{x}_k P(\\mathbf{x}_k | \\mathbf{z}_{1:k})\\mathrm{d}\\mathbf{x}_k \\\\ =\u0026 \\hat{\\mathbf{x}}_k^T \\hat{\\mathbf{x}}_k\\\\ \u0026 - \\int 2\\mathbf{x}_k^T\\hat{\\mathbf{x}}_kP(\\mathbf{x}_k | \\mathbf{z}_{1:k})\\mathrm{d}\\mathbf{x}_k \\\\ \u0026 + \\int \\mathbf{x}_k^T \\mathbf{x}_k P(\\mathbf{x}_k | \\mathbf{z}_{1:k})\\mathrm{d}\\mathbf{x}_k \\end{aligned} $$ 注意到第三个积分号为一个常数，对$\\hat{\\mathbf{x}}_k$求导可得 $$ \\frac{\\partial \\mathbf{F}(\\hat{\\mathbf{x}}_k)}{\\partial \\hat{\\mathbf{x}}_k} = 2\\hat{\\mathbf{x}}_k - 2\\int \\mathbf{x}_kP(\\mathbf{x}_k | \\mathbf{z}_{1:k})\\mathrm{d}\\mathbf{x}_k = 0 $$ 解得$\\hat{\\mathbf{x}}_k = \\int \\mathbf{x}_kP(\\mathbf{x}_k | \\mathbf{z}_{1:k})\\mathrm{d}\\mathbf{x}_k$，即为其期望值。\n",
+  "wordCount" : "6924",
+  "inLanguage": "en",
+  "datePublished": "2023-08-08T13:30:44+08:00",
+  "dateModified": "2023-08-08T13:30:44+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/frombayestokalman/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+</style>
+
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">🏠 主页</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">📚文章</a></div>
+            <h1 class="post-title">
+                从贝叶斯滤波框架到卡尔曼滤波
+            </h1>
+            <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2023-08-08
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>6924字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>14分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>Song
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://bingsz.github.io/en/tags/bayes-filter/" style="color: var(--secondary)!important;">Bayes Filter</a>
+            </span>
+        </span>
+    </span>
+</span>
+<span style="opacity: 0.8;">
+                    <span id="post_meta_style_7">
+                        &nbsp;&nbsp;
+                        <span class="fa fa-eye" ></span>
+                        <span>
+                            <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                    <span id="post_meta_style_8">
+                        <span class="fa fa-commenting-o"></span>
+                        <span>
+                            <script src="https://cdn.staticfile.org/twikoo//twikoo.all.min.js"></script>
+                            <script>
+                                let url = document.documentURI
+                                
+                                let dnsUrl = "https://bingsz.github.io/"
+                                let urlSplit = url.split(dnsUrl)
+                                let finalUrl = urlSplit[1]
+                                if (finalUrl[0] !== '/') {
+                                    finalUrl = '/'+finalUrl
+                                }
+                                twikoo.getCommentsCount({
+                                    envId:  null , 
+                                region:  null , 
+                                urls: [ 
+                                    
+                                    finalUrl,
+                                ],
+                                    includeReply: false 
+                                }).then(function (res) {
+                                    let count = res[0].count
+                                    const obj = document.getElementById("comment_count");
+                                    obj.innerText = count
+                                    
+                                    
+                                    
+                                }).catch(function (err) {
+                                    
+                                    console.error(err);
+                                });
+                            </script>
+                            <span id="comment_count"></span>
+                        </span>
+                    </span>
+                </span>
+
+</div>
+        </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-%e8%b4%9d%e5%8f%b6%e6%96%af%e6%bb%a4%e6%b3%a2%e6%a1%86%e6%9e%b6" aria-label="1. 贝叶斯滤波框架">1. 贝叶斯滤波框架</a></li>
+                <li>
+                    <a href="#2-%e5%8d%a1%e5%b0%94%e6%9b%bc%e6%bb%a4%e6%b3%a2%e5%8e%9f%e7%90%86" aria-label="2. 卡尔曼滤波原理">2. 卡尔曼滤波原理</a></li>
+                <li>
+                    <a href="#3-%e5%8d%a1%e5%b0%94%e6%9b%bc%e6%bb%a4%e6%b3%a2%e7%9a%84%e4%b8%80%e4%b8%aa%e4%be%8b%e5%ad%90" aria-label="3. 卡尔曼滤波的一个例子">3. 卡尔曼滤波的一个例子</a></li>
+                <li>
+                    <a href="#4-%e6%8e%a8%e5%af%bc%e8%bf%87%e7%a8%8b%e4%b8%ad%e7%9a%84%e4%b8%80%e4%ba%9b%e7%bb%86%e8%8a%82%e9%97%ae%e9%a2%98" aria-label="4. 推导过程中的一些细节问题">4. 推导过程中的一些细节问题</a><ul>
+                        
+                <li>
+                    <a href="#41-%e9%ab%98%e6%96%af%e5%8f%98%e9%87%8f%e7%9a%84%e8%b4%9d%e5%8f%b6%e6%96%af%e5%ae%9a%e7%90%86" aria-label="4.1. 高斯变量的贝叶斯定理">4.1. 高斯变量的贝叶斯定理</a></li>
+                <li>
+                    <a href="#42-%e9%ab%98%e6%96%af%e5%88%86%e5%b8%83%e7%9a%84%e7%9b%b8%e4%b9%98%e5%8e%9f%e7%90%86" aria-label="4.2. 高斯分布的相乘原理">4.2. 高斯分布的相乘原理</a></li>
+                <li>
+                    <a href="#43-%e6%9c%80%e5%b0%8f%e5%9d%87%e6%96%b9%e8%af%af%e5%b7%ae%e5%87%86%e5%88%99" aria-label="4.3. 最小均方误差准则">4.3. 最小均方误差准则</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        if (elements) {
+            activeElement = Array.from(elements).find((element) => {
+                if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                    (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                    return element;
+                }
+            }) || activeElement
+
+            elements.forEach(element => {
+                const id = encodeURI(element.getAttribute('id')).toLowerCase();
+                if (element === activeElement){
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+                }
+            })
+        }
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        <div class="post-content"><p>  卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波</p>
+<h3 id="1-贝叶斯滤波框架">1. 贝叶斯滤波框架<a hidden class="anchor" aria-hidden="true" href="#1-贝叶斯滤波框架">#</a></h3>
+<p>  贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主要包含目标状态值与观测值，并且存在如下所示的关系</p>
+<p>$$
+\begin{aligned}
+\mathbf{x}_{k+1}=f(\mathbf{x}_k)+\mathbf{Q} \\
+\mathbf{z}_k=g(\mathbf{x}_k)+\mathbf{R}
+\end{aligned} \tag{1.1}
+$$</p>
+<p>  其中$\mathbf{x}_k$表示$k$时刻的目标状态向量，$f(\cdot)$表示目标状态转移函数，描述了这一时刻与下一时刻目标状态的关系（从另一个角度来说，这一时刻的状态仅与上一时刻有关，因此贝叶斯滤波框架蕴含了一阶马尔可夫假设），$\mathbf{Q}$为噪声向量；$\mathbf{z}_k$表示$k$时刻的系统观测值，该值仅与当前目标状态有关（这意味着贝叶斯滤波框架蕴含了独立观测假设，即观测值仅与当前状态有关），$g(\cdot)$表示目标状态$\mathbf{x}_k$与观测值$\mathbf{z}_k$之间的关系，$\mathbf{R}$表示观测过程中引入的噪声向量。</p>
+<p>  贝叶斯滤波的核心问题是求解$P(\mathbf{x}_k|\mathbf{z}_{1:k})$，表示已知$1$到$k$时刻的观测值$\mathbf{z}_{1:k}$时，目标状态$\mathbf{x}_k$的后验概率。当求解得到$P(\mathbf{x}_k|\mathbf{z}_{1:k})$后，在最小均方误差准则下（下文中均基于最小均方误差准则展开），当前状态$\mathbf{x}_k$的估计可以通过求解上述概率的期望来得到，如下所示（为了方便，下文中所有的积分均指定积分，不表明积分限表示对整个区间积分）</p>
+<p>$$
+\hat{\mathbf{x}}_k=\int \mathbf{x}_k P(\mathbf{x}_k|\mathbf{z}_{1:k}) \mathrm{d}\mathbf{x}_k
+$$</p>
+<p>  为了求解得到上述概率函数，贝叶斯滤波主要包含两个步骤：预测步与更新步。预测步指的是根据当前所得的目标状态信息来预测下一时刻的目标状态信息，即求解$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$；更新步指的是根据观测结果来修正之前所预测的值，即求解$P(\mathbf{x}_k|\mathbf{z}_{1:k})$。通常而言，预测步的概率密度函数是通过柯莫哥洛夫公式来求解的，如下所示
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k-1})=\int P(\mathbf{x}_k|\mathbf{x}_{k-1})P(\mathbf{x}_{k-1}|\mathbf{z}_{1:k-1})\mathrm{d}\mathbf{x}_{k-1}
+$$
+  其中$P(\mathbf{x}_k|\mathbf{x}_{k-1})$表示目标的状态转移概率，即在已知上一时刻的状态信息估计值基础上，当前时刻状态信息为$\mathbf{x}_k$的概率；$P(\mathbf{x}_{k-1}|\mathbf{z}_{1:k-1})$表示上一个更新步的结果。更新步指的是利用观测信息来修正上述预测值，如下所示
+$$
+\begin{aligned}
+P(\mathbf{x}_k|\mathbf{z}_{1:k})=&amp;P(\mathbf{x}_k|\mathbf{z}_{1:k-1}, \mathbf{z}_k) \\
+=&amp; \frac{P(\mathbf{x}_k, \mathbf{z}_k|\mathbf{z}_{1:k-1})}{P(\mathbf{z}_k|\mathbf{z}_{1:k-1})} \\
+=&amp; \frac{P(\mathbf{x}_k, \mathbf{z}_k|\mathbf{z}_{1:k-1})}{P(\mathbf{z}_k|\mathbf{z}_{1:k-1})} \\
+=&amp; \frac{P(\mathbf{z}_k|\mathbf{z}_{1:k-1}, \mathbf{x}_k)P(\mathbf{x}_k|\mathbf{z}_{1:k-1})}{P(\mathbf{z}_k|\mathbf{z}_{1:k-1})}
+\end{aligned} \tag{1.2}
+$$
+  需要注意的是，贝叶斯滤波基于独立观测假设而推导，独立观测假设指的是$k$时刻的观测值仅与$k$时刻的目标状态值有关。换言之，有下式成立
+$$
+P(\mathbf{z}_k|\mathbf{z}_{1:k-1}, \mathbf{x}_k) = P(\mathbf{z}_k|\mathbf{x}_k)
+$$
+  将上式代入到$(1.2)$式中，可以得到
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k})=\frac{P(\mathbf{z}_k|\mathbf{x}_k)P(\mathbf{x}_k|\mathbf{z}_{1:k-1})}{P(\mathbf{z}_k|\mathbf{z}_{1:k-1})}
+$$
+  再来观察一下上式，$P(\mathbf{z}_k|\mathbf{z}_{1:k-1})$是一个常数，因为它仅与观测值有关，而观测值是人为无法改变的。这个常数的意义在于保持概率密度函数的正则性（即整个区间内积分为1）。$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$便是之前所求的预测步概率密度函数，预测步概率密度函数已经通过柯莫哥洛夫公式求解得到，仅与目标的状态转移概率与上一个更新步结果有关。$P(\mathbf{z}_k|\mathbf{x}_k)$表示的是已知当前目标状态为$\mathbf{x}_k$时，观测到$\mathbf{z}_k$的概率，这一概率可通过$(1.1)$式中的目标状态与观测值之间的关系得到。</p>
+<p>  总结来说，贝叶斯滤波框架的步骤如下所示</p>
+<ul>
+<li>
+<ol>
+<li>根据上一时刻的目标状态来得到这一时刻的预测值，即求解$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>根据当前时刻的观测值来修正当前时刻的预测值，即求解$P(\mathbf{x}_k|\mathbf{z}_{1:k})$。这一部分相当于加入了该状态的观测值这一新的信息。</li>
+</ol>
+</li>
+</ul>
+<p>  一般而言，上述概率密度函数并不容易求解，当$(1.1)$式中的$f(\cdot)$与$g(\cdot)$均为线性函数，并且噪声符合高斯正态分布时，贝叶斯滤波的近似形式便是卡尔曼滤波。为了更好理解贝叶斯滤波框架，接下来以卡尔曼滤波为例，利用贝叶斯滤波框架来推导卡尔曼滤波的公式。</p>
+<h3 id="2-卡尔曼滤波原理">2. 卡尔曼滤波原理<a hidden class="anchor" aria-hidden="true" href="#2-卡尔曼滤波原理">#</a></h3>
+<p>  卡尔曼滤波是贝叶斯滤波的简化形式。当贝叶斯滤波中的$\mathbf{Q}$与$\mathbf{R}$均符合高斯正态分布，且$f(\cdot)$与$g(\cdot)$均为线性函数时，贝叶斯滤波便退化为了卡尔曼滤波。进一步地，$(1.1)$式化为如下形式
+$$
+\begin{aligned}
+\mathbf{x}_{k+1}=\mathbf{F}\mathbf{x}_k+\mathbf{Q} \\
+\mathbf{z}_k = \mathbf{H}\mathbf{x}_k+\mathbf{R}
+\end{aligned} \tag{2.1}
+$$
+  其中$\mathbf{F}$被称为状态转移矩阵，表示该时刻与下一时刻状态的关联，$\mathbf{H}$被称为观测矩阵，表示观测值与状态值之间的联系。假设$\mathbf{Q}$与$\mathbf{R}$分别服从均值为$0$，协方差为$\mathbf{P_Q}$与$\mathbf{P_R}$的正态分布，$k$时刻的目标状态值$\mathbf{x}_k$服从均值为最优估计值$\hat{\mathbf{x}}_k$、协方差为$\mathbf{P}_{k-1}$的高斯正态分布。根据贝叶斯滤波框架的原理，首先需要计算预测步的概率密度函数，如下所示
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k-1})=\int P(\mathbf{x}_k|\mathbf{x}_{k-1})P(\mathbf{x}_{k-1}|\mathbf{z}_{1:k-1}) \mathrm{d} \mathbf{x}_{k-1}
+$$
+  对于$P(\mathbf{x}_k|\mathbf{x}_{k-1})$，由$(2.1)$式中的状态转移方程，可以得到
+$$
+P(\mathbf{x}_k|\mathbf{x}_{k-1})=\mathcal{N}(\mathbf{x}_k; \mathbf{F}\mathbf{x}_{k-1}, \mathbf{P_Q})
+$$
+  其中$N(\mu, \Sigma^2)$表示均值为$\mu$，协方差为$\Sigma^2$的高斯正态分布概率密度函数。根据假设可知$P(\mathbf{x}_{k-1}|\mathbf{z}_{1:k-1})$满足如下关系
+$$
+P(\mathbf{x}_{k-1}|\mathbf{z}_{1:k-1})=\mathcal{N}(\mathbf{x}_{k-1}; \hat{\mathbf{x}}_{k-1}, \mathbf{P}_{k-1})
+$$
+  因此接下来需要重点求解的便是如下所示的一个积分
+$$
+\begin{aligned}
+P(\mathbf{x}_k | \mathbf{z}_{1:k-1})=&amp;\int \mathcal{N}(\mathbf{F}\mathbf{x}_{k-1}, \mathbf{P_Q})\mathcal{N}(\hat{\mathbf{x}}_{k-1}, \mathbf{P}_{k-1}) \mathrm{d} \mathbf{x}_{k-1} \\
+=&amp; \frac{1}{(2\pi)^{D}}\frac{1}{|\mathbf{P_Q}|^{\frac{1}{2}}|\mathbf{P}_{k-1}|^{\frac{1}{2}}} \int \exp(-\frac{1}{2}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})^T\mathbf{P_Q^{-1}}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})) \\
+&amp;\exp(-\frac{1}{2}(\mathbf{x}_{k-1}-\hat{\mathbf{x}}_{k-1})^T\mathbf{P}_{k-1}^{-1}(\mathbf{x}_{k-1}-\hat{\mathbf{x}}_{k-1}))\mathrm{d}\mathbf{x}_{k-1} \\
+&amp; \\
+&amp;
+\end{aligned} \tag{2.2}
+$$
+  上述积分的求解较为复杂，事实上，上述公式可以通过高斯变量的贝叶斯定理来求解，通过高斯变量的贝叶斯定理可以直接得到
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k-1})=\mathcal{N}(\mathbf{x}_k; \mathbf{F}\mathbf{x}_{k-1}, \mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})
+$$
+  根据观测方程，可以得到
+$$
+P(\mathbf{z}_k|\mathbf{x}_k)=\mathcal{N}(\mathbf{z}_k; \mathbf{H}\mathbf{x}_k, \mathbf{P_R})
+$$
+  代入到贝叶斯滤波框架的更新步公式中，可以得到
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k})=C\mathcal{N}(\mathbf{x}_k; \mathbf{F}\mathbf{x}_{k-1}, \mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})\mathcal{N}(\mathbf{z}_k; \mathbf{H}\mathbf{x}_k, \mathbf{P_R})
+$$
+  其中$C$为一个常数。根据“高斯分布的相乘原理”（这部分在第四节中），可以得到
+$$
+\begin{aligned}
+P(\mathbf{x}_k|\mathbf{z}_{1:k})=&amp;\mathcal{N}(\mathbf{x}_k; \mathbf{F}\mathbf{x}_{k-1}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\mathbf{F}\mathbf{x}_{k-1}), \mathbf{P}_{k-1}-\mathbf{K}\mathbf{H}\mathbf{P}_{k-1}) \\
+=&amp; \mathcal{N}(\mathbf{x}_k; \hat{\mathbf{x}}_{k}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\hat{\mathbf{x}}_{k}), \mathbf{P}_{k-1}-\mathbf{K}\mathbf{H}\mathbf{P}_{k-1})
+\end{aligned}\tag{2.3}
+$$
+  其中$\mathbf{K}=\mathbf{T}_{k}\mathbf{H}^T(\mathbf{H}\mathbf{T}_{k}\mathbf{H}^T+\mathbf{P_R})^{-1}$，$\mathbf{T}_k=\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q}$，$\hat{\mathbf{x}}_k=\mathbf{F}\mathbf{x}_{k-1}$。从$(2.3)$式中可以发现
+$$
+\begin{aligned}
+\mathbf{x}_{k}=&amp;\hat{\mathbf{x}}_{k}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\hat{\mathbf{x}}_{k}) \\
+\mathbf{P}_k =&amp; \mathbf{T}_{k}-\mathbf{K}\mathbf{H}\mathbf{T}_{k}
+\end{aligned} \tag{2.4}
+$$
+  这就得到了$k$时刻的目标状态估计值。</p>
+<p>  再梳理一下推导过程：</p>
+<ul>
+<li>根据贝叶斯滤波框架，首先需要求解$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$，在卡尔曼滤波的推导过程中，求解出来为$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})=\mathcal{N}(\mathbf{x}_k; \mathbf{F}\mathbf{x}_{k-1}, \mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})$。</li>
+<li>随后，根据求解出来的$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$，来进一步求解$P(\mathbf{x}_k|\mathbf{z}_{1:k})$，在卡尔曼滤波的推导过程中，$P(\mathbf{x}_k|\mathbf{z}_{1:k})=\mathcal{N}(\mathbf{x}_k; \hat{\mathbf{x}}_{k}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\hat{\mathbf{x}}_{k}), \mathbf{P}_{k-1}-\mathbf{K}\mathbf{H}\mathbf{P}_{k-1})$。</li>
+<li>最后，根据某个准则来计算估计值。在卡尔曼滤波推导过程中，根据最小均方误差准则，选取的最优估计值$\mathbf{x}_{k}$为概率密度函数的期望。</li>
+</ul>
+<p>  总结来说，卡尔曼滤波的滤波过程如下所示</p>
+<ul>
+<li>首先根据上一时刻的最优估计值$\mathbf{x}_{k-1}$，计算出该时刻的预测值$\hat{\mathbf{x}}_{k}=\mathbf{F}\mathbf{x}_{k-1}$</li>
+<li>随后利用观测信息得到该时刻的最优估计值为$\mathbf{x}_k=\hat{\mathbf{x}}_{k}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\hat{\mathbf{x}}_{k})$</li>
+<li>最后，更新该时刻最优估计值的协方差$\mathbf{P}_k$以供下一时刻的更新使用，$\mathbf{P}_{k}=\mathbf{P}_{k-1}-\mathbf{K}\mathbf{H}\mathbf{P}_{k-1}$</li>
+</ul>
+<p>  在许多的卡尔曼滤波推导过程中还引入了控制项$\mathbf{u}_k$，这一项存在与否并不影响推导的最终结果，只是在实际应用中需要注意的是，当给予系统一个命令时，需要对应的在预测值上加上该命令对目标状态的影响。</p>
+<h3 id="3-卡尔曼滤波的一个例子">3. 卡尔曼滤波的一个例子<a hidden class="anchor" aria-hidden="true" href="#3-卡尔曼滤波的一个例子">#</a></h3>
+<p>  当利用卡尔曼滤波来估计小车的运动状态时，为了方便，假设小车作一维匀速直线运动，同时小车不受外部动力影响（即控制项$\mathbf{u}_k$为$0$），那么小车的运动状态可以建模为
+$$
+\mathbf{x}_k = \begin{pmatrix}
+p_k \\
+v_k
+\end{pmatrix}
+$$
+  小车的状态转移矩阵$\mathbf{F}$为
+$$
+\mathbf{F}=\begin{pmatrix}
+1 &amp; \Delta T \\
+0 &amp; 1
+\end{pmatrix}
+$$
+  其中$\Delta T$表示传感器的采样周期。于是可以得到下一时刻的状态预测值为
+$$
+\hat{\mathbf{x}}_{k+1}=\mathbf{F}\mathbf{x}_k=\begin{pmatrix}
+p_k+\Delta T v_k \\
+v_k
+\end{pmatrix}
+$$
+  假设传感器直接采样小车的位置与速度，那么观测矩阵$\mathbf{H}$即是单位矩阵（可以看看$(2.1)$式，观测矩阵表示的是传感器采样的值与目标状态值之间的联系，并不是所有场景下传感器都是直接采样目标的状态值）。</p>
+<p>  在上述公式中，$\mathbf{P_Q}$表示的是外界不确定性，例如风力对小车状态的影响，路面不平整对小车状态的影响等等。总而言之，这个量可以根据小车的实际使用场景而被计算出来，此处视其为一个已知量。$\mathbf{P_R}$也是同理的，这个量表示的是传感器误差，可以通过传感器本身的性能而被计算出来。$\mathbf{P}_k$表示的是最优估计值的协方差，这个值可通过$\mathbf{P}_{k-1}$而被计算出来，假设$0$时刻的$\mathbf{P}_0=\mathbf{P_Q}$。当得到$k+1$时刻的观测值时，便可以通过$(2.4)$式计算出$k+1$时刻的最优估计值与估计协方差。</p>
+<h3 id="4-推导过程中的一些细节问题">4. 推导过程中的一些细节问题<a hidden class="anchor" aria-hidden="true" href="#4-推导过程中的一些细节问题">#</a></h3>
+<h4 id="41-高斯变量的贝叶斯定理">4.1. 高斯变量的贝叶斯定理<a hidden class="anchor" aria-hidden="true" href="#41-高斯变量的贝叶斯定理">#</a></h4>
+<p>  高斯变量的贝叶斯定理指的是，当
+$$
+\begin{aligned}
+P(\mathbf{y}|\mathbf{x}) =&amp; \mathcal{N}(\mathbf{y}; \mathbf{A}\mathbf{x}+\mathbf{b}, \Sigma_1) \\
+P(\mathbf{x}) =&amp; \mathcal{N}(\mathbf{x}; \mathbf{\mu}, \Sigma_2)
+\end{aligned}
+$$
+  有下式成立
+$$
+P(\mathbf{y})=\mathcal{N}(\mathbf{y}; \mathbf{A}\mathbf{\mu}+\mathbf{b}, \Sigma_1+\mathbf{A}\Sigma_2\mathbf{A}^T)
+$$
+  高斯变量的贝叶斯定理的推导略显繁琐，此处就不推导了。本节来尝试一下直接推导$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$。</p>
+<p>  考虑$(2.2)$式的积分内的指数项，可以得到
+$$
+\begin{aligned}
+&amp;\exp(-\frac{1}{2}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})^T\mathbf{P_Q^{-1}}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})) \\
+=&amp;\exp(-\frac{1}{2}(\mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{x}_k-\mathbf{x}_{k-1}^T\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{x}_k - \mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1}+\mathbf{x}_{k-1}^T\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1}))
+\end{aligned}\tag{4.1}
+$$
+  注意到，由于$\mathbf{P_Q}$为一个对称矩阵，因此$\mathbf{P_Q^{-1}}$也是一个对称矩阵，从而有下式成立
+$$
+(\mathbf{F}\mathbf{x}_{k-1})^T\mathbf{P_Q^{-1}}\mathbf{x}_k=\mathbf{x}_k^T\mathbf{P_Q^{-1}}(\mathbf{F}\mathbf{x}_{k-1})
+$$
+  因此$(4.1)$式可以化简为
+$$
+\begin{aligned}
+&amp;\exp(-\frac{1}{2}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})^T\mathbf{P_Q^{-1}}(\mathbf{x}_k-\mathbf{F}\mathbf{x}_{k-1})) \\
+=&amp;\exp(-\frac{1}{2}(\mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{x}_k-2\mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1}+\mathbf{x}_{k-1}^T\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1}))
+\end{aligned} \tag{4.2}
+$$
+  同理可以得到
+$$
+\begin{aligned}
+&amp;\exp(-\frac{1}{2}(\mathbf{x}_{k-1}-\hat{\mathbf{x}}_{k-1})^T\mathbf{P}_{k-1}^{-1}(\mathbf{x}_{k-1}-\hat{\mathbf{x}}_{k-1})) \\
+=&amp; \exp(-\frac{1}{2}(\mathbf{x}_{k-1}^T\mathbf{P}_{k-1}^{-1}\mathbf{x}_{k-1} - 2 \hat{\mathbf{x}}_{k-1}^T\mathbf{P}_{k-1}^{-1}\mathbf{x}_{k-1} + \hat{\mathbf{x}}_{k-1}^T\mathbf{P}_{k-1}^{-1}\hat{\mathbf{x}}_{k-1}))
+\end{aligned} \tag{4.3}
+$$
+  接下来的目标是求解$(2.2)$式中的积分部分，将$(4.2)$式与$(4.3)$式相乘积分并提出常数部分可以得到
+$$
+\begin{aligned}
+LHS=&amp;\int \exp(-\frac{1}{2}(\mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{x}_k-2\mathbf{x}_k^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1}+\mathbf{x}_{k-1}^T\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{F}\mathbf{x}_{k-1} \\
+&amp; \qquad \qquad \qquad +\mathbf{x}_{k-1}^T\mathbf{P}_{k-1}^{-1}\mathbf{x}_{k-1} - 2 \hat{\mathbf{x}}_{k-1}^T\mathbf{P}_{k-1}^{-1}\mathbf{x}_{k-1} + \hat{\mathbf{x}}_{k-1}^T\mathbf{P}_{k-1}^{-1}\hat{\mathbf{x}}_{k-1})) \mathrm{d}\mathbf{x}_{k-1} \\
+=&amp; C \int \exp(-\frac{1}{2}\begin{pmatrix}
+\mathbf{x}_k - \mathbf{\mu}  \\
+\mathbf{x}_{k-1} - \hat{\mathbf{x}}_{k-1}
+\end{pmatrix}^T \begin{pmatrix}
+\mathbf{P_Q^{-1}} &amp; -\mathbf{P_Q^{-1}}\mathbf{F} \\
+-\mathbf{F}^T\mathbf{P_Q}^{-1} &amp; \mathbf{P}_{k-1}^{-1}+\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{F}
+\end{pmatrix} \\
+&amp; \qquad \qquad \qquad \qquad \begin{pmatrix}
+\mathbf{x}_k - \mathbf{\mu} \\
+\mathbf{x}_{k-1} - \hat{\mathbf{x}}_{k-1}
+\end{pmatrix})\mathrm{d}\mathbf{x}_{k-1}
+\end{aligned} \tag{4.4}
+$$
+  其中$\mathbf{\mu}$表示$\mathbf{x}_{k}$的均值，是一个待定的系数。观察注意到，上式中积分号内相当于一个高维的高斯分布，当对$\mathbf{x}_{k-1}$作整个区间的积分时，相当于得到了关于$\mathbf{x}_{k}$的边缘分布，并且$\mathbf{x}_{k}$同样服从高斯分布。当知道了这一点后，便可以对上述结果进行简化计算，只需要计算$\mathbf{x}_k$的均值与方差即可得到$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$。由上式可知$\mathbf{x}_k$与$\mathbf{x}_{k-1}$的协方差为
+$$
+\mathrm{Cov}(\mathbf{x}_k, \mathbf{x}_{k-1})=\begin{pmatrix}
+\mathbf{P_Q^{-1}} &amp; -\mathbf{P_Q^{-1}}\mathbf{F} \\
+-\mathbf{F}^T\mathbf{P_Q}^{-1} &amp; \mathbf{P}_{k-1}^{-1}+\mathbf{F}^T\mathbf{P_Q^{-1}}\mathbf{F}
+\end{pmatrix}^{-1}
+$$
+  当已知分块矩阵为（$\mathbf{A}$，$\mathbf{B}$，$\mathbf{C}$，$\mathbf{D}$均为$m\times m$型）
+$$
+\mathbf{P}=\begin{pmatrix}
+\mathbf{A} &amp; \mathbf{B} \\
+\mathbf{C} &amp; \mathbf{D}
+\end{pmatrix}
+$$
+  $\mathbf{P}$的逆矩阵可表示为
+$$
+\mathbf{P}^{-1}=\begin{pmatrix}
+\mathbf{I} &amp; -\mathbf{A}^{-1}\mathbf{B} \\
+0 &amp; \mathbf{I}
+\end{pmatrix} \begin{pmatrix}
+\mathbf{A}^{-1} &amp; 0 \\
+0 &amp; (\mathbf{D}-\mathbf{C}\mathbf{A}^{-1}\mathbf{B})^{-1}
+\end{pmatrix} \begin{pmatrix}
+\mathbf{I} &amp; 0 \\
+-\mathbf{C}\mathbf{A}^{-1} &amp; 0
+\end{pmatrix}
+$$
+  于是有
+$$
+\begin{aligned}
+\mathrm{Cov}(\mathbf{x}_{k}, \mathbf{x}_{k-1})=&amp;\begin{pmatrix}
+\mathbf{I} &amp; \mathbf{F} \\
+\mathbf{0} &amp; \mathbf{I}
+\end{pmatrix} \begin{pmatrix}
+\mathbf{P_Q} &amp; \mathbf{0} \\
+\mathbf{0} &amp; \mathbf{P}_{k-1}
+\end{pmatrix} \begin{pmatrix}
+\mathbf{I} &amp; \mathbf{0} \\
+\mathbf{F}^T &amp; \mathbf{I}
+\end{pmatrix} \\
+=&amp; \begin{pmatrix}
+\mathbf{P_Q}+\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T &amp; \mathbf{F}\mathbf{P}_{k-1} \\
+\mathbf{P}_{k-1}\mathbf{F}^T &amp; \mathbf{P}_{k-1}
+\end{pmatrix}
+\end{aligned}
+$$
+  因此$\mathbf{x}_{k}$的方差为$\mathbf{P_Q}+\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T$。$(4.4)$式中进一步比较系数可得$\mathbf{\mu}=\mathbf{F}\mathbf{x}_{k-1}$，因此可以得到
+$$
+P(\mathbf{x}_k | \mathbf{z}_{1:k-1})=\mathcal{N}(\mathbf{x}_{k}; \mathbf{F}\mathbf{x}_{k-1}, \mathbf{P_Q}+\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T)
+$$</p>
+<h4 id="42-高斯分布的相乘原理">4.2. 高斯分布的相乘原理<a hidden class="anchor" aria-hidden="true" href="#42-高斯分布的相乘原理">#</a></h4>
+<p>  在$(2.3)$式的推导中用到了一个所谓“高斯分布的相乘原理”的性质，事实上这个性质并不是指两个高斯分布相乘可以得到一个新的同维高斯分布，而是指当不考虑常数项时，两个高斯分布相乘后，指数项上依然符合一个高斯分布的形式。记有如下两个高斯分布
+$$
+\begin{aligned}
+\mathcal{N}(\mathbf{x}; \mu_1, \Sigma_1) \\
+\mathcal{N}(\mathbf{x}; \mu_2, \Sigma_2)
+\end{aligned}
+$$
+  两者相乘后取指数项，忽略常数项可得
+$$
+\begin{aligned}
+\ln L =&amp; -\frac{1}{2}((\mathbf{x}^T-\mu_1)^T\Sigma_1^{-1}(\mathbf{x}^T-\mu_1)+(\mathbf{x}^T-\mu_2)^T\Sigma_2^{-1}(\mathbf{x}^T-\mu_2)) \\
+=&amp; -\frac{1}{2}(\mathbf{x}-\mu)^T(\Sigma_1^{-1}+\Sigma_2^{-1})(\mathbf{x}-\mu)
+\end{aligned}
+$$
+  比较系数后，有下式成立
+$$
+\begin{aligned}
+\mu =&amp; (\Sigma_1^{-1}+\Sigma_2^{-1})^{-1}(\Sigma_1^{-1}\mu_1 + \Sigma_2^{-1}\mu_2) \\
+=&amp; \Sigma_1(\Sigma_1+\Sigma_2)^{-1}\Sigma_2(\Sigma_1^{-1}\mu_1 + \Sigma_2^{-1}\mu_2) \\
+=&amp; \Sigma_1(\Sigma_1+\Sigma_2)^{-1}\Sigma_2\Sigma_1^{-1}\mu_1 + \Sigma_1(\Sigma_1+\Sigma_2)^{-1}\mu_2
+\end{aligned}
+$$
+  为了方便，记$\mathbf{K}=\Sigma_1(\Sigma_1+\Sigma_2)^{-1}$，于是有
+$$
+\begin{aligned}
+\mu = \mathbf{K}\Sigma_2\Sigma_1^{-1}\mu_1+\mathbf{K}\mu_2
+\end{aligned}
+$$
+  注意到
+$$
+\begin{aligned}
+\mathbf{K}\Sigma_2\Sigma_1^{-1}=&amp;\Sigma_1(\Sigma_1+\Sigma_2)^{-1}\Sigma_2\Sigma_1^{-1} \\
+=&amp; (\Sigma_1\Sigma_2^{-1}(\Sigma_1+\Sigma_2)\Sigma_1^{-1})^{-1} \\
+=&amp; (\Sigma_1\Sigma_2^{-1}+\mathbf{I})^{-1} \\
+=&amp; \Sigma_2(\Sigma_1+\Sigma_2)^{-1} \\
+=&amp; \mathbf{I} - \mathbf{K}
+\end{aligned}
+$$
+  因此
+$$
+\begin{aligned}
+\mu =&amp; \mathbf{K}\Sigma_2\Sigma_1^{-1}\mu_1+\mathbf{K}\mu_2 \\
+=&amp; (\mathbf{I}-\mathbf{K})\mu_1+\mathbf{K}\mu_2 \\
+=&amp; \mu_1 + \mathbf{K}(\mu_2-\mu_1)
+\end{aligned} \tag{4.5}
+$$
+  对于相乘后方差$\Sigma$而言，有
+$$
+\begin{aligned}
+\Sigma(\mathbf{x})=&amp;(\Sigma_1^{-1}+\Sigma_2^{-1})^{-1}=\Sigma_2(\Sigma_1+\Sigma_2)^{-1}\Sigma_1 \\
+=&amp; (\mathbf{I}-\mathbf{K})\Sigma_1=\Sigma_1 - \mathbf{K}\Sigma_1
+\end{aligned} \tag{4.6}
+$$</p>
+<p>  为了计算$P(\mathbf{x}_k|\mathbf{z}_{1:k})$，需要计算
+$$
+P(\mathbf{x}_k|\mathbf{z}_{1:k})=\frac{P(\mathbf{z}_k|\mathbf{x}_k)P(\mathbf{x}_k|\mathbf{z}_{1:k-1})}{P(\mathbf{z}_k|\mathbf{z}_{1:k-1})}
+$$
+  根据前述的推导结果可知，$P(\mathbf{z}_k|\mathbf{x}_k)$与$P(\mathbf{x}_k|\mathbf{z}_{1:k-1})$均为高斯正态分布，两者相乘后指数项上仍然符合高斯分布的形式，而$P(\mathbf{z}_k|\mathbf{z}_{1:k-1})$作为一个常数项，只起到正则的作用。因此在计算$P(\mathbf{x}_k|\mathbf{z}_{1:k})$过程中，只需要计算指数项上的内容即可。于是有（忽略常数项）
+$$
+\begin{aligned}
+\ln P(\mathbf{x}_k|\mathbf{z}_{1:k})=&amp; -\frac{1}{2}((\mathbf{x}_{k}-\mathbf{F}\mathbf{x}_{k-1})^T(\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})^{-1}(\mathbf{x}_{k}-\mathbf{F}\mathbf{x}_{k-1}) \\
+&amp; \qquad \qquad +(\mathbf{z}_{k}-\mathbf{H}\mathbf{x}_k)^T\mathbf{P_R}^{-1}(\mathbf{z}_{k}-\mathbf{H}\mathbf{x}_k))
+\end{aligned}
+$$
+  为了得到与卡尔曼滤波相同的形式，作一个变量代换$\mathbf{x}_k \rightarrow \mathbf{z}_{k}$，于是有（为了区分，将$\mathbf{x}_k$所对应的观测值记为$\hat{\mathbf{z}}_k$，并且有$\hat{\mathbf{z}}_k=\mathbf{H}\mathbf{x}_k$）
+$$
+\begin{aligned}
+\ln P(\hat{\mathbf{z}}_k|\mathbf{z}_{1:k})=&amp; -\frac{1}{2}((\hat{\mathbf{z}}_{k}-\mathbf{H}\mathbf{F}\mathbf{x}_{k-1})^T{\mathbf{H}^T}^{-1}(\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})^{-1}\mathbf{H}^{-1}(\hat{\mathbf{z}}_{k}-\mathbf{H}\mathbf{F}\mathbf{x}_{k-1}) \\
+&amp; \qquad \qquad +(\hat{\mathbf{z}}_{k}-\mathbf{z}_k)^T\mathbf{P_R}^{-1}(\hat{\mathbf{z}}_{k}-\mathbf{z}_k))
+\end{aligned}
+$$</p>
+<p>  将下式代入到$(4.5)$与$(4.6)$式
+$$
+\begin{aligned}
+\mu_1 =&amp; \mathbf{H}\mathbf{F}\mathbf{x}_{k-1} \\
+\mu_2 =&amp; \mathbf{z}_k \\
+\Sigma_1 =&amp; \mathbf{H}(\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q})\mathbf{H}^T \\
+\Sigma_2 =&amp; \mathbf{P_R}
+\end{aligned}
+$$
+  得到（令$\mathbf{T}_k=\mathbf{F}\mathbf{P}_{k-1}\mathbf{F}^T+\mathbf{P_Q}$）
+$$
+\begin{aligned}
+\mathbf{K} =&amp; \mathbf{H}\mathbf{T}_k\mathbf{H}^T(\mathbf{H}\mathbf{T}_k\mathbf{H}^T+\mathbf{P_R})^{-1} \\
+\mu =&amp; \mathbf{H}\mathbf{F}\mathbf{x}_{k-1}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\mathbf{F}\mathbf{x}_{k-1}) \\
+\Sigma =&amp; \mathbf{H}\mathbf{T}_k\mathbf{H}^T-\mathbf{K}\mathbf{H}\mathbf{T}_k\mathbf{H}^T
+\end{aligned}
+$$
+  再将$\mathbf{z}_{k} \rightarrow \mathbf{x}_k$变换回来，便可得到
+$$
+\begin{aligned}
+\mathbf{K} =&amp; \mathbf{T}_k\mathbf{H}^T(\mathbf{H}\mathbf{T}_k\mathbf{H}^T+\mathbf{P_R})^{-1} \\
+\mu =&amp; \mathbf{F}\mathbf{x}_{k-1}+\mathbf{K}(\mathbf{z}_k-\mathbf{H}\mathbf{F}\mathbf{x}_{k-1}) \\
+\Sigma =&amp; \mathbf{T}_k-\mathbf{K}\mathbf{H}\mathbf{T}_k
+\end{aligned}
+$$
+  这就完成了$(2.3)$式的推导。</p>
+<h4 id="43-最小均方误差准则">4.3. 最小均方误差准则<a hidden class="anchor" aria-hidden="true" href="#43-最小均方误差准则">#</a></h4>
+<p>  在第一节中指出，基于最小均方误差准则前提下，已知$P(\mathbf{x}_k|\mathbf{z}_{1:k})$时，$\mathbf{x}_k$的最优估计是其期望值。</p>
+<p>  记$\epsilon(\hat{\mathbf{x}}_k)$表示$\mathbf{x}_k$的估计误差（$\hat{\mathbf{x}}_k$为估计值，$\mathbf{x}_k$为真实值），最小均方误差准则指的是最小化如下所示的公式
+$$
+\begin{aligned}
+\arg \min _{\mathbf{x}_k} \epsilon(\hat{\mathbf{x}}_k) =&amp; \arg \min _{\mathbf{x}_k} \int (\hat{\mathbf{x}}_k-\mathbf{x}_k)^T(\hat{\mathbf{x}}_k-\mathbf{x}_k) P(\mathbf{x}_k | \mathbf{z}_{1:k}) \mathrm{d}\mathbf{x}_k \\
+\end{aligned}
+$$
+  记$\mathbf{F}(\hat{\mathbf{x}}_k)=\int (\hat{\mathbf{x}}_k-\mathbf{x}_k)^T(\hat{\mathbf{x}}_k-\mathbf{x}_k) P(\mathbf{x}_k | \mathbf{z}_{1:k}) \mathrm{d}\mathbf{x}_k$，于是有
+$$
+\begin{aligned}
+\mathbf{F}(\hat{\mathbf{x}}_k)=&amp;\int (\hat{\mathbf{x}}_k-\mathbf{x}_k)^T(\hat{\mathbf{x}}_k-\mathbf{x}_k) P(\mathbf{x}_k | \mathbf{z}_{1:k}) \mathrm{d}\mathbf{x}_k \\
+=&amp; \int \hat{\mathbf{x}}_k^T \hat{\mathbf{x}}_k P(\mathbf{x}_k | \mathbf{z}_{1:k}) - 2\mathbf{x}_k^T\hat{\mathbf{x}}_kP(\mathbf{x}_k | \mathbf{z}_{1:k}) + \mathbf{x}_k^T \mathbf{x}_k P(\mathbf{x}_k | \mathbf{z}_{1:k})\mathrm{d}\mathbf{x}_k \\
+=&amp; \hat{\mathbf{x}}_k^T \hat{\mathbf{x}}_k\\
+&amp; - \int 2\mathbf{x}_k^T\hat{\mathbf{x}}_kP(\mathbf{x}_k | \mathbf{z}_{1:k})\mathrm{d}\mathbf{x}_k \\
+&amp; + \int \mathbf{x}_k^T \mathbf{x}_k P(\mathbf{x}_k | \mathbf{z}_{1:k})\mathrm{d}\mathbf{x}_k
+\end{aligned}
+$$
+  注意到第三个积分号为一个常数，对$\hat{\mathbf{x}}_k$求导可得
+$$
+\frac{\partial \mathbf{F}(\hat{\mathbf{x}}_k)}{\partial \hat{\mathbf{x}}_k} = 2\hat{\mathbf{x}}_k - 2\int \mathbf{x}_kP(\mathbf{x}_k | \mathbf{z}_{1:k})\mathrm{d}\mathbf{x}_k = 0
+$$
+  解得$\hat{\mathbf{x}}_k = \int \mathbf{x}_kP(\mathbf{x}_k | \mathbf{z}_{1:k})\mathrm{d}\mathbf{x}_k$，即为其期望值。</p>
+
+
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/radarsummary2/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>分布式全相参雷达论文阅读笔记（二）</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+</article>
+</main>
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2022-2023
+        <a href="https://bingsz.github.io/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+</script>
+<script>
+    let mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {}
+            selection.removeRange(range);
+        });
+
+        let language = codeblock.className.replaceAll("language-", "")
+        let macTool = document.createElement("div")
+        let macTool1 = document.createElement("div")
+        let macTool2 = document.createElement("div")
+        let macTool3 = document.createElement("div")
+        let languageType = document.createElement("div")
+        languageType.innerText = language
+        macTool.setAttribute('class', 'mac-tool')
+        macTool1.setAttribute('class', 'mac bb1')
+        macTool2.setAttribute('class', 'mac bb2')
+        macTool3.setAttribute('class', 'mac bb3')
+        languageType.setAttribute('class', 'language-type')
+        macTool.appendChild(macTool1)
+        macTool.appendChild(macTool2)
+        macTool.appendChild(macTool3)
+        macTool.appendChild(languageType)
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        }
+    });
+</script>
+</body>
+
+</html>

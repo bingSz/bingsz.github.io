@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bayes Filter on Song&#39;s Blog</title>
+    <link>https://bingsz.github.io/en/tags/bayes-filter/</link>
+    <description>Recent content in Bayes Filter on Song&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 08 Aug 2023 13:30:44 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/tags/bayes-filter/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从贝叶斯滤波框架到卡尔曼滤波</title>
+      <link>https://bingsz.github.io/en/posts/frombayestokalman/</link>
+      <pubDate>Tue, 08 Aug 2023 13:30:44 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/frombayestokalman/</guid>
+      <description>卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主</description>
+    </item>
+    
+  </channel>
+</rss>

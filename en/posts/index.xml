@@ -6,7 +6,16 @@
     <description>Recent content in 📚文章 on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 04 Aug 2023 18:38:48 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Aug 2023 13:30:44 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从贝叶斯滤波框架到卡尔曼滤波</title>
+      <link>https://bingsz.github.io/en/posts/frombayestokalman/</link>
+      <pubDate>Tue, 08 Aug 2023 13:30:44 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/frombayestokalman/</guid>
+      <description>卡尔曼滤波是基于贝叶斯滤波框架提出的一种基于高斯正态分布假设的线性滤波算法（这几个词将在后文进行介绍）。目前网络上的大部分关于卡尔曼滤波算法的讲解都没有从贝叶斯滤波框架出发推导，因此本文从贝叶斯滤波框架来推导卡尔曼滤波 1. 贝叶斯滤波框架 贝叶斯滤波框架基于贝叶斯模型展开，贝叶斯模型主</description>
+    </item>
+    
     <item>
       <title>分布式全相参雷达论文阅读笔记（二）</title>
       <link>https://bingsz.github.io/en/posts/radarsummary2/</link>
