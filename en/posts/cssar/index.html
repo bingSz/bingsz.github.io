@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>基于圆周外扫描的毫米波合成孔径雷达 | Song&#39;s Blog</title>
+<meta name="keywords" content="Radar, SAR">
+<meta name="description" content="这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。 1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示 图1.1：系统组成草图 主要组成部分有雷达，转动轴与转动轨道。">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/cssar/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+
+
+<script defer src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="基于圆周外扫描的毫米波合成孔径雷达" />
+<meta property="og:description" content="这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。 1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示 图1.1：系统组成草图 主要组成部分有雷达，转动轴与转动轨道。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/cssar/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-11T17:44:35+08:00" />
+<meta property="article:modified_time" content="2023-08-11T17:44:35+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="基于圆周外扫描的毫米波合成孔径雷达"/>
+<meta name="twitter:description" content="这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。 1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示 图1.1：系统组成草图 主要组成部分有雷达，转动轴与转动轨道。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+
+        {
+          "@type": "ListItem",
+          "position":  1 ,
+          "name": "📚文章",
+          "item": "https://bingsz.github.io/en/posts/"
+        }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "基于圆周外扫描的毫米波合成孔径雷达",
+      "item": "https://bingsz.github.io/en/posts/cssar/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "基于圆周外扫描的毫米波合成孔径雷达",
+  "name": "基于圆周外扫描的毫米波合成孔径雷达",
+  "description": "这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。 1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示 图1.1：系统组成草图 主要组成部分有雷达，转动轴与转动轨道。",
+  "keywords": [
+    "Radar", "SAR"
+  ],
+  "articleBody": " 这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。\n1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示\n图1.1：系统组成草图\r主要组成部分有雷达，转动轴与转动轨道。雷达在转动轨道上绕着转动轴旋转，同时在旋转过程中收发电磁波完成信号采集过程。随后雷达将采集得到的信号传输至上位机，上位机利用雷达成像算法来得到最终的成像结果。\n一方面来说，传统的SAR系统通常基于一个直线轨迹采集信号回波数据（如固定在一个直轨道上，或者固定在飞机上），而上述系统是基于一个圆周轨道的，因此有必要论证一下方案的合理性。从另一个方面来说，基于圆周轨道的旋转在极短时间内可以近似为作切线方向的直线运动，因此上述系统具备一定的可行性，还需进一步论证。\n2. 基本参数推导 2.1. 方位维分辨率 2.1.1. 基本公式推导 雷达距离维分辨率主要取决于毫米波雷达本身，而与本文所讨论的CSSAR并无直接关系，因此本文不对距离维分辨率作推导。\nCSSAR系统的俯视图如下所示。其中目标与雷达的距离为$R$，雷达旋转半径为$r$，转动角速度为$\\omega_r$，转动轴与目标的连线和转动轴与雷达的连线夹角记为$\\alpha$。\n图2.1：系统组成俯视图\r记雷达与目标之间的距离为$R_0$，根据余弦定理有 $$ R_0 = \\sqrt{R^2+r^2-2Rr\\cos \\alpha} \\tag{2.1} $$ 假设雷达发射线性调频信号，调频率为$\\mu$，于是发射信号可以表示为 $$ x_s(t)=u(t)\\exp (j\\pi \\mu t^2) \\exp(j 2\\pi f_0 t) \\tag{2.2} $$ 其中$u(t)$表示发射信号的包络。发射信号经过目标发射后，可得接收信号（已下变频）为 $$ \\begin{aligned} x_r(t)=\u0026u(t-\\frac{2R_0}{c})\\exp(j\\pi \\mu (t-\\frac{2R_0}{c})^2)\\exp(-j4\\pi f_0 \\frac{R_0}{c}) \\\\ =\u0026 u(t-\\frac{2R_0}{c})\\exp(j\\pi \\mu (t-\\frac{2R_0}{c})^2) \\\\ \u0026 \\qquad \\qquad \\exp(-j4\\pi f_0 \\frac{\\sqrt{R^2+r^2-2Rr\\cos \\alpha}}{c}) \\end{aligned} \\tag{2.3} $$ 已知$\\sqrt{1+x} \\approx 1+\\frac{x}{2}$，于是有$\\sqrt{R^2+r^2-2Rr\\cos \\alpha} \\approx R+\\frac{r^2-2Rr\\cos \\alpha}{2R}$。但该近似在本系统中达不到精确度要求，因此需要在该近似的基础上添加一个修正因子，观察可知近似误差可近似为仅与$R$与$r$有关，记为$\\beta(r, R)$，于是有下式成立 $$ \\sqrt{R^2+r^2-2Rr\\cos\\alpha} \\approx R+\\frac{r^2-2Rr\\cos \\alpha}{2R\\beta(r, R)} \\tag{2.4} $$ 同时对$\\cos\\alpha$作二阶麦克劳林级数展开后可得到$\\cos\\alpha \\approx 1+\\frac{\\alpha^2}{2}=1+\\frac{\\omega^2t^2}{2}$，其中$\\omega$为雷达旋转角速度。同样，将该近似代入公式后也是无法达到系统精度要求的，因此取一个修正因子$\\gamma(r, R)$，可得到如下公式 $$ \\sqrt{R^2+r^2-2Rr\\cos\\alpha} \\approx R+\\frac{r^2}{2R\\beta(r, R)}-\\frac{r}{\\beta(r, R)}+\\frac{\\gamma(r, R)r\\omega^2t^2}{2\\beta(r, R)} \\tag{2.5} $$ 接下来进行仿真分析上述近似是否有效，取$R=2$，$r=0.5$，$\\beta=0.875$，$\\gamma=1.145$，$\\omega=\\pi\\ \\mathrm{rad} /s$时，可以得到如下所示结果\n图2.2：近似比较\r图2.3：近似误差\r此时近似的最大误差为$1.6 \\times 10^{-4}$，小于毫米波波长的$\\frac{1}{32}$，因此近似是合理的。将上述近似代入$(2.3)$式，忽略常数项，可以得到 $$ x_r(t)=u(t-\\frac{2R_0}{c})\\exp(j\\pi \\mu (t-\\frac{2R_0}{c})^2)\\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_r^2t^2}{cR\\beta(r, R)}) \\tag{2.6} $$ 从上式观察可得，慢时间维上的多普勒调频率为 $$ \\mu_d = \\frac{f_0 \\gamma(r, R) \\omega_r^2}{cR\\beta(r, R)} $$ 假设天线方向图波束宽度为$\\theta_w$，于是可得到驻留时间为 $$ T_d = \\frac{\\theta_w}{\\omega_r} $$ 因此慢时间维上的线性调频信号带宽为 $$ B = T_d\\mu_d=\\frac{\\theta_wf_0 \\gamma(r, R)\\omega_r}{c R\\beta(r, R)} $$ 因此脉冲压缩后的脉冲宽度为 $$ \\tau = \\frac{c R\\beta(r, R)}{\\theta_wf_0 \\gamma(r, R)\\omega_r} $$ 于是可得方位维上的分辨率为 $$ \\rho_\\theta = \\tau \\omega_r R = \\frac{cR^2\\beta(r, R)}{\\theta_wf_0 \\gamma(r, R)} \\tag{2.7} $$ 取下述参数代入公式，计算可得$\\rho_\\theta \\approx 2.7 \\mathrm{mm}$。\n参数 值 r 0.5m R 2m $\\omega_r$ $\\pi /\\mathrm{s}$ $\\beta(0.5, 2)$ 0.875 $\\gamma(0.5, 2)$ 2.289 $\\theta_w$ $40^\\circ$ $f_0$ $60\\mathrm{GHz}$ 2.1.2. $\\beta(r, R)$与$\\gamma(r, R)$推导 首先考虑$\\beta(r, R)$的计算，已知$\\beta(r, R)$是为了补偿下式公式在$\\alpha=0$时的近似而提出的，因此$\\beta(r, R)$的选择应当使得当$\\alpha$为0时，下式两端相等。 $$ \\sqrt{R^2+r^2-2Rr\\cos \\alpha} \\approx R + \\frac{r^2-2Rr\\cos \\alpha}{2R\\beta(r, R)} $$ 于是可得 $$ \\beta(r, R) = \\frac{r^2-2Rr}{2R(\\sqrt{R^2+r^2-2Rr} - R)} \\tag{2.8} $$ 然后考虑$\\gamma(r, R)$补偿因子的选择问题。$\\gamma(r, R)$的提出是由于下式的右端在二次项方面不能很好拟合左端。因此，为了得到$\\gamma(r, R)$参数，需要对下式作最小二乘拟合 $$ \\sqrt{R^2+r^2-2Rr\\cos (\\omega_r t)} \\approx R + \\frac{r^2}{2R\\beta(r, R)} - \\frac{r}{\\beta(r, R)} + \\frac{\\gamma(r, R)\\omega_r^2 t^2}{4R\\beta(r, R)} $$\n但是对上式作最小二乘拟合所得到的公式非常复杂，而我们推导这两个参数只是为了计算这种雷达结构的方位维分辨率，因此可进一步对$\\gamma(r, R)$作近似。我们对上式两边求二阶导数可得\n$$ \\frac{ARr\\omega_r^2 \\cos(\\omega_r t) - R^2r^2\\omega_r^2\\sin^2(\\omega_r t)}{A^{\\frac{3}{2}}} = \\frac{\\gamma(r, R)\\omega_r^2}{2R\\beta(r, R)} \\tag{2.9} $$\n其中$A = R^2+r^2-2Rr\\cos(\\omega_r t)$。\n为了近似求得$\\gamma(r, R)$，可对$(2.9)$式的左端取离散点，然后求平均值来近似得到一段区间上的二阶导数值的平均值，最后求解出$\\gamma(r, R)$。\n例如，若已知波束在$t \\in (-t_0, t_0)$上照射到物体上，则可取$t=\\frac{t_0}{2}$，来作为$(2.9)$式左端的近似，于是可求得$\\gamma(r, R)$的近似值为\n$$ \\gamma(r, R) \\approx \\frac{2R\\beta(r, R)(ARr\\omega_r^2 \\cos(\\omega_r t) - R^2r^2\\omega_r^2\\sin^2(\\omega_r t))}{\\omega_r^2 A^{\\frac{3}{2}}} \\tag{2.10} $$\n将$(2.8)$式与$(2.10)$式代入$(2.7)$式中，便可求得方位维分辨率。若将同样的数据代入，可得到方位分辨率为$\\text{2.8mm}$，与之前的预估值近似。\n2.2. 脉冲重复频率 由第二节的回波模型可以得到\n$$ \\begin{align*} x_r(t) = u(t - \\frac{2R_0}{c})\u0026\\exp(j\\pi \\mu (t - \\frac{2R_0}{c})^2) \\\\ \u0026\\ \\ \\exp(-j4\\pi f_0 \\frac{\\sqrt{R^2+r^2-2Rr\\cos \\alpha}}{c}) \\end{align*} $$\n将第二个指数项的近似代入，并且忽略常数项可得\n$$ x_r(t) = u(t - \\frac{2R_0}{c})\\exp(j\\pi \\mu (t - \\frac{2R_0}{c})^2)\\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_r^2 t^2}{cR\\beta(r, R)}) $$\n于是驻留时间为$T_d = \\frac{\\theta_w}{\\omega_r}$，于是可以得到信号带宽为\n$$ B = \\frac{\\theta_w f_0\\gamma(r, R)\\omega_r}{cR\\beta(r, R)} $$\n雷达在慢时间维上的积累等价于对上述信号进行一个采样，因此脉冲重复频率应当\n$$ f_d \\geq 2B = \\frac{2\\theta_w f_0\\gamma(r, R)\\omega_r}{cR\\beta(r, R)} \\tag{2.11} $$\n取$R=\\text{2m}$, $r=\\text{0.5m}, \\omega_r = \\pi \\text{/s}, \\beta(0.5, 2) = 0.875, \\gamma(0.5, 2) = 2.289, \\theta_w = 40^{\\circ}, f_0 = \\text{60GHz}$，代入上述公式可计算得$f_d \\geq \\text{1148Hz}$\n2.3. 数据传输速率要求 由于雷达开发板自身的容量较小，因此一个方法是将数据上传至上位机进行处理，因此本节对上传速率进行推导。 假设脉冲重复频率为$f_d$，在快时间维上采样点数为$n_0$，若$\\text{ADC}$采样位数为$n_A$比特，且使用$\\text{IQ}$正交采样，有$n_t$个发射天线，$n_r$个接收天线。于是有每秒数据量（KB）为 $$ D = \\frac{f_d n_0 n_A n_t n_r}{4096} $$ 因此通讯速率应当大于$D$。若取$f_d = \\text{2000Hz}, n_0 = 256, n_A = 16, n_t = 3, n_r = 4$，可计算得 $$ D = \\frac{2000 \\times 256 \\times 16 \\times 3 \\times 4}{4096} = 24000\\text{KB} \\approx 24\\text{MB} $$\n2.4. 伺服系统的角速度徙动影响 根据图1.1给出的结构可以发现，现实世界中的伺服系统转动时的角速度通常不能保持为一个恒定的值，而角速度的这种徙动会对雷达的成像精度造成影响，本节对这种影响进行一个分析。 直接对回波信号作一个近似，可得 $$ x_r(t) = u(t - \\frac{2R_0}{c})\\exp(j\\pi \\mu (t - \\frac{2R_0}{c})^2)\\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_r^2 t^2}{cR\\beta(r, R)}) $$ 可以看到，角速度徙动带来的影响主要在第二个指数项。假设期望角速度为$\\omega_s$，而角速度徙动带来的误差为$\\Delta \\omega_s$，于是在某一时刻，角速度的值可以被表示为$\\omega_r = \\omega_s+ \\Delta \\omega_s$。不妨假设$\\Delta \\omega_s$服从均值为$0$，方差为$\\sigma_s^2$的一个高斯正态分布。将$\\omega_r = \\omega_s+ \\Delta \\omega_s$代入上式的第二个指数项，可以得到 $$ \\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_r^2 t^2}{cR\\beta(r, R)}) = \\exp(-j\\pi f_0 \\frac{\\gamma(r, R)(\\omega_s + \\Delta \\omega_s)^2 t^2}{cR\\beta(r, R)}) $$ 通常$\\omega_r \\gg \\Delta \\omega_s$，于是忽略高阶项可得$(\\omega_s + \\Delta \\omega_s)^2 \\approx \\omega_s^2 + 2\\omega_s \\Delta \\omega_s$，将其代入上式可以得到 $$ \\begin{align*} \\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_r^2 t^2}{cR\\beta(r, R)}) =\u0026 \\exp(-j\\pi f_0 \\frac{\\gamma(r, R)(\\omega_s + \\Delta \\omega_s)^2 t^2}{cR\\beta(r, R)}) \\\\ =\u0026 \\exp(-j\\pi f_0 \\frac{\\gamma(r, R)\\omega_s^2 t^2}{cR\\beta(r, R)} - j\\pi f_0 \\frac{2\\gamma(r, R)\\omega_s\\Delta\\omega_s t^2}{cR\\beta(r, R)}) \\end{align*} $$ 可以看到，角速度徙动带来的误差相当于在原本线性调频信号的基础上，增加了一个相位抖动项，记为$\\Delta \\phi$，于是有 $$ \\Delta \\phi = \\pi f_0 \\frac{2\\gamma(r, R)\\omega_s\\Delta\\omega_s t^2}{cR\\beta(r, R)} $$ 已知$\\Delta \\omega_s$的方差为$\\sigma_s^2$，因此$\\Delta \\phi$的方差为 $$ \\sigma_{\\Delta \\phi}^2 = \\pi^2 f_0^2 \\frac{4\\gamma(r, R)^2\\omega_s^2\\sigma_s^2 t^4}{c^2R^2\\beta(r, R)^2} $$ 接下来我们使用蒙特卡洛模拟的方法来获得加入了相位抖动后的主副瓣比的变化。结果如下图所示\n图2.4：角速度抖动影响\r可以看到，当相位抖动方差$\\sigma_{\\Delta \\phi}^2 \\leq 3$时，主副瓣比与无徙动时的主副瓣比相近，而主副瓣比在方差为$4$左右时急剧下降。若令$\\sigma_{\\Delta \\phi}^2 \\leq 3$，则可解得$\\sigma_s^2 \\leq 7.7 \\times 10^{-4}$。根据$3\\sigma$原则，这意味着伺服系统转动时的角速度抖动应当在$2^{\\circ}\\text{/s}$左右\n3. 仿真结果 假设空间中三个点目标方位如下所示\n点目标编号 x y z 1 0 3 0 2 3 4 0 3 0 4 0 仿真得到回波信号如下所示\r图3.1：角速度抖动影响\r快时间维上作FFT可得\n图3.2：角速度抖动影响\r作距离徙动校正与成像后，可得如下结果\n图3.3：角速度抖动影响\r从仿真结果来看本系统已经完成了初步的成像工作，但从仿真结果可明显看出点目标成像结果发散，这是因为由于雷达的圆周轨道特性而导致的目标间的大距离徙动差，因此本项目的下一个重点内容应当是算法的改进与优化。\n",
+  "wordCount" : "3619",
+  "inLanguage": "en",
+  "datePublished": "2023-08-11T17:44:35+08:00",
+  "dateModified": "2023-08-11T17:44:35+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/cssar/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+</style>
+
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">🏠 主页</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">📚文章</a></div>
+            <h1 class="post-title">
+                基于圆周外扫描的毫米波合成孔径雷达
+            </h1>
+            <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2023-08-11
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>3619字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>8分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>Song
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://bingsz.github.io/en/tags/radar/" style="color: var(--secondary)!important;">Radar</a>
+                &nbsp;<a href="https://bingsz.github.io/en/tags/sar/" style="color: var(--secondary)!important;">SAR</a>
+            </span>
+        </span>
+    </span>
+</span>
+<span style="opacity: 0.8;">
+                    <span id="post_meta_style_7">
+                        &nbsp;&nbsp;
+                        <span class="fa fa-eye" ></span>
+                        <span>
+                            <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                    <span id="post_meta_style_8">
+                        <span class="fa fa-commenting-o"></span>
+                        <span>
+                            <script src="https://cdn.staticfile.org/twikoo//twikoo.all.min.js"></script>
+                            <script>
+                                let url = document.documentURI
+                                
+                                let dnsUrl = "https://bingsz.github.io/"
+                                let urlSplit = url.split(dnsUrl)
+                                let finalUrl = urlSplit[1]
+                                if (finalUrl[0] !== '/') {
+                                    finalUrl = '/'+finalUrl
+                                }
+                                twikoo.getCommentsCount({
+                                    envId:  null , 
+                                region:  null , 
+                                urls: [ 
+                                    
+                                    finalUrl,
+                                ],
+                                    includeReply: false 
+                                }).then(function (res) {
+                                    let count = res[0].count
+                                    const obj = document.getElementById("comment_count");
+                                    obj.innerText = count
+                                    
+                                    
+                                    
+                                }).catch(function (err) {
+                                    
+                                    console.error(err);
+                                });
+                            </script>
+                            <span id="comment_count"></span>
+                        </span>
+                    </span>
+                </span>
+
+</div>
+        </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86" aria-label="1. 基本原理">1. 基本原理</a></li>
+                <li>
+                    <a href="#2-%e5%9f%ba%e6%9c%ac%e5%8f%82%e6%95%b0%e6%8e%a8%e5%af%bc" aria-label="2. 基本参数推导">2. 基本参数推导</a><ul>
+                        
+                <li>
+                    <a href="#21-%e6%96%b9%e4%bd%8d%e7%bb%b4%e5%88%86%e8%be%a8%e7%8e%87" aria-label="2.1. 方位维分辨率">2.1. 方位维分辨率</a><ul>
+                        
+                <li>
+                    <a href="#211-%e5%9f%ba%e6%9c%ac%e5%85%ac%e5%bc%8f%e6%8e%a8%e5%af%bc" aria-label="2.1.1. 基本公式推导">2.1.1. 基本公式推导</a></li>
+                <li>
+                    <a href="#212-betar-r%e4%b8%8egammar-r%e6%8e%a8%e5%af%bc" aria-label="2.1.2. $\beta(r, R)$与$\gamma(r, R)$推导">2.1.2. $\beta(r, R)$与$\gamma(r, R)$推导</a></li></ul>
+                </li>
+                <li>
+                    <a href="#22-%e8%84%89%e5%86%b2%e9%87%8d%e5%a4%8d%e9%a2%91%e7%8e%87" aria-label="2.2. 脉冲重复频率">2.2. 脉冲重复频率</a></li>
+                <li>
+                    <a href="#23-%e6%95%b0%e6%8d%ae%e4%bc%a0%e8%be%93%e9%80%9f%e7%8e%87%e8%a6%81%e6%b1%82" aria-label="2.3. 数据传输速率要求">2.3. 数据传输速率要求</a></li>
+                <li>
+                    <a href="#24-%e4%bc%ba%e6%9c%8d%e7%b3%bb%e7%bb%9f%e7%9a%84%e8%a7%92%e9%80%9f%e5%ba%a6%e5%be%99%e5%8a%a8%e5%bd%b1%e5%93%8d" aria-label="2.4. 伺服系统的角速度徙动影响">2.4. 伺服系统的角速度徙动影响</a></li></ul>
+                </li>
+                <li>
+                    <a href="#3-%e4%bb%bf%e7%9c%9f%e7%bb%93%e6%9e%9c" aria-label="3. 仿真结果">3. 仿真结果</a>
+                </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        if (elements) {
+            activeElement = Array.from(elements).find((element) => {
+                if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                    (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                    return element;
+                }
+            }) || activeElement
+
+            elements.forEach(element => {
+                const id = encodeURI(element.getAttribute('id')).toLowerCase();
+                if (element === activeElement){
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+                }
+            })
+        }
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        <div class="post-content"><p>  这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。</p>
+<h3 id="1-基本原理">1. 基本原理<a hidden class="anchor" aria-hidden="true" href="#1-基本原理">#</a></h3>
+<p>  基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/sysStr.jpg' width=70%>
+    <br>图1.1：系统组成草图
+    </center>
+</div>
+<p>  主要组成部分有雷达，转动轴与转动轨道。雷达在转动轨道上绕着转动轴旋转，同时在旋转过程中收发电磁波完成信号采集过程。随后雷达将采集得到的信号传输至上位机，上位机利用雷达成像算法来得到最终的成像结果。</p>
+<p>  一方面来说，传统的SAR系统通常基于一个直线轨迹采集信号回波数据（如固定在一个直轨道上，或者固定在飞机上），而上述系统是基于一个圆周轨道的，因此有必要论证一下方案的合理性。从另一个方面来说，基于圆周轨道的旋转在极短时间内可以近似为作切线方向的直线运动，因此上述系统具备一定的可行性，还需进一步论证。</p>
+<h3 id="2-基本参数推导">2. 基本参数推导<a hidden class="anchor" aria-hidden="true" href="#2-基本参数推导">#</a></h3>
+<h4 id="21-方位维分辨率">2.1. 方位维分辨率<a hidden class="anchor" aria-hidden="true" href="#21-方位维分辨率">#</a></h4>
+<h5 id="211-基本公式推导">2.1.1. 基本公式推导<a hidden class="anchor" aria-hidden="true" href="#211-基本公式推导">#</a></h5>
+<p>  雷达距离维分辨率主要取决于毫米波雷达本身，而与本文所讨论的CSSAR并无直接关系，因此本文不对距离维分辨率作推导。</p>
+<p>  CSSAR系统的俯视图如下所示。其中目标与雷达的距离为$R$，雷达旋转半径为$r$，转动角速度为$\omega_r$，转动轴与目标的连线和转动轴与雷达的连线夹角记为$\alpha$。</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/sysStrOverlookParam.jpg' width=50%>
+    <br>图2.1：系统组成俯视图
+    </center>
+</div>
+<p>  记雷达与目标之间的距离为$R_0$，根据余弦定理有
+$$
+R_0 = \sqrt{R^2+r^2-2Rr\cos \alpha} \tag{2.1}
+$$
+  假设雷达发射线性调频信号，调频率为$\mu$，于是发射信号可以表示为
+$$
+x_s(t)=u(t)\exp (j\pi \mu t^2) \exp(j 2\pi f_0 t) \tag{2.2}
+$$
+  其中$u(t)$表示发射信号的包络。发射信号经过目标发射后，可得接收信号（已下变频）为
+$$
+\begin{aligned}
+x_r(t)=&amp;u(t-\frac{2R_0}{c})\exp(j\pi \mu (t-\frac{2R_0}{c})^2)\exp(-j4\pi f_0 \frac{R_0}{c}) \\
+=&amp; u(t-\frac{2R_0}{c})\exp(j\pi \mu (t-\frac{2R_0}{c})^2) \\
+&amp; \qquad \qquad \exp(-j4\pi f_0 \frac{\sqrt{R^2+r^2-2Rr\cos \alpha}}{c})
+\end{aligned} \tag{2.3}
+$$
+  已知$\sqrt{1+x} \approx 1+\frac{x}{2}$，于是有$\sqrt{R^2+r^2-2Rr\cos \alpha} \approx R+\frac{r^2-2Rr\cos \alpha}{2R}$。但该近似在本系统中达不到精确度要求，因此需要在该近似的基础上添加一个修正因子，观察可知近似误差可近似为仅与$R$与$r$有关，记为$\beta(r, R)$，于是有下式成立
+$$
+\sqrt{R^2+r^2-2Rr\cos\alpha} \approx R+\frac{r^2-2Rr\cos \alpha}{2R\beta(r, R)} \tag{2.4}
+$$
+  同时对$\cos\alpha$作二阶麦克劳林级数展开后可得到$\cos\alpha \approx 1+\frac{\alpha^2}{2}=1+\frac{\omega^2t^2}{2}$，其中$\omega$为雷达旋转角速度。同样，将该近似代入公式后也是无法达到系统精度要求的，因此取一个修正因子$\gamma(r, R)$，可得到如下公式
+$$
+\sqrt{R^2+r^2-2Rr\cos\alpha} \approx R+\frac{r^2}{2R\beta(r, R)}-\frac{r}{\beta(r, R)}+\frac{\gamma(r, R)r\omega^2t^2}{2\beta(r, R)} \tag{2.5}
+$$
+  接下来进行仿真分析上述近似是否有效，取$R=2$，$r=0.5$，$\beta=0.875$，$\gamma=1.145$，$\omega=\pi\ \mathrm{rad} /s$时，可以得到如下所示结果</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/loss.png' width=70%>
+    <br>图2.2：近似比较
+    </center>
+</div>
+<div>
+    <center>
+    <img src='/images/CSSAR/loss2.png' width=70%>
+    <br>图2.3：近似误差
+    </center>
+</div>
+<p>  此时近似的最大误差为$1.6 \times 10^{-4}$，小于毫米波波长的$\frac{1}{32}$，因此近似是合理的。将上述近似代入$(2.3)$式，忽略常数项，可以得到
+$$
+x_r(t)=u(t-\frac{2R_0}{c})\exp(j\pi \mu (t-\frac{2R_0}{c})^2)\exp(-j\pi f_0 \frac{\gamma(r, R)\omega_r^2t^2}{cR\beta(r, R)}) \tag{2.6}
+$$
+  从上式观察可得，慢时间维上的多普勒调频率为
+$$
+\mu_d = \frac{f_0 \gamma(r, R) \omega_r^2}{cR\beta(r, R)}
+$$
+  假设天线方向图波束宽度为$\theta_w$，于是可得到驻留时间为
+$$
+T_d = \frac{\theta_w}{\omega_r}
+$$
+  因此慢时间维上的线性调频信号带宽为
+$$
+B = T_d\mu_d=\frac{\theta_wf_0 \gamma(r, R)\omega_r}{c R\beta(r, R)}
+$$
+  因此脉冲压缩后的脉冲宽度为
+$$
+\tau = \frac{c R\beta(r, R)}{\theta_wf_0 \gamma(r, R)\omega_r}
+$$
+  于是可得方位维上的分辨率为
+$$
+\rho_\theta = \tau \omega_r R = \frac{cR^2\beta(r, R)}{\theta_wf_0 \gamma(r, R)} \tag{2.7}
+$$
+  取下述参数代入公式，计算可得$\rho_\theta \approx 2.7 \mathrm{mm}$。</p>
+<style>
+.center 
+{
+  width: auto;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>0.5m</td>
+</tr>
+<tr>
+<td>R</td>
+<td>2m</td>
+</tr>
+<tr>
+<td>$\omega_r$</td>
+<td>$\pi /\mathrm{s}$</td>
+</tr>
+<tr>
+<td>$\beta(0.5, 2)$</td>
+<td>0.875</td>
+</tr>
+<tr>
+<td>$\gamma(0.5, 2)$</td>
+<td>2.289</td>
+</tr>
+<tr>
+<td>$\theta_w$</td>
+<td>$40^\circ$</td>
+</tr>
+<tr>
+<td>$f_0$</td>
+<td>$60\mathrm{GHz}$</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="212-betar-r与gammar-r推导">2.1.2. $\beta(r, R)$与$\gamma(r, R)$推导<a hidden class="anchor" aria-hidden="true" href="#212-betar-r与gammar-r推导">#</a></h5>
+<p>  首先考虑$\beta(r, R)$的计算，已知$\beta(r, R)$是为了补偿下式公式在$\alpha=0$时的近似而提出的，因此$\beta(r, R)$的选择应当使得当$\alpha$为0时，下式两端相等。
+$$
+\sqrt{R^2+r^2-2Rr\cos \alpha} \approx R + \frac{r^2-2Rr\cos \alpha}{2R\beta(r, R)}
+$$
+  于是可得
+$$
+\beta(r, R) = \frac{r^2-2Rr}{2R(\sqrt{R^2+r^2-2Rr} - R)} \tag{2.8}
+$$
+  然后考虑$\gamma(r, R)$补偿因子的选择问题。$\gamma(r, R)$的提出是由于下式的右端在二次项方面不能很好拟合左端。因此，为了得到$\gamma(r, R)$参数，需要对下式作最小二乘拟合
+$$
+\sqrt{R^2+r^2-2Rr\cos (\omega_r t)} \approx R + \frac{r^2}{2R\beta(r, R)} - \frac{r}{\beta(r, R)} + \frac{\gamma(r, R)\omega_r^2 t^2}{4R\beta(r, R)}
+$$</p>
+<p>  但是对上式作最小二乘拟合所得到的公式非常复杂，而我们推导这两个参数只是为了计算这种雷达结构的方位维分辨率，因此可进一步对$\gamma(r, R)$作近似。我们对上式两边求二阶导数可得</p>
+<p>$$
+\frac{ARr\omega_r^2 \cos(\omega_r t) - R^2r^2\omega_r^2\sin^2(\omega_r t)}{A^{\frac{3}{2}}} = \frac{\gamma(r, R)\omega_r^2}{2R\beta(r, R)} \tag{2.9}
+$$</p>
+<p>  其中$A = R^2+r^2-2Rr\cos(\omega_r t)$。</p>
+<p>  为了近似求得$\gamma(r, R)$，可对$(2.9)$式的左端取离散点，然后求平均值来近似得到一段区间上的二阶导数值的平均值，最后求解出$\gamma(r, R)$。</p>
+<p>  例如，若已知波束在$t \in (-t_0, t_0)$上照射到物体上，则可取$t=\frac{t_0}{2}$，来作为$(2.9)$式左端的近似，于是可求得$\gamma(r, R)$的近似值为</p>
+<p>$$
+\gamma(r, R) \approx \frac{2R\beta(r, R)(ARr\omega_r^2 \cos(\omega_r t) - R^2r^2\omega_r^2\sin^2(\omega_r t))}{\omega_r^2 A^{\frac{3}{2}}} \tag{2.10}
+$$</p>
+<p>  将$(2.8)$式与$(2.10)$式代入$(2.7)$式中，便可求得方位维分辨率。若将同样的数据代入，可得到方位分辨率为$\text{2.8mm}$，与之前的预估值近似。</p>
+<h4 id="22-脉冲重复频率">2.2. 脉冲重复频率<a hidden class="anchor" aria-hidden="true" href="#22-脉冲重复频率">#</a></h4>
+<p>  由第二节的回波模型可以得到</p>
+<p>$$
+\begin{align*}
+x_r(t) = u(t - \frac{2R_0}{c})&amp;\exp(j\pi \mu (t - \frac{2R_0}{c})^2) \\
+&amp;\ \ \exp(-j4\pi f_0 \frac{\sqrt{R^2+r^2-2Rr\cos \alpha}}{c})
+\end{align*}
+$$</p>
+<p>  将第二个指数项的近似代入，并且忽略常数项可得</p>
+<p>$$
+x_r(t) = u(t - \frac{2R_0}{c})\exp(j\pi \mu (t - \frac{2R_0}{c})^2)\exp(-j\pi f_0 \frac{\gamma(r, R)\omega_r^2 t^2}{cR\beta(r, R)})
+$$</p>
+<p>  于是驻留时间为$T_d = \frac{\theta_w}{\omega_r}$，于是可以得到信号带宽为</p>
+<p>$$
+B = \frac{\theta_w f_0\gamma(r, R)\omega_r}{cR\beta(r, R)}
+$$</p>
+<p>  雷达在慢时间维上的积累等价于对上述信号进行一个采样，因此脉冲重复频率应当</p>
+<p>$$
+f_d \geq 2B = \frac{2\theta_w f_0\gamma(r, R)\omega_r}{cR\beta(r, R)} \tag{2.11}
+$$</p>
+<p>  取$R=\text{2m}$, $r=\text{0.5m}, \omega_r = \pi \text{/s}, \beta(0.5, 2) = 0.875, \gamma(0.5, 2) = 2.289, \theta_w = 40^{\circ}, f_0 = \text{60GHz}$，代入上述公式可计算得$f_d \geq \text{1148Hz}$</p>
+<h4 id="23-数据传输速率要求">2.3. 数据传输速率要求<a hidden class="anchor" aria-hidden="true" href="#23-数据传输速率要求">#</a></h4>
+<p>  由于雷达开发板自身的容量较小，因此一个方法是将数据上传至上位机进行处理，因此本节对上传速率进行推导。
+假设脉冲重复频率为$f_d$，在快时间维上采样点数为$n_0$，若$\text{ADC}$采样位数为$n_A$比特，且使用$\text{IQ}$正交采样，有$n_t$个发射天线，$n_r$个接收天线。于是有每秒数据量（KB）为
+$$
+D = \frac{f_d n_0 n_A n_t n_r}{4096}
+$$
+  因此通讯速率应当大于$D$。若取$f_d = \text{2000Hz}, n_0 = 256, n_A = 16, n_t = 3, n_r = 4$，可计算得
+$$
+D = \frac{2000 \times 256 \times 16 \times 3 \times 4}{4096} = 24000\text{KB} \approx 24\text{MB}
+$$</p>
+<h4 id="24-伺服系统的角速度徙动影响">2.4. 伺服系统的角速度徙动影响<a hidden class="anchor" aria-hidden="true" href="#24-伺服系统的角速度徙动影响">#</a></h4>
+<p>  根据图1.1给出的结构可以发现，现实世界中的伺服系统转动时的角速度通常不能保持为一个恒定的值，而角速度的这种徙动会对雷达的成像精度造成影响，本节对这种影响进行一个分析。
+直接对回波信号作一个近似，可得
+$$
+x_r(t) = u(t - \frac{2R_0}{c})\exp(j\pi \mu (t - \frac{2R_0}{c})^2)\exp(-j\pi f_0 \frac{\gamma(r, R)\omega_r^2 t^2}{cR\beta(r, R)})
+$$
+  可以看到，角速度徙动带来的影响主要在第二个指数项。假设期望角速度为$\omega_s$，而角速度徙动带来的误差为$\Delta \omega_s$，于是在某一时刻，角速度的值可以被表示为$\omega_r = \omega_s+ \Delta \omega_s$。不妨假设$\Delta \omega_s$服从均值为$0$，方差为$\sigma_s^2$的一个高斯正态分布。将$\omega_r = \omega_s+ \Delta \omega_s$代入上式的第二个指数项，可以得到
+$$
+\exp(-j\pi f_0 \frac{\gamma(r, R)\omega_r^2 t^2}{cR\beta(r, R)}) = \exp(-j\pi f_0 \frac{\gamma(r, R)(\omega_s + \Delta \omega_s)^2 t^2}{cR\beta(r, R)})
+$$
+  通常$\omega_r \gg \Delta \omega_s$，于是忽略高阶项可得$(\omega_s + \Delta \omega_s)^2 \approx \omega_s^2 + 2\omega_s \Delta \omega_s$，将其代入上式可以得到
+$$
+\begin{align*}
+\exp(-j\pi f_0 \frac{\gamma(r, R)\omega_r^2 t^2}{cR\beta(r, R)}) =&amp; \exp(-j\pi f_0 \frac{\gamma(r, R)(\omega_s + \Delta \omega_s)^2 t^2}{cR\beta(r, R)}) \\
+=&amp; \exp(-j\pi f_0 \frac{\gamma(r, R)\omega_s^2 t^2}{cR\beta(r, R)} - j\pi f_0 \frac{2\gamma(r, R)\omega_s\Delta\omega_s t^2}{cR\beta(r, R)})
+\end{align*}
+$$
+  可以看到，角速度徙动带来的误差相当于在原本线性调频信号的基础上，增加了一个相位抖动项，记为$\Delta \phi$，于是有
+$$
+\Delta \phi =  \pi f_0 \frac{2\gamma(r, R)\omega_s\Delta\omega_s t^2}{cR\beta(r, R)}
+$$
+  已知$\Delta \omega_s$的方差为$\sigma_s^2$，因此$\Delta \phi$的方差为
+$$
+\sigma_{\Delta \phi}^2 = \pi^2 f_0^2 \frac{4\gamma(r, R)^2\omega_s^2\sigma_s^2 t^4}{c^2R^2\beta(r, R)^2}
+$$
+  接下来我们使用蒙特卡洛模拟的方法来获得加入了相位抖动后的主副瓣比的变化。结果如下图所示</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/omegaJitter.png' width=70%>
+    <br>图2.4：角速度抖动影响
+    </center>
+</div>
+<p>  可以看到，当相位抖动方差$\sigma_{\Delta \phi}^2 \leq 3$时，主副瓣比与无徙动时的主副瓣比相近，而主副瓣比在方差为$4$左右时急剧下降。若令$\sigma_{\Delta \phi}^2 \leq 3$，则可解得$\sigma_s^2 \leq 7.7 \times 10^{-4}$。根据$3\sigma$原则，这意味着伺服系统转动时的角速度抖动应当在$2^{\circ}\text{/s}$左右</p>
+<h3 id="3-仿真结果">3. 仿真结果<a hidden class="anchor" aria-hidden="true" href="#3-仿真结果">#</a></h3>
+<p>  假设空间中三个点目标方位如下所示</p>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th>点目标编号</th>
+<th>x</th>
+<th>y</th>
+<th>z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+&emsp;&emsp;仿真得到回波信号如下所示
+<div>
+    <center>
+    <img src='/images/CSSAR/radarRet.png' width=70%>
+    <br>图3.1：角速度抖动影响
+    </center>
+</div>
+<p>  快时间维上作FFT可得</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/radarRet2.png' width=70%>
+    <br>图3.2：角速度抖动影响
+    </center>
+</div>
+<p>  作距离徙动校正与成像后，可得如下结果</p>
+<div>
+    <center>
+    <img src='/images/CSSAR/radarRet3.png' width=70%>
+    <br>图3.3：角速度抖动影响
+    </center>
+</div>
+<p>  从仿真结果来看本系统已经完成了初步的成像工作，但从仿真结果可明显看出点目标成像结果发散，这是因为由于雷达的圆周轨道特性而导致的目标间的大距离徙动差，因此本项目的下一个重点内容应当是算法的改进与优化。</p>
+
+
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/frombayestokalman/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>从贝叶斯滤波框架到卡尔曼滤波</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+</article>
+</main>
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2022-2023
+        <a href="https://bingsz.github.io/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+</script>
+<script>
+    let mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {}
+            selection.removeRange(range);
+        });
+
+        let language = codeblock.className.replaceAll("language-", "")
+        let macTool = document.createElement("div")
+        let macTool1 = document.createElement("div")
+        let macTool2 = document.createElement("div")
+        let macTool3 = document.createElement("div")
+        let languageType = document.createElement("div")
+        languageType.innerText = language
+        macTool.setAttribute('class', 'mac-tool')
+        macTool1.setAttribute('class', 'mac bb1')
+        macTool2.setAttribute('class', 'mac bb2')
+        macTool3.setAttribute('class', 'mac bb3')
+        languageType.setAttribute('class', 'language-type')
+        macTool.appendChild(macTool1)
+        macTool.appendChild(macTool2)
+        macTool.appendChild(macTool3)
+        macTool.appendChild(languageType)
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        }
+    });
+</script>
+</body>
+
+</html>

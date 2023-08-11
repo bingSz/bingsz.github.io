@@ -6,7 +6,16 @@
     <description>Recent content in SAR on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 10 Feb 2023 11:45:09 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/categories/sar/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 11 Aug 2023 17:44:35 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/categories/sar/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>基于圆周外扫描的毫米波合成孔径雷达</title>
+      <link>https://bingsz.github.io/en/posts/cssar/</link>
+      <pubDate>Fri, 11 Aug 2023 17:44:35 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/cssar/</guid>
+      <description>这一题目是摘自我的大学生创新训练项目，本文主要论证一下圆周外扫描的毫米波合成孔径雷达的可实现性。 1. 基本原理 基于圆周外扫描的毫米波合成孔径雷达（下文简称CSSAR（Circular Scan SAR）系统）的基本系统组成草图如下所示 图1.1：系统组成草图 主要组成部分有雷达，转动轴与转动轨道。</description>
+    </item>
+    
     <item>
       <title>合成孔径雷达的RD成像算法及距离徙动矫正</title>
       <link>https://bingsz.github.io/en/posts/sarrcmc/</link>
