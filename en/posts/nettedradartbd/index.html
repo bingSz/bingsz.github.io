@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>组网雷达多帧检测前跟踪算法 | Song&#39;s Blog</title>
+<meta name="keywords" content="NettedRadar, TBD">
+<meta name="description" content="这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。 目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/nettedradartbd/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+
+
+<script defer src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="组网雷达多帧检测前跟踪算法" />
+<meta property="og:description" content="这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。 目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/nettedradartbd/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-18T16:09:33+08:00" />
+<meta property="article:modified_time" content="2023-08-18T16:09:33+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="组网雷达多帧检测前跟踪算法"/>
+<meta name="twitter:description" content="这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。 目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+
+        {
+          "@type": "ListItem",
+          "position":  1 ,
+          "name": "📚文章",
+          "item": "https://bingsz.github.io/en/posts/"
+        }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "组网雷达多帧检测前跟踪算法",
+      "item": "https://bingsz.github.io/en/posts/nettedradartbd/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "组网雷达多帧检测前跟踪算法",
+  "name": "组网雷达多帧检测前跟踪算法",
+  "description": "这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。 目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广",
+  "keywords": [
+    "NettedRadar", "TBD"
+  ],
+  "articleBody": " 这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。\n目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广泛。另一种跟踪框架是检测前跟踪框架（Track Before Detect, TBD），检测前跟踪框架指的是通过多帧信号之间的关联性来得到目标在每一帧的点迹，从而得到目标在这几帧的航迹。检测前跟踪算法并没有直接的对单独某帧作目标检测，而是融合了多帧的回波信号来作检测。这相当于作了一个帧间的非相参积累，因此在同一信噪比情况下，能够得到更高的检测概率。\n组网雷达多帧检测前跟踪算法采用的是分布式信号融合手段，即首先在各个雷达处进行检测前跟踪得到目标在这几帧的航迹，随后将这几帧航迹信息输送至融合中心进行航迹融合。\n1. TBD原理 记雷达发射信号如下所示 $$ s(t) = u(t)\\exp(j\\pi \\mu t^2) $$ 其中$\\mu$为线性调频信号的调频率，$u(t)$为信号的包络。通常，目标的多普勒频率远远小于载频，因此这里忽略了多普勒频率。经过目标反射被雷达接收机后得到如下回波信号 $$ x(t) = u(t-\\tau)\\exp(j\\pi \\mu (t-\\tau)^2) $$ 其中$\\tau=\\frac{2R}{c}$，$R$为目标距离，$\\tau$表示目标的双程延时。上述信号经过采样后在接收机处得到如下离散回波信号 $$ \\mathbf{x}_i=\\begin{pmatrix} x(0) \u0026 x(T_s) \u0026 x(2T_s) \u0026 … \u0026 x((n-1)T_s) \\end{pmatrix} $$ 其中下标$i$表示这是在一个CPI（相参处理时间）中的第$i$个回波，$T_s$表示采样周期，$n$表示采样点数。一个CPI内的回波信号矩阵可如下表示 $$ \\mathbf{x} = \\begin{pmatrix} \\mathbf{x}_1 \\\\ \\mathbf{x}_2 \\\\ … \\\\ \\mathbf{x}_N \\end{pmatrix} $$ 其中$N$表示一个CPI内总共有$N$个回波。对$\\mathbf{x}$在列方向上作FFT，即可得到多普勒-距离二维矩阵，记其为$\\mathbf{X}$。为了方便，将雷达在一个CPI内得到的多普勒-距离二维矩阵记为一帧，并将第$i$帧记为$\\mathbf{X}_i$。多帧检测前跟踪算法指的是利用$\\mathbf{X}_1$，$\\mathbf{X}_2$，…，$\\mathbf{X}_m$这$m$帧来作检测前跟踪（PS：原文中还考虑了天线的俯仰角与方位角，此处为了方便只考虑了距离与多普勒频率，但可以容易地推广到这四个因素）。\n目前的多帧检测前跟踪算法主要有基于动态规划的检测前跟踪算法，基于概率密度的检测前跟踪算法等，此处介绍基于动态规划的检测前跟踪算法。（PS：下面的一些记号与原文中的将会有一些不一致）\n基于动态规划的检测前跟踪算法基于下式展开\n$$ \\left\\{ \\begin{aligned} \u0026\\arg \\max_{i_m, j_m} I(\\mathbf{X}_m, i_m, j_m) \\\\ \u0026\\mathrm{s.t} \\quad I(\\mathbf{X}_m(i_m, j_m)) \u003e L \\end{aligned} \\right. \\tag{1.1} $$\n其中$\\mathbf{X}_m(i_m, j_m)$表示$\\mathbf{X}_m$的第$i_m$行、第$j_m$列的元素，$i_m$与$j_m$取遍整个矩阵$\\mathbf{X}_m$，$I(\\cdot)$为一个值函数，理想情况下，这个函数的值应当与存在目标的概率呈正相关，$L$为检测门限，仅当值函数大于该值时，才表明具有目标。在文章中，作者给出了一种值函数如下所示 $$ I(\\mathbf{X}_m, i_m, j_m) = |\\mathbf{X}_m(i_m, j_m)|+\\arg \\max_{i_{m-1}, j_{m-1} \\in \\tau(i_m, j_m)} I(\\mathbf{X}_{m-1}, i_{m-1}, j_{m-1}) $$ 其中$|\\mathbf{X}_m(i_m, j_m)|$表示$\\mathbf{X}_m(i_m, j_m)$的模值，$\\tau(i_m, j_m)$表示当目标位于$\\mathbf{X}_m$的第$i_m$行、第$j_m$列时，$m-1$帧目标可能存在的位置集合。当求解得到符合$(1.1)$式要求的$(i_m, j_m)$后，其对应的$(i_{m-1}, j_{m-1})$，…，$(i_1, j_1)$便构成了目标的航迹。\n从上述推导来看，基于动态规划的检测前跟踪算法具有的一个隐含假设是，第$k$帧的目标回波信号幅值应当在其周围取到最大值，否则在信噪比过小，周围噪声幅值高于信号幅值时，便会形成一个错误的点迹。这一部分内容将在后续的仿真中体现出来。\n2. 组网雷达航迹融合 组网雷达航迹融合过程主要有：空间对准，时间对准，航迹配对，航迹融合。不过时空对准，航迹配对并不是本节重点，本节着重介绍航迹融合。\n2.1 空间对准 每个雷达在经过上述的TBD算法后，可以得到目标距雷达的距离信息。结合雷达对目标的角度测量信息，可以将上述雷达得到的目标点迹从各雷达自身的极坐标系转换至绝对坐标系下。记目标在绝对坐标系下的状态量为$\\mathbf{x}$（与前文的回波信号矩阵$\\mathbf{x}$区分开来） $$ \\mathbf{x} = \\begin{pmatrix} x \u0026 \\dot{x} \u0026 y \u0026 \\dot{y} \u0026 z \u0026 \\dot{z} \\end{pmatrix}^T $$ 上述的不加粗$x$，$y$，$z$分别表示绝对坐标系下的值，$\\dot{x}$表示$x$的微分，即$x$方向上的速度。需要注意的是，原文（包括本文）假设目标符合匀速运动模型，因此目标状态量中没有包含目标的加速度。\n2.2 时间对准 每个雷达得到的目标航迹不一定位于同一时刻，因此有必要将各个雷达得到的航迹转换至同一时间维度下。原文中给出的一种转换方法是基于线性插值的转换方法。记雷达站k得到的第p帧航迹时刻为$t_k^p$，融合中心的时刻为$t_1$，$t_2$，…，$t_m$，那么雷达站k的航迹可通过如下公式转换至融合中心的时间维度下（原文中的这个公式有一个小笔误）\n$$ \\hat{x}_k^p = \\left\\{ \\begin{aligned} x_k^p + (t_p - t_k^p)\\frac{x_k^p - x_k^{p+1}}{t_k^p - t_k^{p+1}} \u0026 \u0026 t_k^p \\leq t_p \\leq t_k^{p+1} \\\\ x_k^m + (t_p - t_k^m)\\frac{x_k^{m-1} - x_k^{m}}{t_k^{m-1} - t_k^{m}} \u0026 \u0026 t_k^m \u003c t_p \\\\ x_k^1 + (t_p - t_k^1)\\frac{x_k^1 - x_k^{2}}{t_k^1 - t_k^{2}} \u0026 \u0026 t_p \u003c t_k^1 \\end{aligned} \\right. $$\n其中$\\hat{x}_k^p$表示融合中心时间维度下的雷达站k得到的目标在第p帧时的航迹。对于$y_k^p$与$z_k^p$同理通过上式公式转换至融合中心时间维度下。最终记融合中心维度下的雷达站k的第p帧航迹信息为$\\hat{\\mathbf{x}}^p_k$\n2.3 航迹配对 航迹配对通常是在某个准则下，比较两条航迹的误差，当误差小于可接受值时，便认为两条航迹为同一条；当一条航迹的误差大于其它任何一条航迹时，便认为这是一条虚警航迹。原文中（虽然没有提及，但显然是）采用L-∞范数来作为航迹配对时的两条航迹误差。具体步骤如下\n首先考虑值函数最大的一条航迹，计算这条航迹与其它航迹之间的L-∞范数（即两条航迹相差绝对值的最大值）来作为误差，若误差小于一个可接受值，则认为这两条航迹为同一条 当配对完值函数最大的一条航迹后，将这些航迹从待配对航迹中删除，并重复步骤1，直到所有航迹都配对完或只剩下虚警航迹。 2.4 航迹融合 2.4.1 基本原理 此处的组网雷达航迹融合算法基于贝叶斯滤波框架，采用最大后验概率的方式来作融合。具体来说，记$\\mathbf{x}^{1:p}$表示第1帧至第$p$帧的融合结果，那么基于最大后验概率的融合方式如下所示 $$ \\mathbf{x}^{1:p} = \\int \\mathbf{x}^{1:p}P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_{1:K}^{1:p}) \\mathrm{d} \\mathbf{x}^{1:p} $$ 其中$K$表示雷达站个数，$\\hat{\\mathbf{x}}_{1:K}^{1:p}$表示各个雷达站的第p帧目标观测数据。由于点迹间具有相关性，因此为了评估后验概率，原文中使用了广义协方差交叉融合方法，如下所示 $$ P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_{1:K}^{1:p}) = \\frac{\\displaystyle\\prod_{k}P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k}}{\\displaystyle{\\int}\\prod_{k}P(\\mathbf{\\chi}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k} \\mathrm{d}\\chi^{1:p}} \\tag{2.1} $$ 其中$\\omega_k\u003e0$且$\\sum_k \\omega_k = 1$。为了使用序贯重要性采样的粒子滤波算法，我们期望找到$P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_{1:K}^{1:p})$与$P(\\mathbf{x}^{1:p-1} | \\hat{\\mathbf{x}}_{1:K}^{1:p-1})$之间的关系，注意到 $$ \\begin{aligned} P(\\mathbf{x}^{1:p}|\\hat{\\mathbf{x}}_{k}^{1:p}) =\u0026 \\frac{P(\\mathbf{x}^{p}, \\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1}, \\mathbf{x}^{1:p-1})P(\\mathbf{x}^{1:p-1}|\\hat{\\mathbf{x}}_{k}^{1:p-1})}{P(\\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1})} \\end{aligned} \\tag{2.2} $$ 由于独立观测假设（$\\hat{\\mathbf{x}}_k^p$仅与$\\mathbf{x}^p$有关）与一阶齐次马尔科夫假设（$\\mathbf{x}^p$仅与$\\mathbf{x}^{p-1}$有关），可以得到 $$ \\begin{aligned} P(\\mathbf{x}^{p}, \\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1}, \\mathbf{x}^{1:p-1}) =\u0026 P(\\mathbf{x}^{p}, \\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p-1}) \\\\ =\u0026 P(\\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p})P(\\mathbf{x}^{p}|\\mathbf{x}^{p-1}) \\end{aligned} $$ 将上式代入$(2.2)$式中，可以得到 $$ P(\\mathbf{x}^{1:p}|\\hat{\\mathbf{x}}_{k}^{1:p}) = \\frac{P(\\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p})P(\\mathbf{x}^{p}|\\mathbf{x}^{p-1})}{P(\\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1})}P(\\mathbf{x}^{1:p-1}|\\hat{\\mathbf{x}}_{k}^{1:p-1}) $$ 这样就得到了$P(\\mathbf{x}^{1:p}|\\hat{\\mathbf{x}}_{k}^{1:p})$的递推式。将上式代入到$(2.1)$式中可以得到（原文中此处有个笔误） $$ \\begin{aligned} P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_{1:K}^{1:p}) =\u0026 \\frac{\\displaystyle\\prod_{k}P(\\mathbf{x}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k}}{\\displaystyle{\\int}\\prod_{k}P(\\mathbf{\\chi}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k} \\mathrm{d}\\chi^{1:p}} \\\\ =\u0026 \\frac{P(\\mathbf{x}^{p}|\\mathbf{x}^{p-1})\\displaystyle\\prod_{k}P(\\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p})^{\\omega_k}P(\\mathbf{x}^{1:p-1}|\\hat{\\mathbf{x}}_{k}^{1:p-1})^{\\omega_k}}{\\displaystyle{\\int}\\prod_{k}P(\\mathbf{\\chi}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k} \\mathrm{d}\\chi^{1:p} \\displaystyle\\prod_kP(\\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1})} \\\\ =\u0026 \\mathrm{C} P(\\mathbf{x}^{p}|\\mathbf{x}^{p-1})\\displaystyle\\prod_{k}P(\\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p})^{\\omega_k}P(\\mathbf{x}^{1:p-1} | \\hat{\\mathbf{x}}_{1:K}^{1:p-1}) \\end{aligned} \\tag{2.3} $$ 其中$\\mathrm{C}$如下所示，注意到$\\mathrm{C}$是一个常数，只起到一个概率正则功能。因此在使用粒子滤波时，并不需要考虑这一项，对粒子作归一化权重即可。 $$ \\mathrm{C} = \\frac{\\displaystyle\\int\\prod_{k}P(\\mathbf{\\chi}^{1:p-1} | \\hat{\\mathbf{x}}_k^{1:p-1})^{\\omega_k} \\mathrm{d}\\chi^{1:p-1}}{\\displaystyle\\int\\prod_{k}P(\\mathbf{\\chi}^{1:p} | \\hat{\\mathbf{x}}_k^{1:p})^{\\omega_k} \\mathrm{d}\\chi^{1:p}\\displaystyle\\prod_kP(\\hat{\\mathbf{x}}_{k}^{p}|\\hat{\\mathbf{x}}_{k}^{1:p-1})} $$\n2.4.2 粒子滤波算法 粒子滤波算法是基于蒙特卡洛方法的一种滤波算法，利用大量的随机粒子来近似目标分布。重新考虑期望公式 $$ E = \\int x P(x) \\mathrm{d}x $$ 若令$x_i\\sim P(x)$（$i = 1, 2, …, N$），那么上式可写为 $$ E \\approx \\frac{1}{N}\\sum_i x_i $$ 当$N$充分大时，上式便可以用来精确的近似$E$。但是$P(x)$通常是难以求解的，引入重要性分布$Q(x)$，期望公式可改写为 $$ E=\\int \\frac{P(x)}{Q(x)}x Q(x) \\mathrm{d}x $$ 上式可理解为，一个加权的$Q(x)$期望可以用来表示$P(x)$期望，进一步用近似的思想令$x_i\\sim Q(x)$（$i = 1, 2, …, N$），那么有 $$ E \\approx \\frac{1}{N} \\sum_i \\frac{P(x_i)}{Q(x_i)}x_i = \\frac{1}{N} \\sum_i w_i x_i $$ 上式中$w_i$即为$x_i$的权重，通过一个加权的$x_i$的和，可以用满足$Q(x)$分布的$x_i$来近似$P(x)$的期望。注意到，由于$x_i \\sim Q(x)$，因此 $$ \\begin{aligned} \\sum_i \\frac{w_i}{N} =\u0026 \\frac{1}{N}\\sum_i\\frac{P(x_i)}{Q(x_i)} \\\\ \\approx \u0026 \\int \\frac{P(x)}{Q(x)}Q(x) \\mathrm{d}x = 1 \\end{aligned} $$ 所以为了有更佳的性能，可以使用归一化的$\\hat{w}_i$来代替$w_i$ $$ \\begin{aligned} E \\approx \u0026 \\sum_i \\frac{w_i}{N} x_i = \\sum_i \\hat{w}_i x_i \\\\ \\hat{w}_i =\u0026 \\frac{w_i}{\\displaystyle\\sum_i w_i} \\end{aligned} \\tag{2.4} $$ 这样做的一个好处是在计算$\\hat{w}_i$时不再需要关心$\\frac{P(x)}{Q(x)}$的常数项，从而使得计算变得非常简便。\n目标状态估计中，通常使用序贯重要性采样来获得一系列粒子。序贯重要性采样指的是下一时刻的粒子状态与权重由该时刻粒子采样、更新而来。在序贯重要性采样中，为了求解该时刻粒子权重与下一时刻粒子权重之间的关系，需要求解该时刻概率密度函数与下一时刻概率密度函数之间的关系，即求解$P(x_{1:k}|z_{1:k})$（对应于本文中就是$P(\\mathbf{x}^{1:p}|\\hat{\\mathbf{x}}_{1:K}^{1:p})$）与$P(x_{1:k-1}|z_{1:k-1})$之间的关系，由贝叶斯公式可以得到 $$ \\begin{aligned} P(x_{1:k}|z_{1:k}) =\u0026 \\frac{P(x_k, z_k|x_{k-1})P(x_{1:k-1}|z_{1:k-1})}{P(z_k|z_{1:k-1})} \\\\ =\u0026 \\frac{P(z_k|x_k)P(x_k|x_{k-1})P(x_{1:k-1}|z_{1:k-1})}{P(z_k|z_{1:k-1})} \\end{aligned} $$ 注意到 $$ Q(x_{1:k}|z_{1:k})=Q(x_k|x_{k-1}, z_{1:k})Q(x_{1:k-1}|z_{1:k-1}) $$ 因此有 $$ w_i^k = \\frac{P(x_{1:k}^i|z_{1:k})}{Q(x_{1:k}^i|z_{1:k})} = \\frac{P(z_k|x_k^i)P(x_k^i|x_{k-1}^i)}{P(z_k|z_{1:k-1})Q(x_k^i|x_{k-1}^i, z_{1:k})}w_i^{k-1} \\tag{2.5} $$ 其中$w_i^k$表示$k$时刻的第$i$个粒子，$x_k^i$表示$k$时刻的第$i$个粒子。因为后续有归一化步骤，因此这里可以不考虑常数项，得到 $$ w_i^k = \\frac{P(z_k|x_k^i)P(x_k^i|x_{k-1}^i)}{Q(x_k^i|x_{k-1}^i, z_{1:k})}w_i^{k-1} $$ 这样就得到了权重更新公式，下一时刻的粒子权重可以由该时刻粒子的权重得到。在实际应用过程中，为了方便，令$Q(x_k|x_{k-1}, z_{1:k}) = P(x_k|x_{k-1})$，这样便可以得到 $$ w_i^k = P(z_k|x_k^i)w_i^{k-1} $$ 当取$Q(x_k|x_{k-1}, z_{1:k}) = P(x_k|x_{k-1})$时，相当于令$x_k^i \\sim P(x_k^i | x_{k-1}^i)$后作一个加权求和，因此$k$时刻的粒子状态可以由$k-1$时刻的粒子状态通过$P(x_k^i | x_{k-1}^i)$采样得来。这就完成了从这一时刻的粒子状态与权重更新到下一时刻的粒子状态与权重了，随后利用$(2.4)$式便完成了目标状态估计。\n总结来说，粒子滤波算法的步骤如下所示\n初始化粒子$x_i^0 \\sim P(x_0)$，$P(x_0)$表示粒子初始状态分布，初始化权重$w_i^0 = \\frac{1}{N}$ 更新粒子状态，$x_i^k \\sim P(x_i^k | x_i^{k-1})$ 根据观测值$z_k$计算得到$k$时刻$i$粒子的权重$w_i^k$，并归一化得到$\\hat{w}_i^k$ 对$k$时刻粒子作加权求和得到$k$时刻的状态估计量，重复2-4步，直到得到所有时刻的估计状态量 但是在实际应用中，通常会发生粒子退化的情况。粒子退化指的是经过多次迭代后，大部分粒子都处于低似然区域，这使得最终不能很好地得到状态估计量。粒子退化的另一个直观理解是，经过多次迭代后，大部分粒子“跑偏”了真实目标状态量而无法返回到正常轨迹上来。为了解决这一问题，学者提出了粒子重采样方法。粒子重采样方法指的是在粒子更新完成后，权重大的粒子更倾向于保留下来，权重小的粒子更倾向于舍弃，这样便使得大部分粒子都位于高似然区域。具体做法是，按照归一化权重作为各个粒子被抽取到的概率进行$N$次抽取。这样在保证了粒子数目不变（$N$个粒子）的同时，也使得位于高似然区域粒子被保留下来，而低似然区域粒子被舍弃。\n因此粒子滤波算法的完整步骤为\n初始化粒子$x_i^0 \\sim P(x_0)$，$P(x_0)$表示粒子初始状态分布，初始化权重$w_i^0 = \\frac{1}{N}$ 更新粒子状态，$x_i^k \\sim P(x_i^k | x_i^{k-1})$ 根据观测值$z_k$计算得到$k$时刻$i$粒子的权重$w_i^k$，并归一化得到$\\hat{w}_i^k$ 对$k$时刻粒子作加权求和得到$k$时刻的状态估计量，并作重采样，重复2-4步，直到得到所有时刻的估计状态量 2.4.3 基于粒子滤波的组网雷达航迹融合方法 将$(2.3)$式代入到$(2.5)$式中，可以得到 $$ \\begin{aligned} w_i^k =\u0026 \\frac{P(x_{1:k}^i|z_{1:k})}{Q(x_{1:k}^i|z_{1:k})} \\\\ \\propto \u0026 (\\displaystyle\\prod_{k}P(\\hat{\\mathbf{x}}_{k}^{p}|\\mathbf{x}^{p})^{\\omega_k})w_i^{k-1} \\end{aligned} $$ 这样便得到了组网雷达航迹融合中的权值更新方式。总结来说，基于组网雷达的多帧检测前跟踪算法的完整步骤如下所示\n所有雷达先在本地执行多帧检测前跟踪算法，得到一系列目标航迹$\\mathbf{x}_k^p$ 各个雷达站将得到的航迹传送至融合中心，并由融合中心进行时空校准与航迹配对 融合中心按照上文给出的粒子滤波算法步骤进行粒子滤波，得到最终的融合目标航迹 3. 仿真分析 假设有两个雷达站，两个雷达站的方位如下所示\n雷达站编号 x y z 1 0 0 0 2 1km 0 0 目标位于$(2\\mathrm{km}, 2\\mathrm{km}, 0)^T$处，作速度为$(200\\mathrm{m/s}, 0, 0)^T$的匀速运动。假设雷达回波信号经过匹配滤波后的信噪比为$-10\\mathrm{dB}$，雷达相参积累个数为$100$个，经过相参积累后回波的信噪比为$10\\mathrm{dB}$，但此时仍然无法从多普勒-距离二维矩阵中检测到目标，结果如下所示\n图3.1：单帧检测结果\r对目标作10帧的检测前跟踪可得到如下所示结果\n图3.2：雷达站本地检测前跟踪结果\r可以看到此时两个雷达站得到的目标航迹与真实航迹偏差较大，当两雷达站将目标航迹传送至融合中心后，利用粒子滤波可以得到两者综合之后的航迹如下所示\n图3.3：航迹融合结果\r可以看到融合后的航迹误差相比两雷达站各自的航迹误差较小，这说明组网雷达多帧检测前融合算法完成了雷达检测前跟踪任务与航迹融合任务。\n",
+  "wordCount" : "5770",
+  "inLanguage": "en",
+  "datePublished": "2023-08-18T16:09:33+08:00",
+  "dateModified": "2023-08-18T16:09:33+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/nettedradartbd/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+</style>
+
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">🏠 主页</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">📚文章</a></div>
+            <h1 class="post-title">
+                组网雷达多帧检测前跟踪算法
+            </h1>
+            <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2023-08-18
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>5770字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>12分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>Song
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://bingsz.github.io/en/tags/nettedradar/" style="color: var(--secondary)!important;">NettedRadar</a>
+                &nbsp;<a href="https://bingsz.github.io/en/tags/tbd/" style="color: var(--secondary)!important;">TBD</a>
+            </span>
+        </span>
+    </span>
+</span>
+<span style="opacity: 0.8;">
+                    <span id="post_meta_style_7">
+                        &nbsp;&nbsp;
+                        <span class="fa fa-eye" ></span>
+                        <span>
+                            <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                    <span id="post_meta_style_8">
+                        <span class="fa fa-commenting-o"></span>
+                        <span>
+                            <script src="https://cdn.staticfile.org/twikoo//twikoo.all.min.js"></script>
+                            <script>
+                                let url = document.documentURI
+                                
+                                let dnsUrl = "https://bingsz.github.io/"
+                                let urlSplit = url.split(dnsUrl)
+                                let finalUrl = urlSplit[1]
+                                if (finalUrl[0] !== '/') {
+                                    finalUrl = '/'+finalUrl
+                                }
+                                twikoo.getCommentsCount({
+                                    envId:  null , 
+                                region:  null , 
+                                urls: [ 
+                                    
+                                    finalUrl,
+                                ],
+                                    includeReply: false 
+                                }).then(function (res) {
+                                    let count = res[0].count
+                                    const obj = document.getElementById("comment_count");
+                                    obj.innerText = count
+                                    
+                                    
+                                    
+                                }).catch(function (err) {
+                                    
+                                    console.error(err);
+                                });
+                            </script>
+                            <span id="comment_count"></span>
+                        </span>
+                    </span>
+                </span>
+
+</div>
+        </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1-tbd%e5%8e%9f%e7%90%86" aria-label="1. TBD原理">1. TBD原理</a></li>
+                <li>
+                    <a href="#2-%e7%bb%84%e7%bd%91%e9%9b%b7%e8%be%be%e8%88%aa%e8%bf%b9%e8%9e%8d%e5%90%88" aria-label="2. 组网雷达航迹融合">2. 组网雷达航迹融合</a><ul>
+                        
+                <li>
+                    <a href="#21-%e7%a9%ba%e9%97%b4%e5%af%b9%e5%87%86" aria-label="2.1 空间对准">2.1 空间对准</a></li>
+                <li>
+                    <a href="#22-%e6%97%b6%e9%97%b4%e5%af%b9%e5%87%86" aria-label="2.2 时间对准">2.2 时间对准</a></li>
+                <li>
+                    <a href="#23-%e8%88%aa%e8%bf%b9%e9%85%8d%e5%af%b9" aria-label="2.3 航迹配对">2.3 航迹配对</a></li>
+                <li>
+                    <a href="#24-%e8%88%aa%e8%bf%b9%e8%9e%8d%e5%90%88" aria-label="2.4 航迹融合">2.4 航迹融合</a><ul>
+                        
+                <li>
+                    <a href="#241-%e5%9f%ba%e6%9c%ac%e5%8e%9f%e7%90%86" aria-label="2.4.1 基本原理">2.4.1 基本原理</a></li>
+                <li>
+                    <a href="#242-%e7%b2%92%e5%ad%90%e6%bb%a4%e6%b3%a2%e7%ae%97%e6%b3%95" aria-label="2.4.2 粒子滤波算法">2.4.2 粒子滤波算法</a></li>
+                <li>
+                    <a href="#243-%e5%9f%ba%e4%ba%8e%e7%b2%92%e5%ad%90%e6%bb%a4%e6%b3%a2%e7%9a%84%e7%bb%84%e7%bd%91%e9%9b%b7%e8%be%be%e8%88%aa%e8%bf%b9%e8%9e%8d%e5%90%88%e6%96%b9%e6%b3%95" aria-label="2.4.3 基于粒子滤波的组网雷达航迹融合方法">2.4.3 基于粒子滤波的组网雷达航迹融合方法</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#3-%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90" aria-label="3. 仿真分析">3. 仿真分析</a>
+                </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        if (elements) {
+            activeElement = Array.from(elements).find((element) => {
+                if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                    (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                    return element;
+                }
+            }) || activeElement
+
+            elements.forEach(element => {
+                const id = encodeURI(element.getAttribute('id')).toLowerCase();
+                if (element === activeElement){
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+                }
+            })
+        }
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        <div class="post-content"><p>  这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。</p>
+<p>  目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广泛。另一种跟踪框架是检测前跟踪框架（Track Before Detect, TBD），检测前跟踪框架指的是通过多帧信号之间的关联性来得到目标在每一帧的点迹，从而得到目标在这几帧的航迹。检测前跟踪算法并没有直接的对单独某帧作目标检测，而是融合了多帧的回波信号来作检测。这相当于作了一个帧间的非相参积累，因此在同一信噪比情况下，能够得到更高的检测概率。</p>
+<p>  组网雷达多帧检测前跟踪算法采用的是分布式信号融合手段，即首先在各个雷达处进行检测前跟踪得到目标在这几帧的航迹，随后将这几帧航迹信息输送至融合中心进行航迹融合。</p>
+<h3 id="1-tbd原理">1. TBD原理<a hidden class="anchor" aria-hidden="true" href="#1-tbd原理">#</a></h3>
+<p>  记雷达发射信号如下所示
+$$
+s(t) = u(t)\exp(j\pi \mu t^2)
+$$
+  其中$\mu$为线性调频信号的调频率，$u(t)$为信号的包络。通常，目标的多普勒频率远远小于载频，因此这里忽略了多普勒频率。经过目标反射被雷达接收机后得到如下回波信号
+$$
+x(t) = u(t-\tau)\exp(j\pi \mu (t-\tau)^2)
+$$
+  其中$\tau=\frac{2R}{c}$，$R$为目标距离，$\tau$表示目标的双程延时。上述信号经过采样后在接收机处得到如下离散回波信号
+$$
+\mathbf{x}_i=\begin{pmatrix}
+x(0) &amp; x(T_s) &amp; x(2T_s) &amp; &hellip; &amp; x((n-1)T_s)
+\end{pmatrix}
+$$
+  其中下标$i$表示这是在一个CPI（相参处理时间）中的第$i$个回波，$T_s$表示采样周期，$n$表示采样点数。一个CPI内的回波信号矩阵可如下表示
+$$
+\mathbf{x} = \begin{pmatrix}
+\mathbf{x}_1 \\
+\mathbf{x}_2 \\
+&hellip; \\
+\mathbf{x}_N
+\end{pmatrix}
+$$
+  其中$N$表示一个CPI内总共有$N$个回波。对$\mathbf{x}$在列方向上作FFT，即可得到多普勒-距离二维矩阵，记其为$\mathbf{X}$。为了方便，将雷达在一个CPI内得到的多普勒-距离二维矩阵记为一帧，并将第$i$帧记为$\mathbf{X}_i$。多帧检测前跟踪算法指的是利用$\mathbf{X}_1$，$\mathbf{X}_2$，&hellip;，$\mathbf{X}_m$这$m$帧来作检测前跟踪（PS：原文中还考虑了天线的俯仰角与方位角，此处为了方便只考虑了距离与多普勒频率，但可以容易地推广到这四个因素）。</p>
+<p>  目前的多帧检测前跟踪算法主要有基于动态规划的检测前跟踪算法，基于概率密度的检测前跟踪算法等，此处介绍基于动态规划的检测前跟踪算法。（PS：下面的一些记号与原文中的将会有一些不一致）</p>
+<p>  基于动态规划的检测前跟踪算法基于下式展开</p>
+<p>$$
+\left\{
+\begin{aligned}
+&amp;\arg \max_{i_m, j_m} I(\mathbf{X}_m, i_m, j_m) \\
+&amp;\mathrm{s.t} \quad I(\mathbf{X}_m(i_m, j_m)) &gt; L
+\end{aligned}
+\right. \tag{1.1}
+$$</p>
+<p>  其中$\mathbf{X}_m(i_m, j_m)$表示$\mathbf{X}_m$的第$i_m$行、第$j_m$列的元素，$i_m$与$j_m$取遍整个矩阵$\mathbf{X}_m$，$I(\cdot)$为一个值函数，理想情况下，这个函数的值应当与存在目标的概率呈正相关，$L$为检测门限，仅当值函数大于该值时，才表明具有目标。在文章中，作者给出了一种值函数如下所示
+$$
+I(\mathbf{X}_m, i_m, j_m) = |\mathbf{X}_m(i_m, j_m)|+\arg \max_{i_{m-1}, j_{m-1} \in \tau(i_m, j_m)} I(\mathbf{X}_{m-1}, i_{m-1}, j_{m-1})
+$$
+  其中$|\mathbf{X}_m(i_m, j_m)|$表示$\mathbf{X}_m(i_m, j_m)$的模值，$\tau(i_m, j_m)$表示当目标位于$\mathbf{X}_m$的第$i_m$行、第$j_m$列时，$m-1$帧目标可能存在的位置集合。当求解得到符合$(1.1)$式要求的$(i_m, j_m)$后，其对应的$(i_{m-1}, j_{m-1})$，&hellip;，$(i_1, j_1)$便构成了目标的航迹。</p>
+<p>  从上述推导来看，基于动态规划的检测前跟踪算法具有的一个隐含假设是，第$k$帧的目标回波信号幅值应当在其周围取到最大值，否则在信噪比过小，周围噪声幅值高于信号幅值时，便会形成一个错误的点迹。这一部分内容将在后续的仿真中体现出来。</p>
+<h3 id="2-组网雷达航迹融合">2. 组网雷达航迹融合<a hidden class="anchor" aria-hidden="true" href="#2-组网雷达航迹融合">#</a></h3>
+<p>  组网雷达航迹融合过程主要有：空间对准，时间对准，航迹配对，航迹融合。不过时空对准，航迹配对并不是本节重点，本节着重介绍航迹融合。</p>
+<h4 id="21-空间对准">2.1 空间对准<a hidden class="anchor" aria-hidden="true" href="#21-空间对准">#</a></h4>
+<p>  每个雷达在经过上述的TBD算法后，可以得到目标距雷达的距离信息。结合雷达对目标的角度测量信息，可以将上述雷达得到的目标点迹从各雷达自身的极坐标系转换至绝对坐标系下。记目标在绝对坐标系下的状态量为$\mathbf{x}$（与前文的回波信号矩阵$\mathbf{x}$区分开来）
+$$
+\mathbf{x} = \begin{pmatrix}
+x &amp; \dot{x} &amp; y &amp; \dot{y} &amp; z &amp; \dot{z}
+\end{pmatrix}^T
+$$
+  上述的不加粗$x$，$y$，$z$分别表示绝对坐标系下的值，$\dot{x}$表示$x$的微分，即$x$方向上的速度。需要注意的是，原文（包括本文）假设目标符合匀速运动模型，因此目标状态量中没有包含目标的加速度。</p>
+<h4 id="22-时间对准">2.2 时间对准<a hidden class="anchor" aria-hidden="true" href="#22-时间对准">#</a></h4>
+<p>  每个雷达得到的目标航迹不一定位于同一时刻，因此有必要将各个雷达得到的航迹转换至同一时间维度下。原文中给出的一种转换方法是基于线性插值的转换方法。记雷达站k得到的第p帧航迹时刻为$t_k^p$，融合中心的时刻为$t_1$，$t_2$，&hellip;，$t_m$，那么雷达站k的航迹可通过如下公式转换至融合中心的时间维度下（原文中的这个公式有一个小笔误）</p>
+<p>$$
+\hat{x}_k^p = \left\{
+\begin{aligned}
+x_k^p + (t_p - t_k^p)\frac{x_k^p - x_k^{p+1}}{t_k^p -  t_k^{p+1}} &amp; &amp; t_k^p \leq t_p \leq t_k^{p+1} \\
+x_k^m + (t_p - t_k^m)\frac{x_k^{m-1} - x_k^{m}}{t_k^{m-1} -  t_k^{m}} &amp; &amp; t_k^m &lt; t_p \\
+x_k^1 + (t_p - t_k^1)\frac{x_k^1 - x_k^{2}}{t_k^1 -  t_k^{2}} &amp; &amp; t_p &lt; t_k^1
+\end{aligned}
+\right.
+$$</p>
+<p>  其中$\hat{x}_k^p$表示融合中心时间维度下的雷达站k得到的目标在第p帧时的航迹。对于$y_k^p$与$z_k^p$同理通过上式公式转换至融合中心时间维度下。最终记融合中心维度下的雷达站k的第p帧航迹信息为$\hat{\mathbf{x}}^p_k$</p>
+<h4 id="23-航迹配对">2.3 航迹配对<a hidden class="anchor" aria-hidden="true" href="#23-航迹配对">#</a></h4>
+<p>  航迹配对通常是在某个准则下，比较两条航迹的误差，当误差小于可接受值时，便认为两条航迹为同一条；当一条航迹的误差大于其它任何一条航迹时，便认为这是一条虚警航迹。原文中（虽然没有提及，但显然是）采用L-∞范数来作为航迹配对时的两条航迹误差。具体步骤如下</p>
+<ol>
+<li>首先考虑值函数最大的一条航迹，计算这条航迹与其它航迹之间的L-∞范数（即两条航迹相差绝对值的最大值）来作为误差，若误差小于一个可接受值，则认为这两条航迹为同一条</li>
+<li>当配对完值函数最大的一条航迹后，将这些航迹从待配对航迹中删除，并重复步骤1，直到所有航迹都配对完或只剩下虚警航迹。</li>
+</ol>
+<h4 id="24-航迹融合">2.4 航迹融合<a hidden class="anchor" aria-hidden="true" href="#24-航迹融合">#</a></h4>
+<h5 id="241-基本原理">2.4.1 基本原理<a hidden class="anchor" aria-hidden="true" href="#241-基本原理">#</a></h5>
+<p>  此处的组网雷达航迹融合算法基于贝叶斯滤波框架，采用最大后验概率的方式来作融合。具体来说，记$\mathbf{x}^{1:p}$表示第1帧至第$p$帧的融合结果，那么基于最大后验概率的融合方式如下所示
+$$
+\mathbf{x}^{1:p} = \int \mathbf{x}^{1:p}P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_{1:K}^{1:p}) \mathrm{d} \mathbf{x}^{1:p}
+$$
+  其中$K$表示雷达站个数，$\hat{\mathbf{x}}_{1:K}^{1:p}$表示各个雷达站的第p帧目标观测数据。由于点迹间具有相关性，因此为了评估后验概率，原文中使用了广义协方差交叉融合方法，如下所示
+$$
+P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_{1:K}^{1:p}) = \frac{\displaystyle\prod_{k}P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k}}{\displaystyle{\int}\prod_{k}P(\mathbf{\chi}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k} \mathrm{d}\chi^{1:p}} \tag{2.1}
+$$
+  其中$\omega_k&gt;0$且$\sum_k \omega_k = 1$。为了使用序贯重要性采样的粒子滤波算法，我们期望找到$P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_{1:K}^{1:p})$与$P(\mathbf{x}^{1:p-1} | \hat{\mathbf{x}}_{1:K}^{1:p-1})$之间的关系，注意到
+$$
+\begin{aligned}
+P(\mathbf{x}^{1:p}|\hat{\mathbf{x}}_{k}^{1:p}) =&amp; \frac{P(\mathbf{x}^{p}, \hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1}, \mathbf{x}^{1:p-1})P(\mathbf{x}^{1:p-1}|\hat{\mathbf{x}}_{k}^{1:p-1})}{P(\hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1})}
+\end{aligned} \tag{2.2}
+$$
+  由于独立观测假设（$\hat{\mathbf{x}}_k^p$仅与$\mathbf{x}^p$有关）与一阶齐次马尔科夫假设（$\mathbf{x}^p$仅与$\mathbf{x}^{p-1}$有关），可以得到
+$$
+\begin{aligned}
+P(\mathbf{x}^{p}, \hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1}, \mathbf{x}^{1:p-1}) =&amp; P(\mathbf{x}^{p}, \hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p-1}) \\
+=&amp; P(\hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p})P(\mathbf{x}^{p}|\mathbf{x}^{p-1})
+\end{aligned}
+$$
+  将上式代入$(2.2)$式中，可以得到
+$$
+P(\mathbf{x}^{1:p}|\hat{\mathbf{x}}_{k}^{1:p}) = \frac{P(\hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p})P(\mathbf{x}^{p}|\mathbf{x}^{p-1})}{P(\hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1})}P(\mathbf{x}^{1:p-1}|\hat{\mathbf{x}}_{k}^{1:p-1})
+$$
+  这样就得到了$P(\mathbf{x}^{1:p}|\hat{\mathbf{x}}_{k}^{1:p})$的递推式。将上式代入到$(2.1)$式中可以得到（原文中此处有个笔误）
+$$
+\begin{aligned}
+P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_{1:K}^{1:p}) =&amp; \frac{\displaystyle\prod_{k}P(\mathbf{x}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k}}{\displaystyle{\int}\prod_{k}P(\mathbf{\chi}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k} \mathrm{d}\chi^{1:p}} \\
+=&amp; \frac{P(\mathbf{x}^{p}|\mathbf{x}^{p-1})\displaystyle\prod_{k}P(\hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p})^{\omega_k}P(\mathbf{x}^{1:p-1}|\hat{\mathbf{x}}_{k}^{1:p-1})^{\omega_k}}{\displaystyle{\int}\prod_{k}P(\mathbf{\chi}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k} \mathrm{d}\chi^{1:p} \displaystyle\prod_kP(\hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1})} \\
+=&amp; \mathrm{C} P(\mathbf{x}^{p}|\mathbf{x}^{p-1})\displaystyle\prod_{k}P(\hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p})^{\omega_k}P(\mathbf{x}^{1:p-1} | \hat{\mathbf{x}}_{1:K}^{1:p-1})
+\end{aligned} \tag{2.3}
+$$
+  其中$\mathrm{C}$如下所示，注意到$\mathrm{C}$是一个常数，只起到一个概率正则功能。因此在使用粒子滤波时，并不需要考虑这一项，对粒子作归一化权重即可。
+$$
+\mathrm{C} = \frac{\displaystyle\int\prod_{k}P(\mathbf{\chi}^{1:p-1} | \hat{\mathbf{x}}_k^{1:p-1})^{\omega_k} \mathrm{d}\chi^{1:p-1}}{\displaystyle\int\prod_{k}P(\mathbf{\chi}^{1:p} | \hat{\mathbf{x}}_k^{1:p})^{\omega_k} \mathrm{d}\chi^{1:p}\displaystyle\prod_kP(\hat{\mathbf{x}}_{k}^{p}|\hat{\mathbf{x}}_{k}^{1:p-1})}
+$$</p>
+<h5 id="242-粒子滤波算法">2.4.2 粒子滤波算法<a hidden class="anchor" aria-hidden="true" href="#242-粒子滤波算法">#</a></h5>
+<p>  粒子滤波算法是基于蒙特卡洛方法的一种滤波算法，利用大量的随机粒子来近似目标分布。重新考虑期望公式
+$$
+E = \int x P(x) \mathrm{d}x
+$$
+  若令$x_i\sim P(x)$（$i = 1, 2, &hellip;, N$），那么上式可写为
+$$
+E \approx \frac{1}{N}\sum_i x_i
+$$
+  当$N$充分大时，上式便可以用来精确的近似$E$。但是$P(x)$通常是难以求解的，引入重要性分布$Q(x)$，期望公式可改写为
+$$
+E=\int \frac{P(x)}{Q(x)}x Q(x) \mathrm{d}x
+$$
+  上式可理解为，一个加权的$Q(x)$期望可以用来表示$P(x)$期望，进一步用近似的思想令$x_i\sim Q(x)$（$i = 1, 2, &hellip;, N$），那么有
+$$
+E \approx \frac{1}{N} \sum_i \frac{P(x_i)}{Q(x_i)}x_i = \frac{1}{N} \sum_i w_i x_i
+$$
+  上式中$w_i$即为$x_i$的权重，通过一个加权的$x_i$的和，可以用满足$Q(x)$分布的$x_i$来近似$P(x)$的期望。注意到，由于$x_i \sim Q(x)$，因此
+$$
+\begin{aligned}
+\sum_i \frac{w_i}{N} =&amp; \frac{1}{N}\sum_i\frac{P(x_i)}{Q(x_i)} \\
+\approx &amp; \int \frac{P(x)}{Q(x)}Q(x) \mathrm{d}x = 1
+\end{aligned}
+$$
+  所以为了有更佳的性能，可以使用归一化的$\hat{w}_i$来代替$w_i$
+$$
+\begin{aligned}
+E \approx &amp; \sum_i \frac{w_i}{N} x_i = \sum_i \hat{w}_i x_i \\
+\hat{w}_i =&amp; \frac{w_i}{\displaystyle\sum_i w_i}
+\end{aligned} \tag{2.4}
+$$
+  这样做的一个好处是在计算$\hat{w}_i$时不再需要关心$\frac{P(x)}{Q(x)}$的常数项，从而使得计算变得非常简便。</p>
+<p>  目标状态估计中，通常使用序贯重要性采样来获得一系列粒子。序贯重要性采样指的是下一时刻的粒子状态与权重由该时刻粒子采样、更新而来。在序贯重要性采样中，为了求解该时刻粒子权重与下一时刻粒子权重之间的关系，需要求解该时刻概率密度函数与下一时刻概率密度函数之间的关系，即求解$P(x_{1:k}|z_{1:k})$（对应于本文中就是$P(\mathbf{x}^{1:p}|\hat{\mathbf{x}}_{1:K}^{1:p})$）与$P(x_{1:k-1}|z_{1:k-1})$之间的关系，由贝叶斯公式可以得到
+$$
+\begin{aligned}
+P(x_{1:k}|z_{1:k}) =&amp; \frac{P(x_k, z_k|x_{k-1})P(x_{1:k-1}|z_{1:k-1})}{P(z_k|z_{1:k-1})} \\
+=&amp; \frac{P(z_k|x_k)P(x_k|x_{k-1})P(x_{1:k-1}|z_{1:k-1})}{P(z_k|z_{1:k-1})}
+\end{aligned}
+$$
+  注意到
+$$
+Q(x_{1:k}|z_{1:k})=Q(x_k|x_{k-1}, z_{1:k})Q(x_{1:k-1}|z_{1:k-1})
+$$
+  因此有
+$$
+w_i^k = \frac{P(x_{1:k}^i|z_{1:k})}{Q(x_{1:k}^i|z_{1:k})} = \frac{P(z_k|x_k^i)P(x_k^i|x_{k-1}^i)}{P(z_k|z_{1:k-1})Q(x_k^i|x_{k-1}^i, z_{1:k})}w_i^{k-1} \tag{2.5}
+$$
+  其中$w_i^k$表示$k$时刻的第$i$个粒子，$x_k^i$表示$k$时刻的第$i$个粒子。因为后续有归一化步骤，因此这里可以不考虑常数项，得到
+$$
+w_i^k = \frac{P(z_k|x_k^i)P(x_k^i|x_{k-1}^i)}{Q(x_k^i|x_{k-1}^i, z_{1:k})}w_i^{k-1}
+$$
+  这样就得到了权重更新公式，下一时刻的粒子权重可以由该时刻粒子的权重得到。在实际应用过程中，为了方便，令$Q(x_k|x_{k-1}, z_{1:k}) = P(x_k|x_{k-1})$，这样便可以得到
+$$
+w_i^k = P(z_k|x_k^i)w_i^{k-1}
+$$
+  当取$Q(x_k|x_{k-1}, z_{1:k}) = P(x_k|x_{k-1})$时，相当于令$x_k^i \sim P(x_k^i | x_{k-1}^i)$后作一个加权求和，因此$k$时刻的粒子状态可以由$k-1$时刻的粒子状态通过$P(x_k^i | x_{k-1}^i)$采样得来。这就完成了从这一时刻的粒子状态与权重更新到下一时刻的粒子状态与权重了，随后利用$(2.4)$式便完成了目标状态估计。</p>
+<p>  总结来说，粒子滤波算法的步骤如下所示</p>
+<ol>
+<li>初始化粒子$x_i^0 \sim P(x_0)$，$P(x_0)$表示粒子初始状态分布，初始化权重$w_i^0 = \frac{1}{N}$</li>
+<li>更新粒子状态，$x_i^k \sim P(x_i^k | x_i^{k-1})$</li>
+<li>根据观测值$z_k$计算得到$k$时刻$i$粒子的权重$w_i^k$，并归一化得到$\hat{w}_i^k$</li>
+<li>对$k$时刻粒子作加权求和得到$k$时刻的状态估计量，重复2-4步，直到得到所有时刻的估计状态量</li>
+</ol>
+<p>  但是在实际应用中，通常会发生粒子退化的情况。粒子退化指的是经过多次迭代后，大部分粒子都处于低似然区域，这使得最终不能很好地得到状态估计量。粒子退化的另一个直观理解是，经过多次迭代后，大部分粒子“跑偏”了真实目标状态量而无法返回到正常轨迹上来。为了解决这一问题，学者提出了粒子重采样方法。粒子重采样方法指的是在粒子更新完成后，权重大的粒子更倾向于保留下来，权重小的粒子更倾向于舍弃，这样便使得大部分粒子都位于高似然区域。具体做法是，按照归一化权重作为各个粒子被抽取到的概率进行$N$次抽取。这样在保证了粒子数目不变（$N$个粒子）的同时，也使得位于高似然区域粒子被保留下来，而低似然区域粒子被舍弃。</p>
+<p>  因此粒子滤波算法的完整步骤为</p>
+<ol>
+<li>初始化粒子$x_i^0 \sim P(x_0)$，$P(x_0)$表示粒子初始状态分布，初始化权重$w_i^0 = \frac{1}{N}$</li>
+<li>更新粒子状态，$x_i^k \sim P(x_i^k | x_i^{k-1})$</li>
+<li>根据观测值$z_k$计算得到$k$时刻$i$粒子的权重$w_i^k$，并归一化得到$\hat{w}_i^k$</li>
+<li>对$k$时刻粒子作加权求和得到$k$时刻的状态估计量，并作重采样，重复2-4步，直到得到所有时刻的估计状态量</li>
+</ol>
+<h5 id="243-基于粒子滤波的组网雷达航迹融合方法">2.4.3 基于粒子滤波的组网雷达航迹融合方法<a hidden class="anchor" aria-hidden="true" href="#243-基于粒子滤波的组网雷达航迹融合方法">#</a></h5>
+<p>  将$(2.3)$式代入到$(2.5)$式中，可以得到
+$$
+\begin{aligned}
+w_i^k =&amp; \frac{P(x_{1:k}^i|z_{1:k})}{Q(x_{1:k}^i|z_{1:k})} \\
+\propto &amp;  (\displaystyle\prod_{k}P(\hat{\mathbf{x}}_{k}^{p}|\mathbf{x}^{p})^{\omega_k})w_i^{k-1}
+\end{aligned}
+$$
+  这样便得到了组网雷达航迹融合中的权值更新方式。总结来说，基于组网雷达的多帧检测前跟踪算法的完整步骤如下所示</p>
+<ol>
+<li>所有雷达先在本地执行多帧检测前跟踪算法，得到一系列目标航迹$\mathbf{x}_k^p$</li>
+<li>各个雷达站将得到的航迹传送至融合中心，并由融合中心进行时空校准与航迹配对</li>
+<li>融合中心按照上文给出的粒子滤波算法步骤进行粒子滤波，得到最终的融合目标航迹</li>
+</ol>
+<h3 id="3-仿真分析">3. 仿真分析<a hidden class="anchor" aria-hidden="true" href="#3-仿真分析">#</a></h3>
+<p>  假设有两个雷达站，两个雷达站的方位如下所示</p>
+<style>
+.center 
+{
+  width: auto;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="center">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">雷达站编号</th>
+<th style="text-align:center">x</th>
+<th style="text-align:center">y</th>
+<th style="text-align:center">z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1km</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>  目标位于$(2\mathrm{km}, 2\mathrm{km}, 0)^T$处，作速度为$(200\mathrm{m/s}, 0, 0)^T$的匀速运动。假设雷达回波信号经过匹配滤波后的信噪比为$-10\mathrm{dB}$，雷达相参积累个数为$100$个，经过相参积累后回波的信噪比为$10\mathrm{dB}$，但此时仍然无法从多普勒-距离二维矩阵中检测到目标，结果如下所示</p>
+<div>
+    <center>
+    <img src='/images/NettedRadarTBD/Z.png' width=50%>
+    <br>图3.1：单帧检测结果
+    </center>
+</div>
+<p>  对目标作10帧的检测前跟踪可得到如下所示结果</p>
+<div>
+    <center>
+    <img src='/images/NettedRadarTBD/Z_1.png' width=50%>
+    <br>图3.2：雷达站本地检测前跟踪结果
+    </center>
+</div>
+<p>  可以看到此时两个雷达站得到的目标航迹与真实航迹偏差较大，当两雷达站将目标航迹传送至融合中心后，利用粒子滤波可以得到两者综合之后的航迹如下所示</p>
+<div>
+    <center>
+    <img src='/images/NettedRadarTBD/Z_2.png' width=50%>
+    <br>图3.3：航迹融合结果
+    </center>
+</div>
+<p>  可以看到融合后的航迹误差相比两雷达站各自的航迹误差较小，这说明组网雷达多帧检测前融合算法完成了雷达检测前跟踪任务与航迹融合任务。</p>
+
+
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/cssar/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>基于圆周外扫描的毫米波合成孔径雷达</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+</article>
+</main>
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2022-2023
+        <a href="https://bingsz.github.io/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+</script>
+<script>
+    let mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {}
+            selection.removeRange(range);
+        });
+
+        let language = codeblock.className.replaceAll("language-", "")
+        let macTool = document.createElement("div")
+        let macTool1 = document.createElement("div")
+        let macTool2 = document.createElement("div")
+        let macTool3 = document.createElement("div")
+        let languageType = document.createElement("div")
+        languageType.innerText = language
+        macTool.setAttribute('class', 'mac-tool')
+        macTool1.setAttribute('class', 'mac bb1')
+        macTool2.setAttribute('class', 'mac bb2')
+        macTool3.setAttribute('class', 'mac bb3')
+        languageType.setAttribute('class', 'language-type')
+        macTool.appendChild(macTool1)
+        macTool.appendChild(macTool2)
+        macTool.appendChild(macTool3)
+        macTool.appendChild(languageType)
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        }
+    });
+</script>
+</body>
+
+</html>

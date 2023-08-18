@@ -6,7 +6,16 @@
     <description>Recent content in 📚文章 on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 11 Aug 2023 17:44:35 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 18 Aug 2023 16:09:33 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>组网雷达多帧检测前跟踪算法</title>
+      <link>https://bingsz.github.io/en/posts/nettedradartbd/</link>
+      <pubDate>Fri, 18 Aug 2023 16:09:33 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/nettedradartbd/</guid>
+      <description>这篇文章主要参考《组网雷达多帧检测前跟踪算法研究》（王经鹤）这一篇论文。 目前雷达的跟踪框架通常是先检测后跟踪，先检测后跟踪（Detect Before Track, DBT）算法的原理是，首先进行回波信号检测得到目标的点迹，随后进行点迹与航迹的配对，最后得到目标的航迹。这种跟踪方法比较符合直觉，因此应用广</description>
+    </item>
+    
     <item>
       <title>基于圆周外扫描的毫米波合成孔径雷达</title>
       <link>https://bingsz.github.io/en/posts/cssar/</link>
