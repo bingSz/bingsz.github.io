@@ -3,18 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://bingsz.github.io/en/posts/</loc>
-    <lastmod>2023-08-18T16:09:33+08:00</lastmod>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/tags/bss/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/categories/bss/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/categories/</loc>
-    <lastmod>2023-08-18T16:09:33+08:00</lastmod>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/tags/tensor/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/categories/tensor/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/posts/psanpsa/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
+  </url><url>
+    <loc>https://bingsz.github.io/en/tags/</loc>
+    <lastmod>2024-04-02T20:30:05+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/tags/nettedradar/</loc>
     <lastmod>2023-08-18T16:09:33+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/categories/nettedradar/</loc>
-    <lastmod>2023-08-18T16:09:33+08:00</lastmod>
-  </url><url>
-    <loc>https://bingsz.github.io/en/</loc>
     <lastmod>2023-08-18T16:09:33+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/tags/tbd/</loc>
@@ -24,9 +42,6 @@
     <lastmod>2023-08-18T16:09:33+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/posts/nettedradartbd/</loc>
-    <lastmod>2023-08-18T16:09:33+08:00</lastmod>
-  </url><url>
-    <loc>https://bingsz.github.io/en/tags/</loc>
     <lastmod>2023-08-18T16:09:33+08:00</lastmod>
   </url><url>
     <loc>https://bingsz.github.io/en/tags/radar/</loc>

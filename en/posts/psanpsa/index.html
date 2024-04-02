@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>张量与盲源分离之间的联系 | Song&#39;s Blog</title>
+<meta name="keywords" content="Tensor, BSS">
+<meta name="description" content="张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。 盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/psanpsa/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+
+
+<script defer src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="张量与盲源分离之间的联系" />
+<meta property="og:description" content="张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。 盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/psanpsa/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-02T20:30:05+08:00" />
+<meta property="article:modified_time" content="2024-04-02T20:30:05+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="张量与盲源分离之间的联系"/>
+<meta name="twitter:description" content="张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。 盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+
+        {
+          "@type": "ListItem",
+          "position":  1 ,
+          "name": "📚文章",
+          "item": "https://bingsz.github.io/en/posts/"
+        }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "张量与盲源分离之间的联系",
+      "item": "https://bingsz.github.io/en/posts/psanpsa/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "张量与盲源分离之间的联系",
+  "name": "张量与盲源分离之间的联系",
+  "description": "张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。 盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离",
+  "keywords": [
+    "Tensor", "BSS"
+  ],
+  "articleBody": "张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。\n盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离。更具体地，假设信号源$i$发出的信号为 $\\mathbf{s}_i = \\begin{bmatrix} s_{i1} \u0026 s_{i2} \u0026 \\cdots \u0026 s_{iL} \\end{bmatrix}$ ，$L$为采样点数，令信号源矩阵$\\mathbf{S}$为\n$$ \\mathbf{S}=\\begin{bmatrix}\\mathbf{s}_1 \\ \\mathbf{s}_2 \\ \\cdots \\ \\mathbf{s}_N\\end{bmatrix} \\in \\mathbb{C}^{N \\times L} $$\n其中$N$表示信号源个数。若接收信号基于瞬时混合假设，那么阵元接收信号可表示为\n$$ \\mathbf{X}=\\mathbf{A}\\mathbf{S} = \\begin{bmatrix} \\mathbf{x}_1 \u0026 \\mathbf{x}_2 \u0026 \\cdots \u0026 \\mathbf{x}_L \\end{bmatrix}\\in \\mathbb{C}^{M \\times L} $$\n其中$M$为阵元个数，在本文中，为了方便假设$M=N$，$\\mathbf{A} \\in \\mathbb{C}^{M \\times N}$为混合矩阵。盲源分离算法通过最大化$\\mathbf{X}$的各个信号之间的独立性来进行信号分离。盲源分离算法有三种理解角度，分别为信息熵角度，统计量角度与似然角度。从信息熵角度来理解盲源分离算法的话，盲源分离算法相当于最大化信号之间的互信息，从而每个信息能够提供更多的信息；从统计量角度而言，盲源分离算法通过最大化高阶统计量来分离信号，因为根据中心极限定理，越多不相关信号的求和，其结果越趋向于高斯分布；从似然角度而言，盲源分离算法对信号源模型进行先验概率的建模，随后最大化后验概率来进行信号源分离。但不论从哪个角度来理解盲源分离，都能够表示为如下所示的优化问题\n$$ \\begin{cases} \\max \u0026 G(\\mathbf{w}^{\\mathrm{H}}\\mathbf{X}) \\\\ \\text{s.t.} \u0026 \\mathbf{w}^{\\mathrm{H}}\\mathbf{w}=1 \\end{cases} \\tag{1} $$\n其中$G(\\cdot)$表示对照函数，用来衡量信号之间的独立性，$\\mathbf{w}$表示解混矢量，在理想情况下，$\\mathbf{w}$应当为$\\mathbf{A}$的广义逆的列向量。FastICA等算法利用牛顿迭代法对上述优化问题进行求解，并取得了较高的效率。可以看到的是，FastICA的每次更新迭代都涉及到整个数据集，因此在采样点数$L$较大的情况下，带来巨大的计算开销。更特殊的，若假设信号为实数信号，混合矩阵$\\mathbf{A}$为一个实矩阵，令$G$为向量元素的三次方和，那么$(1)$可以表示为\n$$ \\begin{cases} \\max \u0026 \\sum_{i=1}^{L}(\\mathbf{w}^{\\mathrm{T}}\\mathbf{x}_i)^3 \\\\ \\text{s.t.} \u0026 \\mathbf{w}^{\\mathrm{H}}\\mathbf{w}=1 \\end{cases} \\tag{2} $$\n注意到，若令$\\mathcal{S}=\\frac{1}{L}\\sum_{i=1}^{L}\\mathbf{x}_i \\circ \\mathbf{x}_i \\circ \\mathbf{x}_i$，其中$\\circ$表示直积，那么有\n$$ \\frac{1}{L}\\sum_{i=1}^{L}(\\mathbf{w}^{\\mathrm{T}}\\mathbf{x}_i)^3 = \\mathcal{S} \\times_1 \\mathbf{w} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w} $$\n其中$\\times_n$表示$n$模积（本文中为了方便，将$\\mathcal{S} \\times_n \\mathbf{w}^{\\mathrm{T}}$写为$\\mathcal{S} \\times_n \\mathbf{w}$）。忽略常数项，$(2)$可等价为\n$$ \\begin{cases} \\max \u0026 \\mathcal{S} \\times_1 \\mathbf{w} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w} \\\\ \\text{s.t.} \u0026 \\mathbf{w}^{\\mathrm{H}}\\mathbf{w}=1 \\end{cases} \\tag{3} $$\n构造拉格朗日算子$L_a$\n$$ L_a = \\frac{1}{3}\\mathcal{S} \\times_1 \\mathbf{w} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w} - \\frac{1}{2}\\lambda (\\mathbf{w}^{\\mathrm{H}}\\mathbf{w} - 1) $$\n对其关于$\\mathbf{w}$求导，可以得到\n$$ \\frac{\\partial L_a}{\\partial \\mathbf{w}} = \\mathcal{S} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w} - \\lambda \\mathbf{w} $$\n令导数为0，有\n$$ \\mathcal{S} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w} = \\lambda \\mathbf{w} $$\n这意味着，$\\mathbf{w}$为$\\mathcal{S}$的特征矢量。对于特征矢量的求解，可以使用不动点迭代来计算$\\mathbf{w}$，即\n$$ \\mathbf{w} \\leftarrow \\mathcal{S} \\times_2 \\mathbf{w} \\times_3 \\mathbf{w}, \\mathbf{w} \\leftarrow \\frac{\\mathbf{w}}{\\lVert \\mathbf{w} \\rVert} $$\n为了求得所有的解混矢量，同时防止后续的$\\mathbf{w}$迭代到与之前解混矢量相同的解中，我们需要应用约束。在PSA算法中，应用正交约束来保持解的唯一性。假设$\\mathbf{W}_k=\\begin{bmatrix} \\mathbf{w}_1 \u0026 \\mathbf{w}_2 \u0026 \\cdots \u0026 \\mathbf{w}_k \\end{bmatrix}$为前$k$个解混矢量构成的解混矩阵，那么对于第$k+1$个解混矢量，迭代公式可变化为\n$$ \\mathbf{w}_{k+1} \\leftarrow \\mathbf{P}_k\\left(\\mathcal{S} \\times_2 \\mathbf{w}_{k+1} \\times_3 \\mathbf{w}_{k+1}\\right), \\mathbf{w}_{k+1} \\leftarrow \\frac{\\mathbf{w}_{k+1}}{\\lVert \\mathbf{w}_{k+1} \\rVert} \\tag{4} $$\n其中$\\mathbf{P}_k=(\\mathbf{I}-\\mathbf{W}_k\\mathbf{W}_k^{\\mathrm{T}})$，为$\\mathbf{W}_k$正交补空间的投影矩阵。\n当然，PSA作者也说了，正交约束对于求解解混矩阵$\\mathbf{W}_N$是一个过于强的条件，因为与矩阵不同的是，$\\mathcal{S}$的特征矢量并不一定是正交的。利用正交约束并不能够获得一个精确的解，仅仅只有第一个解混矢量是精确的。为了得到一个更精确的解，NPSA引入了非正交约束。我们改写一下PSA的迭代公式，$(4)$可以被改写为\n$$ \\mathbf{w}_{k+1} \\leftarrow \\mathcal{S} \\times_1 \\mathbf{P}_k \\times_2 \\mathbf{w}_{k+1} \\times_3 \\mathbf{w}_{k+1}, \\mathbf{w}_{k+1} \\leftarrow \\frac{\\mathbf{w}_{k+1}}{\\lVert \\mathbf{w}_{k+1} \\rVert} $$\n根据PSA的正交约束假设，$\\mathbf{w}_{k+1}$与$\\mathbf{W}_k$构成的子空间正交，因此经过$\\mathbf{P}k$投影后，$\\mathbf{w}{k+1}$不变，于是上式可以被写为\n$$ \\mathbf{w}_{k+1} \\leftarrow \\mathcal{S} \\times_1 \\mathbf{P}_k \\times_2 \\mathbf{P}_k\\mathbf{w}_{k+1} \\times_3 \\mathbf{P}_k\\mathbf{w}_{k+1}, \\mathbf{w}_{k+1} \\leftarrow \\frac{\\mathbf{w}_{k+1}}{\\lVert \\mathbf{w}_{k+1} \\rVert} $$\n进一步有\n$$ \\mathbf{w}_{k+1} \\leftarrow \\mathcal{S}_k \\times_2 \\mathbf{w}_{k+1} \\times_3 \\mathbf{w}_{k+1}, \\mathbf{w}_{k+1} \\leftarrow \\frac{\\mathbf{w}_{k+1}}{\\lVert \\mathbf{w}_{k+1} \\rVert} $$\n其中$\\mathcal{S}_k = \\mathcal{S} \\times_1 \\mathbf{P}_k \\times_2 \\mathbf{P}_k \\times_3 \\mathbf{P}_k$。由于$\\mathbf{P}_k$是一个投影矩阵，并且$\\mathbf{W}_k$中的每个向量之间都正交，因此有\n$$ \\mathbf{P}_k = \\prod_{i=1}^{k}\\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right) = \\prod_{i=1}^{k}\\bar{\\mathbf{P}}_i $$\n其中$\\bar{\\mathbf{P}}_i=\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}$。根据向量拉直$\\mathrm{vec}(\\cdot)$的相关性质，对于$\\mathcal{S}\\times_1 \\mathbf{P}_k \\times_2 \\mathbf{P}_k \\times_3 \\mathbf{P}_k$，我们有\n$$ \\mathrm{vec}(\\mathcal{S}\\times_1 \\mathbf{P}_k \\times_2 \\mathbf{P}_k \\times_3 \\mathbf{P}_k) = \\left(\\mathbf{P}_k \\otimes \\mathbf{P}_k \\otimes \\mathbf{P}_k\\right)\\mathrm{vec}(\\mathcal{S}) $$\n其中$\\otimes$表示克罗内克积。根据克罗内克积相关性质，我们可以得到\n$$ \\begin{aligned} \\mathbf{P}_k \\otimes \\mathbf{P}_k \\otimes \\mathbf{P}_k =\u0026 \\left(\\prod_{i=1}^{k}\\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right)\\right) \\otimes \\left(\\prod_{i=1}^{k}\\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right) \\right)\\otimes \\left(\\prod_{i=1}^{k}\\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right) \\right) \\ =\u0026 \\prod_{i=1}^{k}\\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_i\\mathbf{w}_i^{\\mathrm{T}}\\right) \\end{aligned} $$\n这意味着事实上我们有\n$$ \\mathrm{vec}(\\mathcal{S}_k) = \\left( \\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right) \\right) \\mathrm{vec}(\\mathcal{S}_{k-1}) \\tag{5} $$\n注意到，$\\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right)\\otimes \\left(\\mathbf{I}-\\mathbf{w}_k\\mathbf{w}_k^{\\mathrm{T}}\\right)$事实上就是作了一个投影，但同时也把其余有关$\\mathbf{w}_k$的分量全都去除了，例如$\\mathbf{u}\\otimes \\mathbf{w}_k\\otimes \\mathbf{v}$经过上述投影后便是一个零向量。因此这个正交投影显然是一个过强的投影。为了求得所有的解混矢量$\\mathbf{w}$，我们只需要去除$\\mathbf{w}_k\\otimes\\mathbf{w}_k\\otimes\\mathbf{w}_k$即可，因此对于$(5)$的投影矢量，可以将其改写为\n$$ \\mathrm{vec}(\\mathcal{S}_k) = \\left( \\mathbf{I}-\\left(\\mathbf{w}_k\\otimes\\mathbf{w}_k\\otimes\\mathbf{w}_k\\right)\\left(\\mathbf{w}_k\\otimes\\mathbf{w}_k\\otimes\\mathbf{w}_k\\right)^{\\mathrm{T}}\\right) \\mathrm{vec}(\\mathcal{S}_{k-1}) $$\n当然，如果是基于这种向量拉直的形式，无疑具有很大的计算量，为了降低计算量，作者又进行了后续的推导，具体可见《矩阵之美》一书中。最终可得\n$$ \\mathcal{S}_k=\\mathcal{S}_{k-1}-\\left(\\mathcal{S}_{k-1}\\times_1\\mathbf{w}_k\\times_2\\mathbf{w}_k\\times_3\\mathbf{w}_k\\right)(\\mathbf{w}_k \\circ \\mathbf{w}_k \\circ \\mathbf{w}_k) $$\n这样我们就完成了整体算法推导，具体算法流程如下所示\n初始化$k=1$ 计算$\\mathcal{S}_{k-1}$ 迭代计算$\\mathbf{w}_{k} \\leftarrow \\mathcal{S}_{k-1} \\times_2 \\mathbf{w}_{k} \\times_3 \\mathbf{w}_{k}, \\mathbf{w}_{k} \\leftarrow \\frac{\\mathbf{w}_{k}}{\\lVert \\mathbf{w}_{k} \\rVert}$，直到收敛 令$k=2, 3, \\cdots, N$，并重复步骤2至步骤3，直到得到所有解混矢量 最终$\\mathbf{W}_N=\\begin{bmatrix} \\mathbf{w}_1 \u0026 \\mathbf{w}_2 \u0026 \\cdots \u0026 \\mathbf{w}_N \\end{bmatrix}$，即为最终解混矩阵 ",
+  "wordCount" : "2845",
+  "inLanguage": "en",
+  "datePublished": "2024-04-02T20:30:05+08:00",
+  "dateModified": "2024-04-02T20:30:05+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/psanpsa/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+</style>
+
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">🏠 主页</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">📚文章</a></div>
+            <h1 class="post-title">
+                张量与盲源分离之间的联系
+            </h1>
+            <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2024-04-02
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>2845字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>6分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>Song
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://bingsz.github.io/en/tags/tensor/" style="color: var(--secondary)!important;">Tensor</a>
+                &nbsp;<a href="https://bingsz.github.io/en/tags/bss/" style="color: var(--secondary)!important;">BSS</a>
+            </span>
+        </span>
+    </span>
+</span>
+<span style="opacity: 0.8;">
+                    <span id="post_meta_style_7">
+                        &nbsp;&nbsp;
+                        <span class="fa fa-eye" ></span>
+                        <span>
+                            <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                    <span id="post_meta_style_8">
+                        <span class="fa fa-commenting-o"></span>
+                        <span>
+                            <script src="https://cdn.staticfile.org/twikoo//twikoo.all.min.js"></script>
+                            <script>
+                                let url = document.documentURI
+                                
+                                let dnsUrl = "https://bingsz.github.io/"
+                                let urlSplit = url.split(dnsUrl)
+                                let finalUrl = urlSplit[1]
+                                if (finalUrl[0] !== '/') {
+                                    finalUrl = '/'+finalUrl
+                                }
+                                twikoo.getCommentsCount({
+                                    envId:  null , 
+                                region:  null , 
+                                urls: [ 
+                                    
+                                    finalUrl,
+                                ],
+                                    includeReply: false 
+                                }).then(function (res) {
+                                    let count = res[0].count
+                                    const obj = document.getElementById("comment_count");
+                                    obj.innerText = count
+                                    
+                                    
+                                    
+                                }).catch(function (err) {
+                                    
+                                    console.error(err);
+                                });
+                            </script>
+                            <span id="comment_count"></span>
+                        </span>
+                    </span>
+                </span>
+
+</div>
+        </header> 
+        <div class="post-content"><p>张量具有强大的表示能力，许多问题可以通过张量来进行建模，并利用张量相关工具来得到简化。例如，利用张量工具，能够对互质阵列所接收的信号进行建模；也可以利用张量工具对信号的统计特征进行建模。</p>
+<p>盲源分离是一种在无先验信息下进行信号源分离的工具，通过最大化信号源之间的独立性来进行信号源分离。更具体地，假设信号源$i$发出的信号为 $\mathbf{s}_i = \begin{bmatrix} s_{i1} &amp; s_{i2} &amp; \cdots &amp; s_{iL} \end{bmatrix}$ ，$L$为采样点数，令信号源矩阵$\mathbf{S}$为</p>
+<p>$$
+\mathbf{S}=\begin{bmatrix}\mathbf{s}_1 \ \mathbf{s}_2 \ \cdots \ \mathbf{s}_N\end{bmatrix} \in \mathbb{C}^{N \times L}
+$$</p>
+<p>其中$N$表示信号源个数。若接收信号基于瞬时混合假设，那么阵元接收信号可表示为</p>
+<p>$$
+\mathbf{X}=\mathbf{A}\mathbf{S} = \begin{bmatrix} \mathbf{x}_1 &amp; \mathbf{x}_2 &amp; \cdots &amp; \mathbf{x}_L \end{bmatrix}\in \mathbb{C}^{M \times L}
+$$</p>
+<p>其中$M$为阵元个数，在本文中，为了方便假设$M=N$，$\mathbf{A} \in \mathbb{C}^{M \times N}$为混合矩阵。盲源分离算法通过最大化$\mathbf{X}$的各个信号之间的独立性来进行信号分离。盲源分离算法有三种理解角度，分别为信息熵角度，统计量角度与似然角度。从信息熵角度来理解盲源分离算法的话，盲源分离算法相当于最大化信号之间的互信息，从而每个信息能够提供更多的信息；从统计量角度而言，盲源分离算法通过最大化高阶统计量来分离信号，因为根据中心极限定理，越多不相关信号的求和，其结果越趋向于高斯分布；从似然角度而言，盲源分离算法对信号源模型进行先验概率的建模，随后最大化后验概率来进行信号源分离。但不论从哪个角度来理解盲源分离，都能够表示为如下所示的优化问题</p>
+<p>$$
+\begin{cases}
+\max &amp; G(\mathbf{w}^{\mathrm{H}}\mathbf{X}) \\
+\text{s.t.} &amp; \mathbf{w}^{\mathrm{H}}\mathbf{w}=1
+\end{cases} \tag{1}
+$$</p>
+<p>其中$G(\cdot)$表示对照函数，用来衡量信号之间的独立性，$\mathbf{w}$表示解混矢量，在理想情况下，$\mathbf{w}$应当为$\mathbf{A}$的广义逆的列向量。FastICA等算法利用牛顿迭代法对上述优化问题进行求解，并取得了较高的效率。可以看到的是，FastICA的每次更新迭代都涉及到整个数据集，因此在采样点数$L$较大的情况下，带来巨大的计算开销。更特殊的，若假设信号为实数信号，混合矩阵$\mathbf{A}$为一个实矩阵，令$G$为向量元素的三次方和，那么$(1)$可以表示为</p>
+<p>$$
+\begin{cases}
+\max &amp; \sum_{i=1}^{L}(\mathbf{w}^{\mathrm{T}}\mathbf{x}_i)^3 \\
+\text{s.t.} &amp; \mathbf{w}^{\mathrm{H}}\mathbf{w}=1
+\end{cases} \tag{2}
+$$</p>
+<p>注意到，若令$\mathcal{S}=\frac{1}{L}\sum_{i=1}^{L}\mathbf{x}_i \circ \mathbf{x}_i \circ \mathbf{x}_i$，其中$\circ$表示直积，那么有</p>
+<p>$$
+\frac{1}{L}\sum_{i=1}^{L}(\mathbf{w}^{\mathrm{T}}\mathbf{x}_i)^3 = \mathcal{S} \times_1 \mathbf{w} \times_2 \mathbf{w} \times_3 \mathbf{w}
+$$</p>
+<p>其中$\times_n$表示$n$模积（本文中为了方便，将$\mathcal{S} \times_n \mathbf{w}^{\mathrm{T}}$写为$\mathcal{S} \times_n \mathbf{w}$）。忽略常数项，$(2)$可等价为</p>
+<p>$$
+\begin{cases}
+\max &amp; \mathcal{S} \times_1 \mathbf{w} \times_2 \mathbf{w} \times_3 \mathbf{w} \\
+\text{s.t.} &amp; \mathbf{w}^{\mathrm{H}}\mathbf{w}=1
+\end{cases} \tag{3}
+$$</p>
+<p>构造拉格朗日算子$L_a$</p>
+<p>$$
+L_a = \frac{1}{3}\mathcal{S} \times_1 \mathbf{w} \times_2 \mathbf{w} \times_3 \mathbf{w} - \frac{1}{2}\lambda (\mathbf{w}^{\mathrm{H}}\mathbf{w} - 1)
+$$</p>
+<p>对其关于$\mathbf{w}$求导，可以得到</p>
+<p>$$
+\frac{\partial L_a}{\partial \mathbf{w}} = \mathcal{S} \times_2 \mathbf{w} \times_3 \mathbf{w} - \lambda \mathbf{w}
+$$</p>
+<p>令导数为0，有</p>
+<p>$$
+\mathcal{S} \times_2 \mathbf{w} \times_3 \mathbf{w} = \lambda \mathbf{w}
+$$</p>
+<p>这意味着，$\mathbf{w}$为$\mathcal{S}$的特征矢量。对于特征矢量的求解，可以使用不动点迭代来计算$\mathbf{w}$，即</p>
+<p>$$
+\mathbf{w} \leftarrow \mathcal{S} \times_2 \mathbf{w} \times_3 \mathbf{w}, \mathbf{w} \leftarrow \frac{\mathbf{w}}{\lVert \mathbf{w} \rVert}
+$$</p>
+<p>为了求得所有的解混矢量，同时防止后续的$\mathbf{w}$迭代到与之前解混矢量相同的解中，我们需要应用约束。在PSA算法中，应用正交约束来保持解的唯一性。假设$\mathbf{W}_k=\begin{bmatrix} \mathbf{w}_1 &amp; \mathbf{w}_2 &amp; \cdots &amp; \mathbf{w}_k \end{bmatrix}$为前$k$个解混矢量构成的解混矩阵，那么对于第$k+1$个解混矢量，迭代公式可变化为</p>
+<p>$$
+\mathbf{w}_{k+1} \leftarrow \mathbf{P}_k\left(\mathcal{S} \times_2 \mathbf{w}_{k+1} \times_3 \mathbf{w}_{k+1}\right), \mathbf{w}_{k+1} \leftarrow \frac{\mathbf{w}_{k+1}}{\lVert \mathbf{w}_{k+1} \rVert} \tag{4}
+$$</p>
+<p>其中$\mathbf{P}_k=(\mathbf{I}-\mathbf{W}_k\mathbf{W}_k^{\mathrm{T}})$，为$\mathbf{W}_k$正交补空间的投影矩阵。</p>
+<p>当然，PSA作者也说了，正交约束对于求解解混矩阵$\mathbf{W}_N$是一个过于强的条件，因为与矩阵不同的是，$\mathcal{S}$的特征矢量并不一定是正交的。利用正交约束并不能够获得一个精确的解，仅仅只有第一个解混矢量是精确的。为了得到一个更精确的解，NPSA引入了非正交约束。我们改写一下PSA的迭代公式，$(4)$可以被改写为</p>
+<p>$$
+\mathbf{w}_{k+1} \leftarrow \mathcal{S} \times_1 \mathbf{P}_k \times_2 \mathbf{w}_{k+1} \times_3 \mathbf{w}_{k+1}, \mathbf{w}_{k+1} \leftarrow \frac{\mathbf{w}_{k+1}}{\lVert \mathbf{w}_{k+1} \rVert}
+$$</p>
+<p>根据PSA的正交约束假设，$\mathbf{w}_{k+1}$与$\mathbf{W}_k$构成的子空间正交，因此经过$\mathbf{P}<em>k$投影后，$\mathbf{w}</em>{k+1}$不变，于是上式可以被写为</p>
+<p>$$
+\mathbf{w}_{k+1} \leftarrow \mathcal{S} \times_1 \mathbf{P}_k \times_2 \mathbf{P}_k\mathbf{w}_{k+1} \times_3 \mathbf{P}_k\mathbf{w}_{k+1}, \mathbf{w}_{k+1} \leftarrow \frac{\mathbf{w}_{k+1}}{\lVert \mathbf{w}_{k+1} \rVert}
+$$</p>
+<p>进一步有</p>
+<p>$$
+\mathbf{w}_{k+1} \leftarrow \mathcal{S}_k \times_2 \mathbf{w}_{k+1} \times_3 \mathbf{w}_{k+1}, \mathbf{w}_{k+1} \leftarrow \frac{\mathbf{w}_{k+1}}{\lVert \mathbf{w}_{k+1} \rVert}
+$$</p>
+<p>其中$\mathcal{S}_k = \mathcal{S} \times_1 \mathbf{P}_k \times_2 \mathbf{P}_k \times_3 \mathbf{P}_k$。由于$\mathbf{P}_k$是一个投影矩阵，并且$\mathbf{W}_k$中的每个向量之间都正交，因此有</p>
+<p>$$
+\mathbf{P}_k = \prod_{i=1}^{k}\left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right) = \prod_{i=1}^{k}\bar{\mathbf{P}}_i
+$$</p>
+<p>其中$\bar{\mathbf{P}}_i=\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}$。根据向量拉直$\mathrm{vec}(\cdot)$的相关性质，对于$\mathcal{S}\times_1 \mathbf{P}_k \times_2 \mathbf{P}_k \times_3 \mathbf{P}_k$，我们有</p>
+<p>$$
+\mathrm{vec}(\mathcal{S}\times_1 \mathbf{P}_k \times_2 \mathbf{P}_k \times_3 \mathbf{P}_k) = \left(\mathbf{P}_k \otimes \mathbf{P}_k \otimes \mathbf{P}_k\right)\mathrm{vec}(\mathcal{S})
+$$</p>
+<p>其中$\otimes$表示克罗内克积。根据克罗内克积相关性质，我们可以得到</p>
+<p>$$
+\begin{aligned}
+\mathbf{P}_k \otimes \mathbf{P}_k \otimes \mathbf{P}_k =&amp; \left(\prod_{i=1}^{k}\left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right)\right) \otimes \left(\prod_{i=1}^{k}\left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right) \right)\otimes \left(\prod_{i=1}^{k}\left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right) \right) \
+=&amp; \prod_{i=1}^{k}\left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_i\mathbf{w}_i^{\mathrm{T}}\right)
+\end{aligned}
+$$</p>
+<p>这意味着事实上我们有</p>
+<p>$$
+\mathrm{vec}(\mathcal{S}_k) = \left( \left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right) \right) \mathrm{vec}(\mathcal{S}_{k-1}) \tag{5}
+$$</p>
+<p>注意到，$\left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right)\otimes \left(\mathbf{I}-\mathbf{w}_k\mathbf{w}_k^{\mathrm{T}}\right)$事实上就是作了一个投影，但同时也把其余有关$\mathbf{w}_k$的分量全都去除了，例如$\mathbf{u}\otimes \mathbf{w}_k\otimes \mathbf{v}$经过上述投影后便是一个零向量。因此这个正交投影显然是一个过强的投影。为了求得所有的解混矢量$\mathbf{w}$，我们只需要去除$\mathbf{w}_k\otimes\mathbf{w}_k\otimes\mathbf{w}_k$即可，因此对于$(5)$的投影矢量，可以将其改写为</p>
+<p>$$
+\mathrm{vec}(\mathcal{S}_k) = \left( \mathbf{I}-\left(\mathbf{w}_k\otimes\mathbf{w}_k\otimes\mathbf{w}_k\right)\left(\mathbf{w}_k\otimes\mathbf{w}_k\otimes\mathbf{w}_k\right)^{\mathrm{T}}\right) \mathrm{vec}(\mathcal{S}_{k-1})
+$$</p>
+<p>当然，如果是基于这种向量拉直的形式，无疑具有很大的计算量，为了降低计算量，作者又进行了后续的推导，具体可见《矩阵之美》一书中。最终可得</p>
+<p>$$
+\mathcal{S}_k=\mathcal{S}_{k-1}-\left(\mathcal{S}_{k-1}\times_1\mathbf{w}_k\times_2\mathbf{w}_k\times_3\mathbf{w}_k\right)(\mathbf{w}_k \circ \mathbf{w}_k \circ \mathbf{w}_k)
+$$</p>
+<p>这样我们就完成了整体算法推导，具体算法流程如下所示</p>
+<ol>
+<li>初始化$k=1$</li>
+<li>计算$\mathcal{S}_{k-1}$</li>
+<li>迭代计算$\mathbf{w}_{k} \leftarrow \mathcal{S}_{k-1} \times_2 \mathbf{w}_{k} \times_3 \mathbf{w}_{k}, \mathbf{w}_{k} \leftarrow \frac{\mathbf{w}_{k}}{\lVert \mathbf{w}_{k} \rVert}$，直到收敛</li>
+<li>令$k=2, 3, \cdots, N$，并重复步骤2至步骤3，直到得到所有解混矢量</li>
+<li>最终$\mathbf{W}_N=\begin{bmatrix} \mathbf{w}_1 &amp; \mathbf{w}_2 &amp; \cdots &amp; \mathbf{w}_N \end{bmatrix}$，即为最终解混矩阵</li>
+</ol>
+
+
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/nettedradartbd/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>组网雷达多帧检测前跟踪算法</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+</article>
+</main>
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2022-2024
+        <a href="https://bingsz.github.io/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+</script>
+<script>
+    let mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {}
+            selection.removeRange(range);
+        });
+
+        let language = codeblock.className.replaceAll("language-", "")
+        let macTool = document.createElement("div")
+        let macTool1 = document.createElement("div")
+        let macTool2 = document.createElement("div")
+        let macTool3 = document.createElement("div")
+        let languageType = document.createElement("div")
+        languageType.innerText = language
+        macTool.setAttribute('class', 'mac-tool')
+        macTool1.setAttribute('class', 'mac bb1')
+        macTool2.setAttribute('class', 'mac bb2')
+        macTool3.setAttribute('class', 'mac bb3')
+        languageType.setAttribute('class', 'language-type')
+        macTool.appendChild(macTool1)
+        macTool.appendChild(macTool2)
+        macTool.appendChild(macTool3)
+        macTool.appendChild(languageType)
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        }
+    });
+</script>
+</body>
+
+</html>
