@@ -6,7 +6,16 @@
     <description>Recent content in 📚文章 on Song&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 02 Apr 2024 20:30:05 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 17 May 2024 20:58:57 +0800</lastBuildDate><atom:link href="https://bingsz.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DOA估计的超分辨率算法以及克拉美罗界</title>
+      <link>https://bingsz.github.io/en/posts/superres/</link>
+      <pubDate>Fri, 17 May 2024 20:58:57 +0800</pubDate>
+      
+      <guid>https://bingsz.github.io/en/posts/superres/</guid>
+      <description>这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。 1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。 图</description>
+    </item>
+    
     <item>
       <title>张量与盲源分离之间的联系</title>
       <link>https://bingsz.github.io/en/posts/psanpsa/</link>

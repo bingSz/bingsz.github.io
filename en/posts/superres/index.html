@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>DOA估计的超分辨率算法以及克拉美罗界 | Song&#39;s Blog</title>
+<meta name="keywords" content="Radar">
+<meta name="description" content="这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。 1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。 图">
+<meta name="author" content="Song">
+<link rel="canonical" href="https://bingsz.github.io/en/posts/superres/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.css" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.js" onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://bingsz.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://bingsz.github.io/favicon.ico">
+<link rel="apple-touch-icon" href="https://bingsz.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://bingsz.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://bingsz.github.io/en/posts/superres/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+
+
+
+
+<script defer src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+<script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+  
+
+<meta property="og:title" content="DOA估计的超分辨率算法以及克拉美罗界" />
+<meta property="og:description" content="这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。 1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。 图" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bingsz.github.io/en/posts/superres/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-17T20:58:57+08:00" />
+<meta property="article:modified_time" content="2024-05-17T20:58:57+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DOA估计的超分辨率算法以及克拉美罗界"/>
+<meta name="twitter:description" content="这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。 1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。 图"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+
+        {
+          "@type": "ListItem",
+          "position":  1 ,
+          "name": "📚文章",
+          "item": "https://bingsz.github.io/en/posts/"
+        }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "DOA估计的超分辨率算法以及克拉美罗界",
+      "item": "https://bingsz.github.io/en/posts/superres/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DOA估计的超分辨率算法以及克拉美罗界",
+  "name": "DOA估计的超分辨率算法以及克拉美罗界",
+  "description": "这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。 1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。 图",
+  "keywords": [
+    "Radar"
+  ],
+  "articleBody": "这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。\n1.回波信号模型 在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。\n图1.1：均匀线阵\r两个阵元之间的间距为$d$，目标回波到达方向与第一个阵元轴向方向所呈夹角为$\\theta$。为了方便，本文假设阵列回波信号为一个窄带信号，并且遵循远场假设。窄带信号指的是回波信号的包络是缓变的，从而每个阵元接收到的信号包络都可看作是一样的，因此每个阵元接收到的信号仅仅是相位上存在差异。远场假设指的是当目标充分远时，目标回波信号可看作平行射入阵列，因此每个阵元所接收到的信号夹角都是一致的。\n在上述两个假设前提下，若第$t$个目标在第$1$个阵元所对应的回波数字采样信号为$\\mathbf{s}_t \\in \\mathbb{C}^{1 \\times L}$，其中$L$为采样点数，那么第$n$个阵元的回波信号可表示为\n$$ \\mathbf{x}_n = \\sum_{t=1}^{T}\\mathbf{s}_t \\exp\\left(j 2\\pi \\frac{(n-1)d\\sin\\theta_t}{\\lambda}\\right) + \\mathbf{n}_n $$\n其中$T$为目标个数，$\\theta_t$为目标$t$的回波夹角，$\\mathbf{n}_n$表示第$n$个阵元回波信号的噪声信号。为了更加方便的使用矩阵语言来描述，记源信号矩阵$\\mathbf{S} = \\begin{bmatrix} \\mathbf{s}_1 \u0026 \\mathbf{s}_2 \u0026 \\cdots \u0026 \\mathbf{s}_N \\end{bmatrix}^{\\mathrm{T}}$，噪声信号矩阵$\\mathbf{N} = \\begin{bmatrix} \\mathbf{n}_1 \u0026 \\mathbf{n}_2 \u0026 \\cdots \u0026 \\mathbf{n}_N \\end{bmatrix}^{\\mathrm{T}}$，导向矢量矩阵$\\mathbf{A}$为\n$$ \\begin{aligned} \\mathbf{A} =\u0026 \\begin{bmatrix} 1 \u0026 1 \u0026 \\cdots \u0026 1 \\\\ \\exp\\left(j 2\\pi \\frac{d\\sin\\theta_1}{\\lambda}\\right) \u0026 \\exp\\left(j 2\\pi \\frac{d\\sin\\theta_2}{\\lambda}\\right) \u0026 \\cdots \u0026 \\exp\\left(j 2\\pi \\frac{d\\sin\\theta_T}{\\lambda}\\right) \\\\ \\cdots \u0026 \\cdots \u0026 \\cdots \u0026 \\cdots \\\\ \\exp\\left(j 2\\pi \\frac{(N-1)d\\sin\\theta_1}{\\lambda}\\right) \u0026 \\exp\\left(j 2\\pi \\frac{(N-1)d\\sin\\theta_2}{\\lambda}\\right) \u0026 \\cdots \u0026 \\exp\\left(j 2\\pi \\frac{(N-1)d\\sin\\theta_T}{\\lambda}\\right) \\end{bmatrix} \\\\ =\u0026 \\begin{bmatrix} \\mathbf{a}(\\theta_1) \u0026 \\mathbf{a}(\\theta_2) \u0026 \\cdots \u0026 \\mathbf{a}(\\theta_T) \\end{bmatrix} \\end{aligned} $$\n其中，$\\mathbf{a}(\\theta_t)$被称为目标$t$的导向矢量。那么，阵元接收到的目标回波信号矩阵$\\mathbf{X} = \\begin{bmatrix} \\mathbf{x}_1 \u0026 \\mathbf{x}_2 \u0026 \\cdots \u0026 \\mathbf{x}_N \\end{bmatrix}^{\\mathrm{T}}$为\n$$ \\mathbf{X} = \\mathbf{A} \\mathbf{S} + \\mathbf{N} $$\n从另一个角度来说，某次快拍下，阵列信号（即$\\mathbf{X}$的列向量）实际上就是一个数字信号。在多目标情况下，阵列信号相当于包含了多个数字频率成分，而DOA估计则是估计该数字采样信号的各个频率成分。为了对于第$t$个目标不发生频率混叠，要求上式的数字角频率小于$\\pi$，即\n$$ \\begin{aligned} \\frac{2\\pi d|\\sin\\theta_t|}{\\lambda} \u003c \\pi \\\\ \\Rightarrow d \u003c \\frac{\\lambda}{2 |\\sin \\theta_t|} \\end{aligned} $$\n当探测范围为$-\\pi$至$+\\pi$时，$d$应当满足$d \u003c \\frac{\\lambda}{2}$。为了方便，本文取$d = \\frac{\\lambda}{2}$，那么此时目标$t$的导向矢量可写为\n$$ \\mathbf{a}(\\theta_t) = \\begin{bmatrix} \\exp\\left(j \\pi \\sin\\theta_1\\right) \\\\ \\exp\\left(j \\pi 2\\sin\\theta_1\\right) \\\\ \\cdots \\\\ \\exp\\left(j \\pi (N-1)\\sin\\theta_1\\right) \\end{bmatrix} $$\n2.常规算法 既然前文提到，DOA估计本质上是估计回波信号的各个频率成分，那么最简单的一个方法就是傅里叶变换。假设阵列回波信号的一次快拍为$\\mathbf{x}$，对其作傅里叶变换得到$\\mathbf{y} = \\text{FFT}(\\mathbf{x})$，对$\\mathbf{y}$进行谱峰搜索即可得到目标回波的到达角估计。这种方法虽然简单，但存在分辨率低的问题。\n关于雷达角度估计分辨率，可以从多个角度来理解。从阵列孔径来理解，阵列的3dB波束宽度为\n$$ \\theta_{\\text{3dB}}=\\frac{\\lambda}{D} $$\n其中$D$为阵列孔径。当阵元间距为半波长时，$D=\\frac{N\\lambda}{2}$。带入上式即可得到\n$$ \\theta_{\\text{3dB}} = \\frac{2}{N} $$\n从FFT的频率分辨率来理解，FFT的频率分辨率为$\\frac{1}{N}$。因此两个信号的空域频率应当满足\n$$ \\frac{|\\sin\\theta_1 - \\sin\\theta_2|}{2} \\ge \\frac{1}{N} $$\n当目标位于$0^{\\circ}$附近时，可以得到角度分辨率为$\\frac{2}{N}$。当然，一般教科书上给的理解都是从原始公式出发。对导向矢量作FFT后，可以得到其结果为一个Sinc函数，根据Sinc函数的3dB波束宽度即可得到角度分辨率，这里就不再赘述了。\n总而言之，传统常规算法所得到的角度分辨率为$\\frac{2}{N}$，该分辨率受限于阵列孔径大小，因而也被称为瑞丽限。当阵列的角度分辨率低于瑞丽限时，这类算法被称为超分辨算法。超分辨算法有许多种类，本文主要介绍基于谱分析的超分辨算法。\n3.Capon算法 Capon算法基于一个比较朴素的思想，希望在检测某个方向上的目标回波时，先对回波信号作一个线性变换，使得其它方向上的回波最小，以此来减小其它目标回波对测角结果的影响。\n针对某次快拍阵列信号，经过$\\mathbf{w}$的线性变化后，阵列信号可被写为$\\mathbf{w}^{\\mathrm{H}}\\mathbf{x}$，从而目标能量为$(\\mathbf{w}^{\\mathrm{H}}\\mathbf{x})(\\mathbf{w}^{\\mathrm{H}}\\mathbf{x})^{\\mathrm{H}} = \\mathbf{w}^{\\mathrm{H}}\\mathbf{R}\\mathbf{w}$，其中$\\mathbf{R}=\\mathbf{x}\\mathbf{x}^{\\mathrm{H}}$。约束特定方向$\\theta_0$上的能量为固定值，而其它方向上的能量最小，可写出如下所示的优化问题\n$$ \\begin{cases} \\min \\quad \u0026 \\mathbf{w}^{\\mathrm{H}}\\mathbf{R}\\mathbf{w} \\\\ \\text{s.t.} \u0026 \\mathbf{w}^{\\mathrm{H}}\\mathbf{a}(\\theta_0) = 1 \\end{cases} $$\n为了求解上述优化问题，构建拉格朗日乘子$L$\n$$ L = \\frac{1}{2}\\mathbf{w}^{\\mathrm{H}}\\mathbf{R}\\mathbf{w} - \\lambda(\\mathbf{w}^{\\mathrm{H}}\\mathbf{a}(\\theta_0) - 1) $$\n对$\\mathbf{w}$求导，并令其导数为$0$可得\n$$ \\begin{aligned} \\frac{\\partial L}{\\partial \\mathbf{w}} = \\mathbf{R}\\mathbf{w} - \\lambda\\mathbf{a}(\\theta_0) = 0 \\\\ \\Rightarrow \\mathbf{w} = \\lambda \\mathbf{R}^{-1}\\mathbf{a}(\\theta_0) \\end{aligned} $$\n将上式代入到约束条件中可以计算得到\n$$ \\mathbf{w} = \\frac{\\mathbf{R}^{-1}\\mathbf{a}(\\theta_0)}{\\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{R}^{-1}\\mathbf{a}(\\theta_0)} $$\n回波信号在$\\theta_0$方向上的能量$P(\\theta_0)$为\n$$ \\begin{aligned} P(\\theta_0) =\u0026 \\left|\\mathbf{w}^{\\mathrm{H}}\\mathbf{R}\\mathbf{w}\\right| \\\\ =\u0026 \\left|\\frac{\\mathbf{a}(\\theta_0)^{\\mathrm{H}}{\\mathbf{R}^{-1}}^{\\mathrm{H}}\\mathbf{a}(\\theta_0)}{\\lVert \\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{R}^{-1}\\mathbf{a}(\\theta_0) \\rVert^2}\\right| \\\\ =\u0026 \\left|\\frac{\\mathbf{a}(\\theta_0)^{\\mathrm{H}}{\\mathbf{R}^{-1}}\\mathbf{a}(\\theta_0)}{\\lVert \\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{R}^{-1}\\mathbf{a}(\\theta_0) \\rVert^2}\\right| \\\\ =\u0026 \\left|\\frac{1}{\\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{R}^{-1}\\mathbf{a}(\\theta_0)}\\right| \\end{aligned} $$\n通过遍历$\\theta_0$，即可得到回波信号在各个方向上的能量大小。随后进行谱峰搜索即可得到目标角度的估计。\n4.MUSIC算法 Capon算法仅利用了回波信号的协方差矩阵这一个信息，实际上由于信号分布与噪声分布的区别，通常我们还能够估计得到空域中的目标个数。利用目标个数这一个信息，我们可以仅利用协方差矩阵中的有用分量而抛弃无关分量来进一步得到更优的估计性能。假设目标回波的协方差矩阵为$\\mathbf{R}=\\text{E}\\left(\\mathbf{x}\\mathbf{x}^{\\mathrm{H}}\\right)$，根据回波信号模型，协方差矩阵可表示为\n$$ \\mathbf{R} = \\mathbf{A}\\mathbf{R}_s\\mathbf{A}^{\\mathrm{H}} + \\sigma^2 \\mathbf{I} $$\n其中$\\mathbf{R}_s$表示源信号矩阵的协方差，$\\sigma^2$表示噪声强度，$\\mathbf{I}$表示对角矩阵。从上式可以看到，信号分量$\\mathbf{A}\\mathbf{R}_s\\mathbf{A}^{\\mathrm{H}}$集中在某一个低秩空间内，而噪声分量$\\sigma^2\\mathbf{I}$分散在整个空间中，并且信号分量能量大于噪声分量能量。因而进一步可以推断，大特征值所对应的特征向量为信号与噪声的主成分，而小特征值所对应的特征向量为噪声的主成分。对$\\mathbf{R}$作特征值分解可以得到\n$$ \\mathbf{R} = \\mathbf{E}\\mathbf{V}\\mathbf{E}^{\\mathrm{H}} = \\mathbf{E}_s\\mathbf{V}_s\\mathbf{E}_s^{\\mathrm{H}}+\\mathbf{E}_n\\mathbf{V}_n\\mathbf{E}_n^{\\mathrm{H}} $$\n其中$\\mathbf{E}$表示特征向量矩阵，$\\mathbf{V}$表示特征值对角矩阵，$\\mathbf{E}_s$与$\\mathbf{V}_s$分别表示源信号对应的特征向量与特征值，$\\mathbf{E}_n$与$\\mathbf{V}_n$分别表示噪声信号对应的特征向量与特征值。上述分割方法相当于把信号分为了信号子空间$\\mathbf{E}_s$与噪声子空间$\\mathbf{E}_n$。\n由于源信号所对应的特征向量相当于源信号所张成空间的主成分，因此在源信号导向矢量之间两两正交情况下，特征向量等于源信号导向矢量，但更一般的，源信号导向矢量之间通常并不正交，因此特征向量相当于是源信号导向矢量正交化后的结果。若直接使用源信号特征向量来作角度估计，通常无法得到一个精确的结果。\n为了得到一个精确的目标角度估计结果，可以将导向矢量$\\mathbf{a}(\\theta_0)$投影至噪声子空间中。由于实对称矩阵的特征向量之间相互正交，因此信号子空间与噪声子空间之间是正交的。$\\mathbf{a}(\\theta_0)$投影至噪声子空间的分量越小，表明$\\mathbf{a}(\\theta_0)$越多分量处于信号子空间，从而目标为该角度的可能性越大。与Capon算法类似，计算导向矢量投影至噪声子空间的大小\n$$ P(\\theta_0) = \\frac{1}{\\lVert \\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{E}_n \\rVert^2} = \\frac{1}{\\mathbf{a}(\\theta_0)^{\\mathrm{H}}\\mathbf{E}_n\\mathbf{E}_n^{\\mathrm{H}}\\mathbf{a}(\\theta_0)} $$\n随后遍历$\\theta_0$便能得到每个回波角度情况下的估计。而实际应用中，通常无法知道目标回波的协方差矩阵，因此首先需要对回波协方差矩阵进行一个估计\n$$ \\hat{\\mathbf{R}} = \\frac{1}{L}\\sum_{i=1}^{L}\\mathbf{x}_{:,i}\\mathbf{x}_{:,i}^{\\mathrm{H}} = \\frac{1}{L}\\mathbf{X}\\mathbf{X}^{\\mathrm{H}} $$\n其中$\\mathbf{x}_{:,i}$表示第$i$次快拍阵列采样信号。随后根据$\\hat{\\mathbf{R}}$进行后续的操作即可得到目标角度估计。\n5.ESPRIT算法 当然，Capon算法与MUSIC算法的一个共同点是两个算法都要进行角度遍历并进行谱峰搜索才能得到目标角度估计，因此性能较低。ESPRIT算法根据旋转不变子空间的方式来进行角度估计。假设目标回波信号为$\\mathbf{X}=\\mathbf{A}\\mathbf{S}+\\mathbf{N}$，将$N$个阵元分为两个子阵，分别为第$1$个阵元至第$N-1$个阵元，与第$2$个阵元至第$N$个阵元。记第$1$至第$N-1$个阵元回波信号构成的矩阵为$\\mathbf{X}_1 = \\mathbf{A}_1\\mathbf{S}+\\mathbf{N}_1$，第$2$至第$N$构成的矩阵为$\\mathbf{X}_2 = \\mathbf{A}_2\\mathbf{S}+\\mathbf{N}_2$，那么如下关系成立\n$$ \\mathbf{A}_2 = \\mathbf{A}_1 \\mathbf{\\Phi} $$\n其中\n$$ \\mathbf{\\Phi} = \\begin{bmatrix} \\exp(j \\pi \\sin\\theta_1) \u0026 0 \u0026 \\cdots \u0026 0 \\\\ 0 \u0026 \\exp(j \\pi \\sin\\theta_2) \u0026 \\cdots \u0026 0 \\\\ \\cdots \u0026 \\cdots \u0026 \\cdots \u0026 \\cdots \\\\ 0 \u0026 0 \u0026 \\cdots \u0026 \\exp(j \\pi \\sin\\theta_T) \\end{bmatrix} $$\n令$\\mathbf{X}_0$为两个子阵回波信号行方向上的拼接，进一步可得\n$$ \\mathbf{X}_0 = \\begin{bmatrix} \\mathbf{X}_1 \\\\ \\mathbf{X}_2 \\end{bmatrix} = \\mathbf{A}_1 \\begin{bmatrix} \\mathbf{I} \\\\ \\mathbf{\\Phi} \\end{bmatrix}\\mathbf{S} + \\mathbf{N}_0 = \\bar{\\mathbf{A}}\\mathbf{S}+\\mathbf{N}_0 $$\n其中$\\bar{\\mathbf{A}}=\\begin{bmatrix} \\mathbf{A}_1 \\\\ \\mathbf{A}_1\\mathbf{\\Phi} \\end{bmatrix}$。与MUSIC算法一样，仍然估计回波信号的协方差矩阵\n$$ \\hat{\\mathbf{R}}_X = \\frac{1}{L}\\mathbf{X}_0\\mathbf{X}_0^{\\mathrm{H}} \\approx \\bar{\\mathbf{A}}\\hat{\\mathbf{R}_S}\\bar{\\mathbf{A}}^{\\mathrm{H}} + \\sigma^2\\mathbf{I} $$\n其中，$\\hat{\\mathbf{R}}_S=\\frac{1}{L}\\mathbf{S}\\mathbf{S}^{\\mathrm{H}}$。对$\\hat{\\mathbf{R}}_X$作特征值分解后，可以得到\n$$ \\hat{\\mathbf{R}}_X=\\mathbf{E}_s\\mathbf{V}_s\\mathbf{E}_s + \\mathbf{E}_n\\mathbf{V}_n\\mathbf{E}_n $$\n其中$\\mathbf{E}_s$与$\\mathbf{E}_n$分别对应信号子空间与噪声子空间。由于$\\mathbf{E}_s$所张成的空间应当就等于$\\bar{\\mathbf{A}}$所张成的空间，因此存在一个可逆矩阵$\\mathbf{P}$，使得\n$$ \\mathbf{E}_s = \\bar{\\mathbf{A}}\\mathbf{P} $$\n将$\\mathbf{E}_s$分为与$\\mathbf{A}_1$大小相等的两部分，可以得到\n$$ \\mathbf{E}_s = \\begin{bmatrix} \\mathbf{E}_x \\\\ \\mathbf{E}_y \\end{bmatrix} = \\bar{\\mathbf{A}}\\mathbf{P} = \\begin{bmatrix} \\mathbf{A}_1\\mathbf{P} \\\\ \\mathbf{A}_1\\mathbf{\\Phi}\\mathbf{P} \\end{bmatrix} $$\n进一步有\n$$ \\mathbf{E}_y = \\mathbf{E}_x\\mathbf{P}^{-1}\\mathbf{\\Phi}\\mathbf{P} = \\mathbf{E}_x\\mathbf{T} $$\n可以发现，$\\mathbf{T}$与$\\mathbf{\\Phi}$相似，因此两者具有相同的特征值；同时，$\\mathbf{\\Phi}$的特征值恰好对应目标回波角度，因此只需要估计$\\mathbf{T}$，并求其特征值便能得到目标回波角度估计。最简单的估计方式便是令\n$$ \\mathbf{T}=\\mathbf{E}_x^{\\dagger}\\mathbf{E}_y = (\\mathbf{E}_x^{\\mathrm{H}}\\mathbf{E}_x)^{-1}\\mathbf{E}_x^{\\mathrm{H}}\\mathbf{E}_y $$\n其中$\\cdot^{\\dagger}$表示矩阵的伪逆。估计得到$\\mathbf{T}$后，对其求特征值，并进行一些转化，便得到了目标的角度估计。\n6.克拉美罗界 前文提到了在常规算法下，目标回波角度受瑞利界限制，那么超分辨算法的角度分辨率的理论下界又是多少呢？克拉美罗界指的是，对于一个受参数$\\theta$控制的概率密度函数$P(x; \\theta)$而言，对$\\theta$的无偏估计方差满足如下关系\n$$ \\text{Var}(\\theta) \\ge \\frac{1}{-\\mathrm{E}(\\frac{\\partial^2\\ln P(x; \\theta)}{\\partial\\theta^2})} = \\frac{1}{I(\\theta)} $$\n矩阵情形下，概率密度函数$P(\\mathbf{X}; \\Theta)$对$\\Theta=\\begin{bmatrix} \\theta_1 \u0026 \\theta_2 \u0026 \\cdots \\theta_M \\end{bmatrix}$的无偏估计满足如下关系\n$$ \\text{Cov}(\\Theta) \\ge I(\\Theta)^{-1} $$\n其中$I(\\Theta)$表示费歇尔信息量，其定义如下所示\n$$ I(\\Theta) = \\begin{bmatrix} \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_1\\partial\\theta_1} \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_1\\partial\\theta_2} \u0026 \\cdots \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_1\\partial\\theta_M} \\\\ \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_2\\partial\\theta_1} \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_2\\partial\\theta_2} \u0026 \\cdots \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_2\\partial\\theta_M} \\\\ \\cdots \u0026 \\cdots \u0026 \\cdots \u0026 \\cdots \\\\ \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_M\\partial\\theta_1} \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_M\\partial\\theta_2} \u0026 \\cdots \u0026 \\frac{\\partial^2\\ln P(\\mathbf{X}; \\Theta)}{\\partial\\theta_M\\partial\\theta_M} \\\\ \\end{bmatrix} $$\n6.1 克拉美罗界证明 此处只给出标量情形下的证明。由于\n$$ \\int_{-\\infty}^{+\\infty}P(x; \\theta)\\mathrm{d}x = 1 $$\n因此有\n$$ \\begin{aligned} \\frac{\\partial}{\\partial \\theta}\\int_{-\\infty}^{+\\infty}P(x; \\theta)\\mathrm{d}x = 0 \\\\ \\Rightarrow \\int_{-\\infty}^{+\\infty}\\frac{\\partial}{\\partial \\theta}P(x; \\theta)\\mathrm{d}x = 0 \\end{aligned} $$\n注意到$\\frac{\\partial}{\\partial \\theta}P(x; \\theta) = P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)$，因此有\n$$ \\int_{-\\infty}^{+\\infty}P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\mathrm{d}x = 0 \\tag{6.1} $$\n即\n$$ \\int_{-\\infty}^{+\\infty}\\theta P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\mathrm{d}x = 0 \\tag{6.2} $$\n从另一个角度而言，由于这个估计是一个无偏估计，因此有\n$$ \\int_{-\\infty}^{+\\infty} \\hat{\\theta} P(x; \\theta)\\mathrm{d}x = \\theta $$\n同理可得\n$$ \\int_{-\\infty}^{+\\infty}\\hat{\\theta} P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\mathrm{d}x = 1 \\tag{6.3} $$\n两式相减$(6.3) - (6.2)$可得\n$$ \\int_{-\\infty}^{+\\infty}(\\hat{\\theta} - \\theta) P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\mathrm{d}x = 1 $$\n即\n$$ \\mathrm{E}\\left((\\hat{\\theta} - \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\right) = 1 $$\n由柯西不等式可得\n$$ 1 = \\mathrm{E}\\left[(\\hat{\\theta} - \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\right]^2 \\le \\mathrm{E}\\left[(\\hat{\\theta} - \\theta)^2 \\right]\\mathrm{E}\\left[ (\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta))^2 \\right] $$\n即\n$$ \\text{Var}(\\theta) \\ge \\frac{1}{\\mathrm{E}\\left[ (\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta))^2 \\right]} $$\n由$(6.1)$进一步可得\n$$ \\begin{aligned} \u0026\\frac{\\partial}{\\partial \\theta}\\int_{-\\infty}^{+\\infty}P(x; \\theta)\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\mathrm{d}x = 0 \\\\ \\Rightarrow \\\\ \u0026\\int_{-\\infty}^{+\\infty}P(x; \\theta)\\left[\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta)\\right]^2\\mathrm{d}x \\\\ \u0026+ \\int_{-\\infty}^{+\\infty}P(x; \\theta)\\frac{\\partial^2}{\\partial \\theta^2} \\ln P(x; \\theta)\\mathrm{d}x = 0 \\end{aligned} $$\n因此有$\\mathrm{E}\\left[ (\\frac{\\partial}{\\partial \\theta} \\ln P(x; \\theta))^2 \\right] = -\\mathrm{E}\\left[\\frac{\\partial^2}{\\partial \\theta^2} \\ln P(x; \\theta)\\right]$，最终可得\n$$ \\text{Var}(\\theta) \\ge \\frac{1}{-\\mathrm{E}\\left[\\frac{\\partial^2}{\\partial \\theta^2} \\ln P(x; \\theta)\\right]} $$\n至此就完成了标量情况下的证明。\n6.2. CMA条件下DOA估计的克拉美罗界 CMA条件指的是Conditional Model Assumption，指的是目标回波信号是一个确定的未知参数，而非一个随机变量。 假设目标回波信号模型为\n$$ \\mathbf{X} = \\mathbf{A} \\mathbf{S} + \\mathbf{N} $$\n并且$\\mathbf{S}=\\begin{bmatrix}s_1 \u0026 s_2 \u0026 \\cdots \u0026 s_T\\end{bmatrix}^{\\mathrm{T}}$是一个恒定的向量，$\\mathbf{N}$服从复高斯分布。那么$\\mathbf{X} \\sim \\mathcal{CN}(\\mathbf{A}\\mathbf{S}, \\sigma^2 \\mathbf{I})$，其中$\\mathcal{CN}$表示复高斯分布，$\\sigma^2$表示噪声方差。令$\\mathbf{Y}=\\mathbf{A}\\mathbf{S}$，进一步可得概率密度函数为\n$$ \\begin{aligned} P(\\mathbf{X}; \\Theta) =\u0026 \\frac{1}{(2\\pi)^{N}|\\mathbf{C}|}\\exp\\left\\{-\\frac{1}{2}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]^{\\mathrm{T}}\\mathbf{C}^{-1}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]\\right\\} \\\\ \u0026 \\cdot \\exp\\left\\{-\\frac{1}{2}\\left[\\text{Im}(\\mathbf{X})-\\text{Im}(\\mathbf{Y})\\right]^{\\mathrm{T}}\\mathbf{C}^{-1}\\left[\\text{Im}(\\mathbf{X})-\\text{Im}(\\mathbf{Y})\\right]\\right\\} \\end{aligned} $$\n其中\n$$ \\mathbf{C} = \\begin{bmatrix} \\frac{\\sigma^2}{2} \u0026 0 \u0026 \\cdots \u0026 0 \\\\ 0 \u0026 \\frac{\\sigma^2}{2} \u0026 \\cdots \u0026 0 \\\\ \\cdots \u0026 \\cdots \u0026 \\cdots \u0026 \\cdots \\\\ 0 \u0026 0 \u0026 \\cdots \u0026 \\frac{\\sigma^2}{2} \\end{bmatrix} $$\n假设待估计参数$\\Theta=\\begin{bmatrix} \\theta_1 \u0026 \\theta_2 \u0026 \\cdots \u0026 \\theta_T \u0026 s_1 \u0026 s_2 \u0026 \\cdots \u0026 s_T \\end{bmatrix}$，其中$\\sigma_1^2$表示目标$1$回波的能量，以此类推。考虑到在复高斯分布情况下，实部方差与虚部方差一致，那么可以得到\n$$ P(\\mathbf{X}; \\Theta) = \\frac{1}{(2\\pi)^{N}|\\mathbf{C}|}\\exp\\left\\{-\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]^{\\mathrm{T}}\\mathbf{C}^{-1}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]\\right\\} $$\n从而有\n$$ \\begin{aligned} \\frac{\\partial \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i} =\u0026 -\\frac{\\partial}{\\partial \\theta_i}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]^{\\mathrm{T}}\\mathbf{C}^{-1}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right] \\\\ =\u0026 -\\frac{2}{\\sigma^2}\\frac{\\partial}{\\partial \\theta_i}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right]^{\\mathrm{T}}\\left[\\text{Re}(\\mathbf{X})-\\text{Re}(\\mathbf{Y})\\right] \\\\ =\u0026 -\\frac{1}{\\sigma^2}\\text{Re}\\left[\\frac{\\partial}{\\partial \\theta_i}(\\mathbf{X}-\\mathbf{Y})^{\\mathrm{H}}(\\mathbf{X}-\\mathbf{Y})\\right] \\\\ =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[ (\\mathbf{X}-\\mathbf{Y})^{\\mathrm{H}} \\frac{\\partial \\mathbf{Y}}{\\partial \\theta_i} \\right] \\end{aligned} $$\n进而\n$$ \\begin{aligned} -\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i \\partial \\theta_j} =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[ \\frac{\\partial \\mathbf{Y}^{\\mathrm{H}}}{\\partial \\theta_i} \\frac{\\partial \\mathbf{Y}}{\\partial \\theta_j} \\right] \\\\ =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[\\text{tr}\\left( \\frac{\\partial \\mathbf{Y}}{\\partial \\theta_i} \\frac{\\partial \\mathbf{Y}^{\\mathrm{H}}}{\\partial \\theta_j} \\right)\\right] \\\\ =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[\\text{tr}\\left( \\frac{\\partial \\mathbf{A}}{\\partial \\theta_i} \\mathbf{R}_S \\frac{\\partial \\mathbf{A}^{\\mathrm{H}}}{\\partial \\theta_j} \\right)\\right] \\end{aligned} $$\n其中$\\mathbf{R}_S = \\text{E}(\\mathbf{S}\\mathbf{S}^{\\mathrm{H}})$。同理有\n$$ \\begin{aligned} -\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial s_i \\partial \\theta_j} =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[\\text{tr}\\left( \\mathbf{A}\\frac{\\partial \\mathbf{S}}{\\partial s_i} \\mathbf{S}^{\\mathrm{H}} \\frac{\\partial \\mathbf{A}^{\\mathrm{H}}}{\\partial \\theta_j} \\right)\\right] \\\\ -\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i \\partial s_j} =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[\\text{tr}\\left( \\frac{\\partial \\mathbf{A}}{\\partial \\theta_i}\\mathbf{S} \\frac{\\partial \\mathbf{S}^{\\mathrm{H}}}{\\partial s_j}\\mathbf{A}^{\\mathrm{H}} \\right)\\right] \\\\ -\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial s_i \\partial s_j} =\u0026 \\frac{2}{\\sigma^2}\\text{Re}\\left[\\text{tr}\\left( \\mathbf{A}\\frac{\\partial \\mathbf{S}}{\\partial s_i} \\frac{\\partial \\mathbf{S}^{\\mathrm{H}}}{\\partial s_j}\\mathbf{A}^{\\mathrm{H}} \\right)\\right] \\end{aligned} $$\n令$\\mathbf{F}(\\theta, \\theta)_{i,j}=-\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i \\partial \\theta_j}$，$\\mathbf{F}(s, \\theta)_{i,j}=-\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial s_i \\partial \\theta_j}$，$\\mathbf{F}(\\theta, s)_{i,j}=-\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i \\partial s_j}$，$\\mathbf{F}(s, s)_{i,j}=-\\frac{\\partial^2 \\ln P(\\mathbf{X}; \\Theta)}{\\partial s_i \\partial s_j}$，构造分块矩阵可得\n$$ \\mathbf{FIM} = \\begin{bmatrix} \\mathbf{F}(\\theta, \\theta) \u0026 \\mathbf{F}(\\theta, s) \\\\ \\mathbf{F}(s, \\theta) \u0026 \\mathbf{F}(s, s) \\end{bmatrix} $$\n随后利用分块矩阵求逆即可计算得到各个变量方差的理论下界。\n6.3. UMA条件下DOA估计的克拉美罗界 与CMA条件不同的是，UMA条件指的是目标回波信号是一个随机变量。此时回波信号模型仍然为\n$$ \\mathbf{X} = \\mathbf{A}\\mathbf{S}+\\mathbf{N} $$\n但是，$\\mathbf{X} \\sim \\mathcal{CN}(0, \\mathbf{A}\\mathbf{R}_S\\mathbf{A}^{\\mathrm{H}} + \\sigma^2\\mathbf{I})$。并且，本文还假设$\\mathbf{R}_S=\\text{diag}(\\sigma_1^2, \\sigma_2^2, \\cdots, \\sigma_T^2)$。与上一节一致，可以得到此时的概率密度函数为\n$$ P(\\mathbf{X}; \\Theta) = \\frac{1}{(2\\pi)^N 2^{N}|\\mathbf{R}|}\\exp\\left\\{-\\frac{1}{2}\\text{Re}(\\mathbf{X})^{\\mathrm{T}}\\mathbf{\\mathbf{R}}^{-1}\\text{Re}(\\mathbf{X})\\right\\} $$\n其中$\\mathbf{R}=\\mathbf{A}\\mathbf{R}_S\\mathbf{A}^{\\mathrm{H}} + \\sigma^2\\mathbf{I}$。同理可求得\n$$ \\frac{\\partial \\ln P(\\mathbf{X}; \\Theta)}{\\partial \\theta_i} = -\\text{tr}\\left( \\frac{\\partial \\mathbf{R}}{\\partial \\theta_i} \\mathbf{R}^{-1} \\right) + \\mathbf{X}^{\\mathrm{H}}\\mathbf{R}^{-1}\\frac{\\partial \\mathbf{R}}{\\partial \\theta_i}\\mathbf{R}^{-1}\\mathbf{X} $$\n",
+  "wordCount" : "6454",
+  "inLanguage": "en",
+  "datePublished": "2024-05-17T20:58:57+08:00",
+  "dateModified": "2024-05-17T20:58:57+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "Song"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bingsz.github.io/en/posts/superres/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Song's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://bingsz.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    (function () {
+        let  arr,reg = new RegExp("(^| )"+"change-themes"+"=([^;]*)(;|$)");
+        if(arr = document.cookie.match(reg)) {
+        } else {
+            if (new Date().getHours() >= 19 || new Date().getHours() < 6) {
+                document.body.classList.add('dark');
+                localStorage.setItem("pref-theme", 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem("pref-theme", 'light');
+            }
+        }
+    })()
+
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://bingsz.github.io/en/" accesskey="h" title="Song&#39;s Blog (Alt + H)">Song&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://bingsz.github.io/en/search" title="🔍搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/" title="🏠主页">
+                <span>🏠主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/posts" title="📚文章">
+                <span>📚文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/tags" title="🔖标签">
+                <span>🔖标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://bingsz.github.io/en/about" title="🙋🏻‍♂️关于">
+                <span>🙋🏻‍♂️关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+</style>
+
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://bingsz.github.io/en/">🏠 主页</a>&nbsp;»&nbsp;<a href="https://bingsz.github.io/en/posts/">📚文章</a></div>
+            <h1 class="post-title">
+                DOA估计的超分辨率算法以及克拉美罗界
+            </h1>
+            <div class="post-meta">
+
+<style>
+    i[id*="post_meta_style"] {
+        display: flex;
+        align-items: center;
+        margin: 0 0 10px 0;
+    }
+
+    .parent-post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0.8;
+    }
+</style>
+
+<span class="parent-post-meta">
+    <span id="post_meta_style_1">
+        <span class="fa fa-calendar-check-o"></span>
+        <span>2024-05-17
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    
+    
+    
+    
+    
+    
+    
+    <span id="post_meta_style_3">
+        <span class="fa fa-file-word-o"></span>
+        <span>6454字
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_4">
+        <span class="fa fa-clock-o"></span>
+        <span>13分钟
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_5">
+        <span class="fa fa-user-o"></span>
+        <span>Song
+            &nbsp;&nbsp;
+        </span>
+    </span>
+    <span id="post_meta_style_6">
+        <span class="fa fa-tags" style="opacity: 0.8"></span>
+        <span>
+            <span class="post-tags-meta">
+                <a href="https://bingsz.github.io/en/tags/radar/" style="color: var(--secondary)!important;">Radar</a>
+            </span>
+        </span>
+    </span>
+</span>
+<span style="opacity: 0.8;">
+                    <span id="post_meta_style_7">
+                        &nbsp;&nbsp;
+                        <span class="fa fa-eye" ></span>
+                        <span>
+                            <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                    <span id="post_meta_style_8">
+                        <span class="fa fa-commenting-o"></span>
+                        <span>
+                            <script src="https://cdn.staticfile.org/twikoo//twikoo.all.min.js"></script>
+                            <script>
+                                let url = document.documentURI
+                                
+                                let dnsUrl = "https://bingsz.github.io/"
+                                let urlSplit = url.split(dnsUrl)
+                                let finalUrl = urlSplit[1]
+                                if (finalUrl[0] !== '/') {
+                                    finalUrl = '/'+finalUrl
+                                }
+                                twikoo.getCommentsCount({
+                                    envId:  null , 
+                                region:  null , 
+                                urls: [ 
+                                    
+                                    finalUrl,
+                                ],
+                                    includeReply: false 
+                                }).then(function (res) {
+                                    let count = res[0].count
+                                    const obj = document.getElementById("comment_count");
+                                    obj.innerText = count
+                                    
+                                    
+                                    
+                                }).catch(function (err) {
+                                    
+                                    console.error(err);
+                                });
+                            </script>
+                            <span id="comment_count"></span>
+                        </span>
+                    </span>
+                </span>
+
+</div>
+        </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1%e5%9b%9e%e6%b3%a2%e4%bf%a1%e5%8f%b7%e6%a8%a1%e5%9e%8b" aria-label="1.回波信号模型">1.回波信号模型</a></li>
+                <li>
+                    <a href="#2%e5%b8%b8%e8%a7%84%e7%ae%97%e6%b3%95" aria-label="2.常规算法">2.常规算法</a></li>
+                <li>
+                    <a href="#3capon%e7%ae%97%e6%b3%95" aria-label="3.Capon算法">3.Capon算法</a></li>
+                <li>
+                    <a href="#4music%e7%ae%97%e6%b3%95" aria-label="4.MUSIC算法">4.MUSIC算法</a></li>
+                <li>
+                    <a href="#5esprit%e7%ae%97%e6%b3%95" aria-label="5.ESPRIT算法">5.ESPRIT算法</a></li>
+                <li>
+                    <a href="#6%e5%85%8b%e6%8b%89%e7%be%8e%e7%bd%97%e7%95%8c" aria-label="6.克拉美罗界">6.克拉美罗界</a><ul>
+                        
+                <li>
+                    <a href="#61-%e5%85%8b%e6%8b%89%e7%be%8e%e7%bd%97%e7%95%8c%e8%af%81%e6%98%8e" aria-label="6.1 克拉美罗界证明">6.1 克拉美罗界证明</a></li>
+                <li>
+                    <a href="#62-cma%e6%9d%a1%e4%bb%b6%e4%b8%8bdoa%e4%bc%b0%e8%ae%a1%e7%9a%84%e5%85%8b%e6%8b%89%e7%be%8e%e7%bd%97%e7%95%8c" aria-label="6.2. CMA条件下DOA估计的克拉美罗界">6.2. CMA条件下DOA估计的克拉美罗界</a></li>
+                <li>
+                    <a href="#63-uma%e6%9d%a1%e4%bb%b6%e4%b8%8bdoa%e4%bc%b0%e8%ae%a1%e7%9a%84%e5%85%8b%e6%8b%89%e7%be%8e%e7%bd%97%e7%95%8c" aria-label="6.3. UMA条件下DOA估计的克拉美罗界">6.3. UMA条件下DOA估计的克拉美罗界</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        if (elements) {
+            activeElement = Array.from(elements).find((element) => {
+                if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                    (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                    return element;
+                }
+            }) || activeElement
+
+            elements.forEach(element => {
+                const id = encodeURI(element.getAttribute('id')).toLowerCase();
+                if (element === activeElement){
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+                }
+            })
+        }
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        <div class="post-content"><p>这篇博客主要是介绍一下超分辨相关算法。在之前已经接触了很多超分辨算法，但一直都没有时间记录，这篇博客就把之前的超分辨算法做一个总结。</p>
+<h3 id="1回波信号模型">1.回波信号模型<a hidden class="anchor" aria-hidden="true" href="#1回波信号模型">#</a></h3>
+<p>在本文开始之前，我们先来介绍一下雷达阵列信号的回波信号模型。假设空间中存在$N$个阵元，并且阵元按照均匀线阵排列，如图1.1所示。</p>
+<div>
+<center>
+  <img src="/images/SuperRes/ula.png" width="50%"/>
+  <br>
+  图1.1：均匀线阵
+</center>
+</div>
+<p>两个阵元之间的间距为$d$，目标回波到达方向与第一个阵元轴向方向所呈夹角为$\theta$。为了方便，本文假设阵列回波信号为一个窄带信号，并且遵循远场假设。窄带信号指的是回波信号的包络是缓变的，从而每个阵元接收到的信号包络都可看作是一样的，因此每个阵元接收到的信号仅仅是相位上存在差异。远场假设指的是当目标充分远时，目标回波信号可看作平行射入阵列，因此每个阵元所接收到的信号夹角都是一致的。</p>
+<p>在上述两个假设前提下，若第$t$个目标在第$1$个阵元所对应的回波数字采样信号为$\mathbf{s}_t \in \mathbb{C}^{1 \times L}$，其中$L$为采样点数，那么第$n$个阵元的回波信号可表示为</p>
+<p>$$
+\mathbf{x}_n = \sum_{t=1}^{T}\mathbf{s}_t \exp\left(j 2\pi \frac{(n-1)d\sin\theta_t}{\lambda}\right) + \mathbf{n}_n
+$$</p>
+<p>其中$T$为目标个数，$\theta_t$为目标$t$的回波夹角，$\mathbf{n}_n$表示第$n$个阵元回波信号的噪声信号。为了更加方便的使用矩阵语言来描述，记源信号矩阵$\mathbf{S} = \begin{bmatrix} \mathbf{s}_1 &amp; \mathbf{s}_2 &amp; \cdots &amp; \mathbf{s}_N \end{bmatrix}^{\mathrm{T}}$，噪声信号矩阵$\mathbf{N} = \begin{bmatrix} \mathbf{n}_1 &amp; \mathbf{n}_2 &amp; \cdots &amp; \mathbf{n}_N \end{bmatrix}^{\mathrm{T}}$，导向矢量矩阵$\mathbf{A}$为</p>
+<p>$$
+\begin{aligned}
+\mathbf{A} =&amp; \begin{bmatrix} 1 &amp; 1 &amp; \cdots &amp; 1 \\
+\exp\left(j 2\pi \frac{d\sin\theta_1}{\lambda}\right) &amp; \exp\left(j 2\pi \frac{d\sin\theta_2}{\lambda}\right) &amp; \cdots &amp; \exp\left(j 2\pi \frac{d\sin\theta_T}{\lambda}\right) \\
+\cdots &amp; \cdots &amp; \cdots &amp; \cdots \\
+\exp\left(j 2\pi \frac{(N-1)d\sin\theta_1}{\lambda}\right) &amp; \exp\left(j 2\pi \frac{(N-1)d\sin\theta_2}{\lambda}\right) &amp; \cdots &amp; \exp\left(j 2\pi \frac{(N-1)d\sin\theta_T}{\lambda}\right) \end{bmatrix} \\
+=&amp; \begin{bmatrix} \mathbf{a}(\theta_1) &amp; \mathbf{a}(\theta_2) &amp; \cdots &amp; \mathbf{a}(\theta_T) \end{bmatrix}
+\end{aligned}
+$$</p>
+<p>其中，$\mathbf{a}(\theta_t)$被称为目标$t$的导向矢量。那么，阵元接收到的目标回波信号矩阵$\mathbf{X} = \begin{bmatrix} \mathbf{x}_1 &amp; \mathbf{x}_2 &amp; \cdots &amp; \mathbf{x}_N \end{bmatrix}^{\mathrm{T}}$为</p>
+<p>$$
+\mathbf{X} = \mathbf{A} \mathbf{S} + \mathbf{N}
+$$</p>
+<p>从另一个角度来说，某次快拍下，阵列信号（即$\mathbf{X}$的列向量）实际上就是一个数字信号。在多目标情况下，阵列信号相当于包含了多个数字频率成分，而DOA估计则是估计该数字采样信号的各个频率成分。为了对于第$t$个目标不发生频率混叠，要求上式的数字角频率小于$\pi$，即</p>
+<p>$$
+\begin{aligned}
+\frac{2\pi d|\sin\theta_t|}{\lambda} &lt; \pi \\
+\Rightarrow d &lt; \frac{\lambda}{2 |\sin \theta_t|}
+\end{aligned}
+$$</p>
+<p>当探测范围为$-\pi$至$+\pi$时，$d$应当满足$d &lt; \frac{\lambda}{2}$。为了方便，本文取$d = \frac{\lambda}{2}$，那么此时目标$t$的导向矢量可写为</p>
+<p>$$
+\mathbf{a}(\theta_t) = \begin{bmatrix}
+\exp\left(j \pi \sin\theta_1\right) \\
+\exp\left(j \pi 2\sin\theta_1\right) \\
+\cdots \\
+\exp\left(j \pi (N-1)\sin\theta_1\right)
+\end{bmatrix}
+$$</p>
+<h3 id="2常规算法">2.常规算法<a hidden class="anchor" aria-hidden="true" href="#2常规算法">#</a></h3>
+<p>既然前文提到，DOA估计本质上是估计回波信号的各个频率成分，那么最简单的一个方法就是傅里叶变换。假设阵列回波信号的一次快拍为$\mathbf{x}$，对其作傅里叶变换得到$\mathbf{y} = \text{FFT}(\mathbf{x})$，对$\mathbf{y}$进行谱峰搜索即可得到目标回波的到达角估计。这种方法虽然简单，但存在分辨率低的问题。</p>
+<p>关于雷达角度估计分辨率，可以从多个角度来理解。从阵列孔径来理解，阵列的3dB波束宽度为</p>
+<p>$$
+\theta_{\text{3dB}}=\frac{\lambda}{D}
+$$</p>
+<p>其中$D$为阵列孔径。当阵元间距为半波长时，$D=\frac{N\lambda}{2}$。带入上式即可得到</p>
+<p>$$
+\theta_{\text{3dB}} = \frac{2}{N}
+$$</p>
+<p>从FFT的频率分辨率来理解，FFT的频率分辨率为$\frac{1}{N}$。因此两个信号的空域频率应当满足</p>
+<p>$$
+\frac{|\sin\theta_1 - \sin\theta_2|}{2} \ge \frac{1}{N}
+$$</p>
+<p>当目标位于$0^{\circ}$附近时，可以得到角度分辨率为$\frac{2}{N}$。当然，一般教科书上给的理解都是从原始公式出发。对导向矢量作FFT后，可以得到其结果为一个Sinc函数，根据Sinc函数的3dB波束宽度即可得到角度分辨率，这里就不再赘述了。</p>
+<p>总而言之，传统常规算法所得到的角度分辨率为$\frac{2}{N}$，该分辨率受限于阵列孔径大小，因而也被称为瑞丽限。当阵列的角度分辨率低于瑞丽限时，这类算法被称为超分辨算法。超分辨算法有许多种类，本文主要介绍基于谱分析的超分辨算法。</p>
+<h3 id="3capon算法">3.Capon算法<a hidden class="anchor" aria-hidden="true" href="#3capon算法">#</a></h3>
+<p>Capon算法基于一个比较朴素的思想，希望在检测某个方向上的目标回波时，先对回波信号作一个线性变换，使得其它方向上的回波最小，以此来减小其它目标回波对测角结果的影响。</p>
+<p>针对某次快拍阵列信号，经过$\mathbf{w}$的线性变化后，阵列信号可被写为$\mathbf{w}^{\mathrm{H}}\mathbf{x}$，从而目标能量为$(\mathbf{w}^{\mathrm{H}}\mathbf{x})(\mathbf{w}^{\mathrm{H}}\mathbf{x})^{\mathrm{H}} = \mathbf{w}^{\mathrm{H}}\mathbf{R}\mathbf{w}$，其中$\mathbf{R}=\mathbf{x}\mathbf{x}^{\mathrm{H}}$。约束特定方向$\theta_0$上的能量为固定值，而其它方向上的能量最小，可写出如下所示的优化问题</p>
+<p>$$
+\begin{cases}
+\min \quad  &amp; \mathbf{w}^{\mathrm{H}}\mathbf{R}\mathbf{w} \\
+\text{s.t.} &amp; \mathbf{w}^{\mathrm{H}}\mathbf{a}(\theta_0) = 1
+\end{cases}
+$$</p>
+<p>为了求解上述优化问题，构建拉格朗日乘子$L$</p>
+<p>$$
+L = \frac{1}{2}\mathbf{w}^{\mathrm{H}}\mathbf{R}\mathbf{w} - \lambda(\mathbf{w}^{\mathrm{H}}\mathbf{a}(\theta_0) - 1)
+$$</p>
+<p>对$\mathbf{w}$求导，并令其导数为$0$可得</p>
+<p>$$
+\begin{aligned}
+\frac{\partial L}{\partial \mathbf{w}} = \mathbf{R}\mathbf{w} - \lambda\mathbf{a}(\theta_0) = 0 \\
+\Rightarrow \mathbf{w} = \lambda \mathbf{R}^{-1}\mathbf{a}(\theta_0)
+\end{aligned}
+$$</p>
+<p>将上式代入到约束条件中可以计算得到</p>
+<p>$$
+\mathbf{w} = \frac{\mathbf{R}^{-1}\mathbf{a}(\theta_0)}{\mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{R}^{-1}\mathbf{a}(\theta_0)}
+$$</p>
+<p>回波信号在$\theta_0$方向上的能量$P(\theta_0)$为</p>
+<p>$$
+\begin{aligned}
+P(\theta_0) =&amp; \left|\mathbf{w}^{\mathrm{H}}\mathbf{R}\mathbf{w}\right| \\
+=&amp; \left|\frac{\mathbf{a}(\theta_0)^{\mathrm{H}}{\mathbf{R}^{-1}}^{\mathrm{H}}\mathbf{a}(\theta_0)}{\lVert \mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{R}^{-1}\mathbf{a}(\theta_0) \rVert^2}\right| \\
+=&amp; \left|\frac{\mathbf{a}(\theta_0)^{\mathrm{H}}{\mathbf{R}^{-1}}\mathbf{a}(\theta_0)}{\lVert \mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{R}^{-1}\mathbf{a}(\theta_0) \rVert^2}\right| \\
+=&amp; \left|\frac{1}{\mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{R}^{-1}\mathbf{a}(\theta_0)}\right|
+\end{aligned}
+$$</p>
+<p>通过遍历$\theta_0$，即可得到回波信号在各个方向上的能量大小。随后进行谱峰搜索即可得到目标角度的估计。</p>
+<h3 id="4music算法">4.MUSIC算法<a hidden class="anchor" aria-hidden="true" href="#4music算法">#</a></h3>
+<p>Capon算法仅利用了回波信号的协方差矩阵这一个信息，实际上由于信号分布与噪声分布的区别，通常我们还能够估计得到空域中的目标个数。利用目标个数这一个信息，我们可以仅利用协方差矩阵中的有用分量而抛弃无关分量来进一步得到更优的估计性能。假设目标回波的协方差矩阵为$\mathbf{R}=\text{E}\left(\mathbf{x}\mathbf{x}^{\mathrm{H}}\right)$，根据回波信号模型，协方差矩阵可表示为</p>
+<p>$$
+\mathbf{R} = \mathbf{A}\mathbf{R}_s\mathbf{A}^{\mathrm{H}} + \sigma^2 \mathbf{I}
+$$</p>
+<p>其中$\mathbf{R}_s$表示源信号矩阵的协方差，$\sigma^2$表示噪声强度，$\mathbf{I}$表示对角矩阵。从上式可以看到，信号分量$\mathbf{A}\mathbf{R}_s\mathbf{A}^{\mathrm{H}}$集中在某一个低秩空间内，而噪声分量$\sigma^2\mathbf{I}$分散在整个空间中，并且信号分量能量大于噪声分量能量。因而进一步可以推断，大特征值所对应的特征向量为信号与噪声的主成分，而小特征值所对应的特征向量为噪声的主成分。对$\mathbf{R}$作特征值分解可以得到</p>
+<p>$$
+\mathbf{R} = \mathbf{E}\mathbf{V}\mathbf{E}^{\mathrm{H}} = \mathbf{E}_s\mathbf{V}_s\mathbf{E}_s^{\mathrm{H}}+\mathbf{E}_n\mathbf{V}_n\mathbf{E}_n^{\mathrm{H}}
+$$</p>
+<p>其中$\mathbf{E}$表示特征向量矩阵，$\mathbf{V}$表示特征值对角矩阵，$\mathbf{E}_s$与$\mathbf{V}_s$分别表示源信号对应的特征向量与特征值，$\mathbf{E}_n$与$\mathbf{V}_n$分别表示噪声信号对应的特征向量与特征值。上述分割方法相当于把信号分为了信号子空间$\mathbf{E}_s$与噪声子空间$\mathbf{E}_n$。</p>
+<p>由于源信号所对应的特征向量相当于源信号所张成空间的主成分，因此在源信号导向矢量之间两两正交情况下，特征向量等于源信号导向矢量，但更一般的，源信号导向矢量之间通常并不正交，因此特征向量相当于是源信号导向矢量正交化后的结果。若直接使用源信号特征向量来作角度估计，通常无法得到一个精确的结果。</p>
+<p>为了得到一个精确的目标角度估计结果，可以将导向矢量$\mathbf{a}(\theta_0)$投影至噪声子空间中。由于实对称矩阵的特征向量之间相互正交，因此信号子空间与噪声子空间之间是正交的。$\mathbf{a}(\theta_0)$投影至噪声子空间的分量越小，表明$\mathbf{a}(\theta_0)$越多分量处于信号子空间，从而目标为该角度的可能性越大。与Capon算法类似，计算导向矢量投影至噪声子空间的大小</p>
+<p>$$
+P(\theta_0) = \frac{1}{\lVert \mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{E}_n \rVert^2} = \frac{1}{\mathbf{a}(\theta_0)^{\mathrm{H}}\mathbf{E}_n\mathbf{E}_n^{\mathrm{H}}\mathbf{a}(\theta_0)}
+$$</p>
+<p>随后遍历$\theta_0$便能得到每个回波角度情况下的估计。而实际应用中，通常无法知道目标回波的协方差矩阵，因此首先需要对回波协方差矩阵进行一个估计</p>
+<p>$$
+\hat{\mathbf{R}} = \frac{1}{L}\sum_{i=1}^{L}\mathbf{x}_{:,i}\mathbf{x}_{:,i}^{\mathrm{H}} = \frac{1}{L}\mathbf{X}\mathbf{X}^{\mathrm{H}}
+$$</p>
+<p>其中$\mathbf{x}_{:,i}$表示第$i$次快拍阵列采样信号。随后根据$\hat{\mathbf{R}}$进行后续的操作即可得到目标角度估计。</p>
+<h3 id="5esprit算法">5.ESPRIT算法<a hidden class="anchor" aria-hidden="true" href="#5esprit算法">#</a></h3>
+<p>当然，Capon算法与MUSIC算法的一个共同点是两个算法都要进行角度遍历并进行谱峰搜索才能得到目标角度估计，因此性能较低。ESPRIT算法根据旋转不变子空间的方式来进行角度估计。假设目标回波信号为$\mathbf{X}=\mathbf{A}\mathbf{S}+\mathbf{N}$，将$N$个阵元分为两个子阵，分别为第$1$个阵元至第$N-1$个阵元，与第$2$个阵元至第$N$个阵元。记第$1$至第$N-1$个阵元回波信号构成的矩阵为$\mathbf{X}_1 = \mathbf{A}_1\mathbf{S}+\mathbf{N}_1$，第$2$至第$N$构成的矩阵为$\mathbf{X}_2 = \mathbf{A}_2\mathbf{S}+\mathbf{N}_2$，那么如下关系成立</p>
+<p>$$
+\mathbf{A}_2 = \mathbf{A}_1 \mathbf{\Phi}
+$$</p>
+<p>其中</p>
+<p>$$
+\mathbf{\Phi} = \begin{bmatrix}
+\exp(j \pi \sin\theta_1) &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \exp(j \pi \sin\theta_2) &amp; \cdots &amp; 0 \\
+\cdots &amp; \cdots &amp; \cdots &amp; \cdots \\
+0 &amp; 0 &amp; \cdots &amp; \exp(j \pi \sin\theta_T)
+\end{bmatrix}
+$$</p>
+<p>令$\mathbf{X}_0$为两个子阵回波信号行方向上的拼接，进一步可得</p>
+<p>$$
+\mathbf{X}_0 = \begin{bmatrix}
+\mathbf{X}_1 \\
+\mathbf{X}_2
+\end{bmatrix} = \mathbf{A}_1 \begin{bmatrix}
+\mathbf{I} \\
+\mathbf{\Phi}
+\end{bmatrix}\mathbf{S} + \mathbf{N}_0 = \bar{\mathbf{A}}\mathbf{S}+\mathbf{N}_0
+$$</p>
+<p>其中$\bar{\mathbf{A}}=\begin{bmatrix}
+\mathbf{A}_1  \\
+\mathbf{A}_1\mathbf{\Phi}
+\end{bmatrix}$。与MUSIC算法一样，仍然估计回波信号的协方差矩阵</p>
+<p>$$
+\hat{\mathbf{R}}_X = \frac{1}{L}\mathbf{X}_0\mathbf{X}_0^{\mathrm{H}} \approx \bar{\mathbf{A}}\hat{\mathbf{R}_S}\bar{\mathbf{A}}^{\mathrm{H}} + \sigma^2\mathbf{I}
+$$</p>
+<p>其中，$\hat{\mathbf{R}}_S=\frac{1}{L}\mathbf{S}\mathbf{S}^{\mathrm{H}}$。对$\hat{\mathbf{R}}_X$作特征值分解后，可以得到</p>
+<p>$$
+\hat{\mathbf{R}}_X=\mathbf{E}_s\mathbf{V}_s\mathbf{E}_s + \mathbf{E}_n\mathbf{V}_n\mathbf{E}_n
+$$</p>
+<p>其中$\mathbf{E}_s$与$\mathbf{E}_n$分别对应信号子空间与噪声子空间。由于$\mathbf{E}_s$所张成的空间应当就等于$\bar{\mathbf{A}}$所张成的空间，因此存在一个可逆矩阵$\mathbf{P}$，使得</p>
+<p>$$
+\mathbf{E}_s = \bar{\mathbf{A}}\mathbf{P}
+$$</p>
+<p>将$\mathbf{E}_s$分为与$\mathbf{A}_1$大小相等的两部分，可以得到</p>
+<p>$$
+\mathbf{E}_s = \begin{bmatrix}
+\mathbf{E}_x \\
+\mathbf{E}_y
+\end{bmatrix} = \bar{\mathbf{A}}\mathbf{P} = \begin{bmatrix}
+\mathbf{A}_1\mathbf{P} \\
+\mathbf{A}_1\mathbf{\Phi}\mathbf{P}
+\end{bmatrix}
+$$</p>
+<p>进一步有</p>
+<p>$$
+\mathbf{E}_y = \mathbf{E}_x\mathbf{P}^{-1}\mathbf{\Phi}\mathbf{P} = \mathbf{E}_x\mathbf{T}
+$$</p>
+<p>可以发现，$\mathbf{T}$与$\mathbf{\Phi}$相似，因此两者具有相同的特征值；同时，$\mathbf{\Phi}$的特征值恰好对应目标回波角度，因此只需要估计$\mathbf{T}$，并求其特征值便能得到目标回波角度估计。最简单的估计方式便是令</p>
+<p>$$
+\mathbf{T}=\mathbf{E}_x^{\dagger}\mathbf{E}_y = (\mathbf{E}_x^{\mathrm{H}}\mathbf{E}_x)^{-1}\mathbf{E}_x^{\mathrm{H}}\mathbf{E}_y
+$$</p>
+<p>其中$\cdot^{\dagger}$表示矩阵的伪逆。估计得到$\mathbf{T}$后，对其求特征值，并进行一些转化，便得到了目标的角度估计。</p>
+<h3 id="6克拉美罗界">6.克拉美罗界<a hidden class="anchor" aria-hidden="true" href="#6克拉美罗界">#</a></h3>
+<p>前文提到了在常规算法下，目标回波角度受瑞利界限制，那么超分辨算法的角度分辨率的理论下界又是多少呢？克拉美罗界指的是，对于一个受参数$\theta$控制的概率密度函数$P(x; \theta)$而言，对$\theta$的无偏估计方差满足如下关系</p>
+<p>$$
+\text{Var}(\theta) \ge \frac{1}{-\mathrm{E}(\frac{\partial^2\ln P(x; \theta)}{\partial\theta^2})} = \frac{1}{I(\theta)}
+$$</p>
+<p>矩阵情形下，概率密度函数$P(\mathbf{X}; \Theta)$对$\Theta=\begin{bmatrix} \theta_1 &amp; \theta_2 &amp; \cdots \theta_M \end{bmatrix}$的无偏估计满足如下关系</p>
+<p>$$
+\text{Cov}(\Theta) \ge I(\Theta)^{-1}
+$$</p>
+<p>其中$I(\Theta)$表示费歇尔信息量，其定义如下所示</p>
+<p>$$
+I(\Theta) = \begin{bmatrix}
+\frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_1\partial\theta_1} &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_1\partial\theta_2} &amp; \cdots &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_1\partial\theta_M} \\
+\frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_2\partial\theta_1} &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_2\partial\theta_2} &amp; \cdots &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_2\partial\theta_M} \\
+\cdots &amp; \cdots &amp; \cdots &amp; \cdots \\
+\frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_M\partial\theta_1} &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_M\partial\theta_2} &amp; \cdots &amp; \frac{\partial^2\ln P(\mathbf{X}; \Theta)}{\partial\theta_M\partial\theta_M} \\
+\end{bmatrix}
+$$</p>
+<h4 id="61-克拉美罗界证明">6.1 克拉美罗界证明<a hidden class="anchor" aria-hidden="true" href="#61-克拉美罗界证明">#</a></h4>
+<p>此处只给出标量情形下的证明。由于</p>
+<p>$$
+\int_{-\infty}^{+\infty}P(x; \theta)\mathrm{d}x = 1
+$$</p>
+<p>因此有</p>
+<p>$$
+\begin{aligned}
+\frac{\partial}{\partial \theta}\int_{-\infty}^{+\infty}P(x; \theta)\mathrm{d}x = 0 \\
+\Rightarrow \int_{-\infty}^{+\infty}\frac{\partial}{\partial \theta}P(x; \theta)\mathrm{d}x = 0
+\end{aligned}
+$$</p>
+<p>注意到$\frac{\partial}{\partial \theta}P(x; \theta) = P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)$，因此有</p>
+<p>$$
+\int_{-\infty}^{+\infty}P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\mathrm{d}x = 0 \tag{6.1}
+$$</p>
+<p>即</p>
+<p>$$
+\int_{-\infty}^{+\infty}\theta P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\mathrm{d}x = 0 \tag{6.2}
+$$</p>
+<p>从另一个角度而言，由于这个估计是一个无偏估计，因此有</p>
+<p>$$
+\int_{-\infty}^{+\infty} \hat{\theta} P(x; \theta)\mathrm{d}x = \theta
+$$</p>
+<p>同理可得</p>
+<p>$$
+\int_{-\infty}^{+\infty}\hat{\theta} P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\mathrm{d}x = 1 \tag{6.3}
+$$</p>
+<p>两式相减$(6.3) - (6.2)$可得</p>
+<p>$$
+\int_{-\infty}^{+\infty}(\hat{\theta} - \theta) P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\mathrm{d}x = 1
+$$</p>
+<p>即</p>
+<p>$$
+\mathrm{E}\left((\hat{\theta} - \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\right) = 1
+$$</p>
+<p>由柯西不等式可得</p>
+<p>$$
+1 = \mathrm{E}\left[(\hat{\theta} - \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\right]^2 \le \mathrm{E}\left[(\hat{\theta} - \theta)^2 \right]\mathrm{E}\left[ (\frac{\partial}{\partial \theta} \ln P(x; \theta))^2 \right]
+$$</p>
+<p>即</p>
+<p>$$
+\text{Var}(\theta) \ge \frac{1}{\mathrm{E}\left[ (\frac{\partial}{\partial \theta} \ln P(x; \theta))^2 \right]}
+$$</p>
+<p>由$(6.1)$进一步可得</p>
+<p>$$
+\begin{aligned}
+&amp;\frac{\partial}{\partial \theta}\int_{-\infty}^{+\infty}P(x; \theta)\frac{\partial}{\partial \theta} \ln P(x; \theta)\mathrm{d}x = 0 \\
+\Rightarrow \\
+&amp;\int_{-\infty}^{+\infty}P(x; \theta)\left[\frac{\partial}{\partial \theta} \ln P(x; \theta)\right]^2\mathrm{d}x \\
+&amp;+ \int_{-\infty}^{+\infty}P(x; \theta)\frac{\partial^2}{\partial \theta^2} \ln P(x; \theta)\mathrm{d}x = 0
+\end{aligned}
+$$</p>
+<p>因此有$\mathrm{E}\left[ (\frac{\partial}{\partial \theta} \ln P(x; \theta))^2 \right] = -\mathrm{E}\left[\frac{\partial^2}{\partial \theta^2} \ln P(x; \theta)\right]$，最终可得</p>
+<p>$$
+\text{Var}(\theta) \ge \frac{1}{-\mathrm{E}\left[\frac{\partial^2}{\partial \theta^2} \ln P(x; \theta)\right]}
+$$</p>
+<p>至此就完成了标量情况下的证明。</p>
+<h4 id="62-cma条件下doa估计的克拉美罗界">6.2. CMA条件下DOA估计的克拉美罗界<a hidden class="anchor" aria-hidden="true" href="#62-cma条件下doa估计的克拉美罗界">#</a></h4>
+<p>CMA条件指的是Conditional Model Assumption，指的是目标回波信号是一个确定的未知参数，而非一个随机变量。 假设目标回波信号模型为</p>
+<p>$$
+\mathbf{X} = \mathbf{A} \mathbf{S} + \mathbf{N}
+$$</p>
+<p>并且$\mathbf{S}=\begin{bmatrix}s_1 &amp; s_2 &amp; \cdots &amp; s_T\end{bmatrix}^{\mathrm{T}}$是一个恒定的向量，$\mathbf{N}$服从复高斯分布。那么$\mathbf{X} \sim \mathcal{CN}(\mathbf{A}\mathbf{S}, \sigma^2 \mathbf{I})$，其中$\mathcal{CN}$表示复高斯分布，$\sigma^2$表示噪声方差。令$\mathbf{Y}=\mathbf{A}\mathbf{S}$，进一步可得概率密度函数为</p>
+<p>$$
+\begin{aligned}
+P(\mathbf{X}; \Theta) =&amp; \frac{1}{(2\pi)^{N}|\mathbf{C}|}\exp\left\{-\frac{1}{2}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]^{\mathrm{T}}\mathbf{C}^{-1}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]\right\} \\
+&amp; \cdot \exp\left\{-\frac{1}{2}\left[\text{Im}(\mathbf{X})-\text{Im}(\mathbf{Y})\right]^{\mathrm{T}}\mathbf{C}^{-1}\left[\text{Im}(\mathbf{X})-\text{Im}(\mathbf{Y})\right]\right\}
+\end{aligned}
+$$</p>
+<p>其中</p>
+<p>$$
+\mathbf{C} = \begin{bmatrix}
+\frac{\sigma^2}{2} &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \frac{\sigma^2}{2} &amp; \cdots &amp; 0 \\
+\cdots &amp; \cdots &amp; \cdots &amp; \cdots \\
+0 &amp; 0 &amp; \cdots &amp; \frac{\sigma^2}{2}
+\end{bmatrix}
+$$</p>
+<p>假设待估计参数$\Theta=\begin{bmatrix} \theta_1 &amp; \theta_2 &amp; \cdots &amp; \theta_T &amp; s_1 &amp; s_2 &amp; \cdots &amp; s_T \end{bmatrix}$，其中$\sigma_1^2$表示目标$1$回波的能量，以此类推。考虑到在复高斯分布情况下，实部方差与虚部方差一致，那么可以得到</p>
+<p>$$
+P(\mathbf{X}; \Theta) = \frac{1}{(2\pi)^{N}|\mathbf{C}|}\exp\left\{-\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]^{\mathrm{T}}\mathbf{C}^{-1}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]\right\}
+$$</p>
+<p>从而有</p>
+<p>$$
+\begin{aligned}
+\frac{\partial \ln P(\mathbf{X}; \Theta)}{\partial \theta_i} =&amp; -\frac{\partial}{\partial \theta_i}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]^{\mathrm{T}}\mathbf{C}^{-1}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right] \\
+=&amp; -\frac{2}{\sigma^2}\frac{\partial}{\partial \theta_i}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right]^{\mathrm{T}}\left[\text{Re}(\mathbf{X})-\text{Re}(\mathbf{Y})\right] \\
+=&amp; -\frac{1}{\sigma^2}\text{Re}\left[\frac{\partial}{\partial \theta_i}(\mathbf{X}-\mathbf{Y})^{\mathrm{H}}(\mathbf{X}-\mathbf{Y})\right] \\
+=&amp; \frac{2}{\sigma^2}\text{Re}\left[ (\mathbf{X}-\mathbf{Y})^{\mathrm{H}} \frac{\partial \mathbf{Y}}{\partial \theta_i} \right]
+\end{aligned}
+$$</p>
+<p>进而</p>
+<p>$$
+\begin{aligned}
+-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial \theta_i \partial \theta_j} =&amp; \frac{2}{\sigma^2}\text{Re}\left[ \frac{\partial \mathbf{Y}^{\mathrm{H}}}{\partial \theta_i} \frac{\partial \mathbf{Y}}{\partial \theta_j} \right] \\
+=&amp; \frac{2}{\sigma^2}\text{Re}\left[\text{tr}\left( \frac{\partial \mathbf{Y}}{\partial \theta_i} \frac{\partial \mathbf{Y}^{\mathrm{H}}}{\partial \theta_j} \right)\right] \\
+=&amp; \frac{2}{\sigma^2}\text{Re}\left[\text{tr}\left( \frac{\partial \mathbf{A}}{\partial \theta_i} \mathbf{R}_S \frac{\partial \mathbf{A}^{\mathrm{H}}}{\partial \theta_j} \right)\right]
+\end{aligned}
+$$</p>
+<p>其中$\mathbf{R}_S = \text{E}(\mathbf{S}\mathbf{S}^{\mathrm{H}})$。同理有</p>
+<p>$$
+\begin{aligned}
+-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial s_i \partial \theta_j} =&amp; \frac{2}{\sigma^2}\text{Re}\left[\text{tr}\left( \mathbf{A}\frac{\partial \mathbf{S}}{\partial s_i} \mathbf{S}^{\mathrm{H}} \frac{\partial \mathbf{A}^{\mathrm{H}}}{\partial \theta_j} \right)\right] \\
+-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial \theta_i \partial s_j} =&amp; \frac{2}{\sigma^2}\text{Re}\left[\text{tr}\left( \frac{\partial \mathbf{A}}{\partial \theta_i}\mathbf{S}  \frac{\partial \mathbf{S}^{\mathrm{H}}}{\partial s_j}\mathbf{A}^{\mathrm{H}} \right)\right] \\
+-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial s_i \partial s_j} =&amp; \frac{2}{\sigma^2}\text{Re}\left[\text{tr}\left( \mathbf{A}\frac{\partial \mathbf{S}}{\partial s_i} \frac{\partial \mathbf{S}^{\mathrm{H}}}{\partial s_j}\mathbf{A}^{\mathrm{H}} \right)\right]
+\end{aligned}
+$$</p>
+<p>令$\mathbf{F}(\theta, \theta)_{i,j}=-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial \theta_i \partial \theta_j}$，$\mathbf{F}(s, \theta)_{i,j}=-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial s_i \partial \theta_j}$，$\mathbf{F}(\theta, s)_{i,j}=-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial \theta_i \partial s_j}$，$\mathbf{F}(s, s)_{i,j}=-\frac{\partial^2 \ln P(\mathbf{X}; \Theta)}{\partial s_i \partial s_j}$，构造分块矩阵可得</p>
+<p>$$
+\mathbf{FIM} = \begin{bmatrix}
+\mathbf{F}(\theta, \theta) &amp; \mathbf{F}(\theta, s) \\
+\mathbf{F}(s, \theta) &amp; \mathbf{F}(s, s)
+\end{bmatrix}
+$$</p>
+<p>随后利用分块矩阵求逆即可计算得到各个变量方差的理论下界。</p>
+<h4 id="63-uma条件下doa估计的克拉美罗界">6.3. UMA条件下DOA估计的克拉美罗界<a hidden class="anchor" aria-hidden="true" href="#63-uma条件下doa估计的克拉美罗界">#</a></h4>
+<p>与CMA条件不同的是，UMA条件指的是目标回波信号是一个随机变量。此时回波信号模型仍然为</p>
+<p>$$
+\mathbf{X} = \mathbf{A}\mathbf{S}+\mathbf{N}
+$$</p>
+<p>但是，$\mathbf{X} \sim \mathcal{CN}(0, \mathbf{A}\mathbf{R}_S\mathbf{A}^{\mathrm{H}} + \sigma^2\mathbf{I})$。并且，本文还假设$\mathbf{R}_S=\text{diag}(\sigma_1^2, \sigma_2^2, \cdots, \sigma_T^2)$。与上一节一致，可以得到此时的概率密度函数为</p>
+<p>$$
+P(\mathbf{X}; \Theta) = \frac{1}{(2\pi)^N 2^{N}|\mathbf{R}|}\exp\left\{-\frac{1}{2}\text{Re}(\mathbf{X})^{\mathrm{T}}\mathbf{\mathbf{R}}^{-1}\text{Re}(\mathbf{X})\right\}
+$$</p>
+<p>其中$\mathbf{R}=\mathbf{A}\mathbf{R}_S\mathbf{A}^{\mathrm{H}} + \sigma^2\mathbf{I}$。同理可求得</p>
+<p>$$
+\frac{\partial \ln P(\mathbf{X}; \Theta)}{\partial \theta_i} = -\text{tr}\left( \frac{\partial \mathbf{R}}{\partial \theta_i} \mathbf{R}^{-1} \right) + \mathbf{X}^{\mathrm{H}}\mathbf{R}^{-1}\frac{\partial \mathbf{R}}{\partial \theta_i}\mathbf{R}^{-1}\mathbf{X}
+$$</p>
+
+
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://bingsz.github.io/en/posts/psanpsa/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>张量与盲源分离之间的联系</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+</article>
+</main>
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2022-2024
+        <a href="https://bingsz.github.io/en/" style="color:#939393;">Song&#39;s Blog</a>
+        All Rights Reserved
+    </span>
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;"></a>&nbsp;
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"
+           style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="" style="float:left;margin: 0px 5px 0px 0px;"/>
+            
+        </a>
+    </span>
+    <span id="busuanzi_container">
+        <span class="fa fa-user"></span> <span id="busuanzi_value_site_uv"></span>
+        <span class="fa fa-eye"></span> <span id="busuanzi_value_site_pv"></span>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+</script>
+<script>
+    let mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        (function() {
+            document.cookie = "change-themes" + "="+ escape ("false");
+        })()
+
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    });
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"Song's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {}
+            selection.removeRange(range);
+        });
+
+        let language = codeblock.className.replaceAll("language-", "")
+        let macTool = document.createElement("div")
+        let macTool1 = document.createElement("div")
+        let macTool2 = document.createElement("div")
+        let macTool3 = document.createElement("div")
+        let languageType = document.createElement("div")
+        languageType.innerText = language
+        macTool.setAttribute('class', 'mac-tool')
+        macTool1.setAttribute('class', 'mac bb1')
+        macTool2.setAttribute('class', 'mac bb2')
+        macTool3.setAttribute('class', 'mac bb3')
+        languageType.setAttribute('class', 'language-type')
+        macTool.appendChild(macTool1)
+        macTool.appendChild(macTool2)
+        macTool.appendChild(macTool3)
+        macTool.appendChild(languageType)
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+            container.appendChild(macTool)
+        }
+    });
+</script>
+</body>
+
+</html>
